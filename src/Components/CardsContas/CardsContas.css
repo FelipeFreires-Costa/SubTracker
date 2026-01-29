@@ -29,10 +29,10 @@
     align-items: flex-start;
     justify-content: center;
     padding: 20px;
+    max-width: 1000px;
 }
 
 .card.pago {
-  padding-left: 10px;
   background-color: #f0fff4;
   border-left: 5px solid green;
   opacity: 0.6;
@@ -47,14 +47,25 @@
   align-items: center; /* Centraliza os cards no meio da tela */
 }
 
-.infos{
+.infos {
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr auto 1fr auto auto;
-  align-items: center;
-  gap: 15px;
-}
+  
+  /* --- A MÁGICA ACONTECE AQUI --- */
+  /* Coluna 1 (Nome): Flexível, mínimo 150px */
+  /* Coluna 2 (Preço): 1 parte */
+  /* Coluna 3 (Data): 1.5 partes */
+  /* Coluna 4 (Status): 120px FIXOS (pra não dançar) */
+  /* Coluna 5 (Checkbox): 50px FIXOS */
+  /* Coluna 6 (Texto pagar): 1 parte */
+  /* Coluna 7 (Botão): 100px FIXOS */
+  grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 50px 1fr 100px;
+  /* ------------------------------ */
+  
+  gap: 10px;
+  align-items: center; /* Centraliza verticalmente */}
 
+  
 .infos h3 {
   font-size: 1.1rem;
   margin: 0;
@@ -77,14 +88,48 @@
   background: white;
 }
 
+.detalhes {
+  align-items: center;
+  display: flex;
+  width: 80px;
+  justify-content: center;
+}
+
 .detalhes p{
   font-size: 11px;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  border-radius: 14px;
+  padding: 4px;
 }
 
 .detalhes.perto p{
   color: rgb(255, 183, 0);
+  background-color: rgba(255, 183, 0, 0.192);
+  font-weight: 600;
 }
 
 .detalhes.tranquilo p{
   color: rgb(16, 174, 85);
+  background-color:rgb(16, 174, 85, 0.192);
+  font-weight: 600;
+}
+
+.detalhes.hoje p{
+  color: rgb(0, 119, 255);
+  background-color:rgb(0, 119, 255, 0.192);
+    font-weight: 600;
+}
+
+.detalhes.vencida p{
+  color: rgb(205, 0, 0);
+  background-color:rgb(205, 0, 0, 0.192);
+    font-weight: 600;
+}
+
+.infos img{
+  width: 18px;
+  vertical-align: bottom;
 }
