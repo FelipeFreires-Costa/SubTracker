@@ -1,8 +1,10 @@
 import React from 'react'
 
-const Header = () => {
+const Header = ({valorTotal}) => {
   return (
-    <div>Header</div>
+    <div>
+      <h2>Gasto Mensal: R$ {valorTotal.toFixed(2)}</h2>
+    </div>
   )
 }
 

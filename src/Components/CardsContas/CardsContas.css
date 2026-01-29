@@ -1,0 +1,37 @@
+.vencida {
+  border-left: solid 5px red;
+  padding-left: 10px;
+  background-color: rgba(255, 0, 0, 0.271);
+}
+
+.perto {
+  border-left: solid 5px rgb(255, 183, 0);
+  padding-left: 10px;
+  background-color: rgb(255, 183, 0, 0.271);
+}
+
+.hoje {
+  border-left: solid 5px rgb(0, 119, 255);
+  padding-left: 10px;
+  background-color: rgb(0, 119, 255, 0.271);
+}
+
+.tranquilo {
+  border-left: solid 5px rgb(16, 174, 85);
+  padding-left: 10px;
+  background-color: rgb(16, 174, 85, 0.271);
+}
+
+.card {
+  background-color: white;
+  opacity: 1;
+  transition: all 0.3s;
+}
+
+.card.pago {
+  padding-left: 10px;
+  background-color: #f0fff4;
+  border-left: 5px solid green;
+  opacity: 0.6;
+  text-decoration: line-through;
+}
