@@ -1,6 +1,7 @@
 import CardsContas from "./Components/CardsContas/CardsContas"
 import Header from "./Components/Header/Header"
 import { useEffect, useState } from "react"
+import './app.css'
 
 function App() {
 
@@ -110,11 +111,12 @@ function App() {
         <input type="Date" min="1" max="31" value={dataInput} onChange={(e) => setDataInput(e.target.value)}/>
         <button onClick={adicionarConta}>Adicionar Conta</button>
     </div>
-
-    {
-      contas.map((item) => (
-        <CardsContas key={item.id} pago={item.pago} foiPago={() => alternarStatus(item.id)} nome={item.nome} preco={item.preco} data={formatarData(item.data)} aoRemover={() => removerConta(item.id)} situacao={verificarSituacao(item.data) }/>
-      ))}
+    <div className="container">
+        {
+          contas.map((item) => (
+            <CardsContas key={item.id} pago={item.pago} foiPago={() => alternarStatus(item.id)} nome={item.nome} preco={item.preco} data={formatarData(item.data)} aoRemover={() => removerConta(item.id)} situacao={verificarSituacao(item.data) }/>
+          ))}
+    </div>
     {
       contas.length === 0 && <p>Nenhuma conta adicionada</p>
     }

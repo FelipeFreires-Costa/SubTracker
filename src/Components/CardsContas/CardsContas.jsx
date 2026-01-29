@@ -3,23 +3,19 @@ import './CardsContas.css'
 
 const CardsContas = ({nome, preco, data, aoRemover, situacao, foiPago, pago}) => {
   return (
-    <div>
-
-      <div>
-        <p>Status: </p>
-      </div>
-
       <div className={`card ${pago ? "pago" : situacao}`}>
+        <div className='infos'>
+          <div className={`detalhes ${situacao}`}>
           <h3>{nome}</h3>
+          <p>{situacao.toUpperCase()}</p>            
+          </div>
           <p>R$: {preco.toFixed(2)}</p>
           <p>Vencimento: {data}</p>
           <button onClick={aoRemover}>Remover</button>
-          <p>Status: {situacao}</p>
           <input type="checkbox" onChange={foiPago} checked={pago}/>
-          <p>{pago == false ? 'falta pagar!' : "pago!"}</p>          
+          <p>{pago == false ? 'falta pagar!' : "pago!"}</p>             
+        </div>
       </div>
-
-    </div>
   )
 }
 
