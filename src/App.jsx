@@ -1,7 +1,7 @@
 import CardsContas from "./Components/CardsContas/CardsContas"
 import Header from "./Components/Header/Header"
 import { useEffect, useState } from "react"
-import './app.css'
+import './App.css'
 
 function App() {
 
