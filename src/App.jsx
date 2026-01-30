@@ -112,6 +112,16 @@ function App() {
         <button onClick={adicionarConta}>Adicionar Conta</button>
     </div>
     <div className="container">
+      <div className="header-table">
+        <span>Nome</span>
+        <span>Preço</span>
+        <span>Vencimento</span>
+        <span>Status</span>
+        <span></span>
+        <span></span>
+        <span>Ação</span>        
+      </div>
+
         {
           contas.map((item) => (
             <CardsContas key={item.id} pago={item.pago} foiPago={() => alternarStatus(item.id)} nome={item.nome} preco={item.preco} data={formatarData(item.data)} aoRemover={() => removerConta(item.id)} situacao={verificarSituacao(item.data) }/>

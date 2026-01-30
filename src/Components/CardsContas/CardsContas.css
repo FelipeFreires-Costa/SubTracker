@@ -24,7 +24,7 @@
     transition: all 0.3s;
     display: flex;
     width: 900px;
-    height: 80px;
+    height: 70px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
@@ -41,51 +41,32 @@
 
 .container {
   display: flex;
-  flex-direction: column; /* Uma lista, um embaixo do outro */
-  gap: 15px; /* Espaço entre os cards */
+  flex-direction: column;
+  gap: 15px;
   padding: 20px;
-  align-items: center; /* Centraliza os cards no meio da tela */
+  align-items: center;
 }
 
 .infos {
   width: 100%;
   display: grid;
-  
-  /* --- A MÁGICA ACONTECE AQUI --- */
-  /* Coluna 1 (Nome): Flexível, mínimo 150px */
-  /* Coluna 2 (Preço): 1 parte */
-  /* Coluna 3 (Data): 1.5 partes */
-  /* Coluna 4 (Status): 120px FIXOS (pra não dançar) */
-  /* Coluna 5 (Checkbox): 50px FIXOS */
-  /* Coluna 6 (Texto pagar): 1 parte */
-  /* Coluna 7 (Botão): 100px FIXOS */
   grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 50px 1fr 100px;
-  /* ------------------------------ */
-  
   gap: 10px;
-  align-items: center; /* Centraliza verticalmente */}
+  align-items: center;}
 
   
 .infos h3 {
   font-size: 1.1rem;
   margin: 0;
-  white-space: nowrap; /* Não deixa quebrar linha */
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Coloca "..." se o nome for gigante */
+  text-overflow: ellipsis;
 }
 
 .infos p {
   margin: 0;
   font-size: 0.9rem;
   color: #555;
-}
-
-.infos button {
-  padding: 5px 10px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
 }
 
 .detalhes {
@@ -133,3 +114,21 @@
   width: 18px;
   vertical-align: bottom;
 }
+
+.remover{
+  width: 50px;
+  border: none;
+  height: 50px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.remover:hover{
+  transform: scale(1.1);
+}
+
+img.remover-img{
+  height: 25px;
+  width: 25px;
+}
+
