@@ -36,7 +36,10 @@
   background-color: #f0fff4;
   border-left: 5px solid green;
   opacity: 0.6;
-  text-decoration: line-through;
+}
+
+.card.pago:hover {
+  opacity: 1; /* Volta ao normal se passar o mouse */
 }
 
 .container {
@@ -50,7 +53,7 @@
 .infos {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 50px 1fr 100px;
+  grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 100px 50px 1fr;
   gap: 10px;
   align-items: center;}
 
@@ -92,8 +95,12 @@
   font-weight: 600;
 }
 
+p.preco{
+  font-weight: bold;
+}
+
 .detalhes.tranquilo p{
-  color: rgb(16, 174, 85);
+  color: #10ae55;
   background-color:rgb(16, 174, 85, 0.192);
   font-weight: 600;
 }
@@ -116,15 +123,15 @@
 }
 
 .remover{
-  width: 50px;
+  grid-column: 7;
+  width: 65%;
   border: none;
   height: 50px;
   background-color: transparent;
   cursor: pointer;
-  transition: transform 0.2s ease;
 }
 .remover:hover{
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 img.remover-img{
@@ -132,3 +139,27 @@ img.remover-img{
   width: 25px;
 }
 
+.pagar{
+  width: 80%;
+  border: none;
+  padding: 3px;
+  background-color: rgb(16, 174, 85, 0.192);
+  border-radius: 14px;
+  font-weight: 600;
+  color: #10ae55;
+  display: flex;
+  justify-content: flex-start;
+  border: 1px solid #10ae55;
+  opacity: 0.6;
+  transition: 0.2s ease-in;
+  cursor: pointer;
+}
+
+.pagar:hover{
+  opacity: 1;
+}
+
+.pagar img{
+  width: 20px;
+  margin-left: 3px;
+}
