@@ -1,6 +1,6 @@
 import CardsContas from "./Components/CardsContas/CardsContas"
 import Header from "./Components/Header/Header"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import './App.css'
 
 function App() {
@@ -23,7 +23,8 @@ function App() {
   const [precoInput, setPrecoInput] = useState("")
   const [dataInput, setDataInput] = useState("")
 
-
+  const [notificacao, setNotificacao] = useState(null)
+  const timeoutRef = useRef()
 
   function formatarData(dataAmericana){
     if(!dataAmericana) return ""
@@ -58,6 +59,12 @@ function App() {
     const novaConta = contas.filter((item) => item.id !== id)
 
     setContas(novaConta)
+    setNotificacao("Item removido!")
+
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => {
+      setNotificacao(null)
+    }, 2000)
   }
 
   function adicionarConta(){
@@ -103,7 +110,6 @@ function App() {
 
   return (
   <div>
-    <Header valorTotal={precoTotal} />
 
     <div>
         <input type="text" placeholder="Nome" value={nomeInput} onChange={(e) => setNomeInput(e.target.value)} />
@@ -126,10 +132,13 @@ function App() {
           contas.map((item) => (
             <CardsContas key={item.id} pago={item.pago} foiPago={() => alternarStatus(item.id)} nome={item.nome} preco={item.preco} data={formatarData(item.data)} aoRemover={() => removerConta(item.id)} situacao={verificarSituacao(item.data) }/>
           ))}
-    </div>
+          <p>{notificacao}</p>
     {
       contas.length === 0 && <p>Nenhuma conta adicionada</p>
-    }
+    }          
+    <Header valorTotal={precoTotal} />
+    </div>
+
   </div>
   )
 }
