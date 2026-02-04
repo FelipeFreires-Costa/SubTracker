@@ -111,7 +111,7 @@ function App() {
   return (
   <div>
 
-    <div>
+    <div className="form">
         <input type="text" placeholder="Nome" value={nomeInput} onChange={(e) => setNomeInput(e.target.value)} />
         <input type="Number" placeholder="Preço" value={precoInput} onChange={(e) => setPrecoInput(e.target.value)}/>
         <input type="Date" min="1" max="31" value={dataInput} onChange={(e) => setDataInput(e.target.value)}/>

@@ -3,6 +3,7 @@ import './CardsContas.css'
 import calendario from '../../assets/calendar-lines-svgrepo-com.svg'
 import lixo from '../../assets/trash-xmark-svgrepo-com.svg'
 import check from '../../assets/check-svgrepo-com.svg'
+import checkPago from "../../assets/check-circle-svgrepo-com.svg"
 
 const CardsContas = ({nome, preco, data, aoRemover, situacao, foiPago, pago}) => {
   return (
@@ -12,7 +13,12 @@ const CardsContas = ({nome, preco, data, aoRemover, situacao, foiPago, pago}) =>
           <p className='preco'>R$ {preco.toFixed(2)}</p>
           <p><img className='calendario' src={calendario} alt="" /> {data}</p>
           <div className={`detalhes ${situacao}`}>
-          <p>{situacao.toUpperCase()}</p>
+          {pago ? (
+            <img src={checkPago} className='img-pago'></img>
+          ) : (
+
+            <p>{situacao.toUpperCase()}</p>
+          )}
           </div>
           <button className='pagar' onClick={foiPago}> 
             <img src={check} alt="" />
