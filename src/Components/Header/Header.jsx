@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Header = ({valorTotal}) => {
+const Header = () => {
   return (
     <div>
-      <h2>Gasto Mensal: R$ {valorTotal.toFixed(2)}</h2>
+      
     </div>
   )
 }

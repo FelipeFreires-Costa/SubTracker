@@ -59,3 +59,57 @@ input[type="Date"]{
   background-color: rgb(17, 129, 173);
   border: solid 2px rgb(17, 129, 173);
 }
+
+
+.resumo-cards {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-resume {
+    flex-direction: column;
+  }
+}
+
+.card-resumo {
+  background: white;
+  flex: 1;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.2s;
+}
+
+.card-resumo:hover {
+  transform: translateY(-3px);
+}
+
+
+.card-resumo span {
+  color: #777;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card-resumo h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+h2.valor-total { color: #333; }
+
+h2.valor-divida{
+  color: rgb(205, 0, 0);
+}
+h2.valor-pago { color: #2a9d8f; } 

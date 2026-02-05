@@ -98,6 +98,18 @@ function App() {
     setContas(lista)
   }
   
+
+  //cards de resumo, logicas simples, melhor visualizaçao para o usuario
+    const apenasDevedores = contas.filter((item) => item.pago === false)
+    
+    const valorTotalDivida = apenasDevedores.reduce((total, item) => {
+      return total + item.preco
+    }, 0)
+
+    const valorPagos = contas.filter((item) => item.pago === true)
+
+    const valoresPagos = valorPagos.reduce((total, item) => total + item.preco, 0)
+
   const precoTotal = contas.reduce((acc, item) => {
     if(item.pago === true){
       return acc
@@ -106,16 +118,38 @@ function App() {
     }
   }, 0)
 
+  const despesasTotal = contas.reduce((acc, item)=>{
+    return acc + item.preco
+  },0)
+
   console.log(contas)
 
   return (
   <div>
+    <div className="resumo-cards">
+    
+    <div className="card-resumo total">
+        <span>Total Mensal</span>
+        <h2 className="valor-total">R$ {despesasTotal.toFixed(2)}</h2>
+    </div>
+
+    <div className="card-resumo divida">
+        <span>Falta Pagar</span>
+        <h2 className="valor-divida">R$ {valorTotalDivida.toFixed(2)}</h2>
+    </div>
+
+    <div className="card-resumo alivio">
+        <span>Já Pago</span>
+        <h2 className="valor-pago">R$ {valoresPagos.toFixed(2)}</h2>
+    </div>
+
+</div>
 
     <div className="form">
         <input type="text" placeholder="Nome" value={nomeInput} onChange={(e) => setNomeInput(e.target.value)} />
         <input type="Number" placeholder="Preço" value={precoInput} onChange={(e) => setPrecoInput(e.target.value)}/>
         <input type="Date" min="1" max="31" value={dataInput} onChange={(e) => setDataInput(e.target.value)}/>
-        <button onClick={adicionarConta}>Adicionar Conta</button>
+        <button onClick={adicionarConta}>+ Adicionar Conta</button>
     </div>
     <div className="container">
       <div className="header-table">
@@ -136,7 +170,7 @@ function App() {
     {
       contas.length === 0 && <p>Nenhuma conta adicionada</p>
     }          
-    <Header valorTotal={precoTotal} />
+    <h2>Gasto Mensal: R$ {precoTotal.toFixed(2)}</h2>
     </div>
 
   </div>
