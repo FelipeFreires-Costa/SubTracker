@@ -9,7 +9,7 @@ const CardsContas = ({nome, preco, data, aoRemover, situacao, foiPago, pago}) =>
   return (
       <div className={`card ${pago ? "pago" : situacao}`}>
         <div className='infos'>
-          <h3>{nome}</h3>
+          <h3 title={nome}>{nome}</h3>
           <p className='preco'>R$ {preco.toFixed(2)}</p>
           <p><img className='calendario' src={calendario} alt="" /> {data}</p>
           <div className={`detalhes ${situacao}`}>

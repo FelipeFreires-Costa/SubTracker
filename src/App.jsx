@@ -1,76 +1,80 @@
-import CardsContas from "./Components/CardsContas/CardsContas"
-import Header from "./Components/Header/Header"
-import { useEffect, useState, useRef } from "react"
-import './App.css'
+import CardsContas from "./Components/CardsContas/CardsContas";
+import Header from "./Components/Header/Header";
+import { useEffect, useState, useRef } from "react";
+import {
+  FaMoneyBillWave,
+  FaExclamationCircle,
+  FaCheckCircle,
+  FaHeart,
+  FaLinkedin,
+  FaGithub,
+} from "react-icons/fa";
+import "./App.css";
 
 function App() {
-
+  // --- ESTADOS E EFEITOS ---
   const [contas, setContas] = useState(() => {
-    const dadosSalvos = localStorage.getItem("contas-pagar")
-
-    if(dadosSalvos){
-      return JSON.parse(dadosSalvos)
-    } else{
-      return []
+    const dadosSalvos = localStorage.getItem("contas-pagar");
+    if (dadosSalvos) {
+      return JSON.parse(dadosSalvos);
+    } else {
+      return [];
     }
-  })
+  });
 
   useEffect(() => {
-    localStorage.setItem("contas-pagar", JSON.stringify(contas))
-  }, [contas])
+    localStorage.setItem("contas-pagar", JSON.stringify(contas));
+  }, [contas]);
 
-  const [nomeInput, setNomeInput] = useState("")
-  const [precoInput, setPrecoInput] = useState("")
-  const [dataInput, setDataInput] = useState("")
+  const [nomeInput, setNomeInput] = useState("");
+  const [precoInput, setPrecoInput] = useState("");
+  const [dataInput, setDataInput] = useState("");
 
-  const [notificacao, setNotificacao] = useState(null)
-  const timeoutRef = useRef()
+  const [notificacao, setNotificacao] = useState(null);
+  const timeoutRef = useRef();
 
-  function formatarData(dataAmericana){
-    if(!dataAmericana) return ""
-
-    const partes = dataAmericana.split('-')
-    return `${partes[2]}/${partes[1]}/${partes[0]}`
+  // --- FUNÇÕES AUXILIARES ---
+  function formatarData(dataAmericana) {
+    if (!dataAmericana) return "";
+    const partes = dataAmericana.split("-");
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
   }
 
-  function verificarSituacao(dataVencimento){
-    if(!dataVencimento) return ""
-    const hoje = new Date()
-    hoje.setHours(0,0,0,0)
+  function verificarSituacao(dataVencimento) {
+    if (!dataVencimento) return "";
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
 
-    const dataConta = new Date(dataVencimento + "T00:00:00")
+    const dataConta = new Date(dataVencimento + "T00:00:00");
+    const diferenciaTime = dataConta - hoje;
+    const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24));
 
-    const diferenciaTime = dataConta - hoje
-
-    const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24))
-
-    if(dias < 0){
-      return "vencida"
-    }else if(dias === 0){
-      return 'hoje'
-    }else if(dias <= 3){
-      return "perto"
-    }else{
-      return "tranquilo"
+    if (dias < 0) {
+      return "vencida";
+    } else if (dias === 0) {
+      return "hoje";
+    } else if (dias <= 3) {
+      return "perto";
+    } else {
+      return "tranquilo";
     }
   }
 
-  function removerConta(id){
-    const novaConta = contas.filter((item) => item.id !== id)
+  function removerConta(id) {
+    const novaConta = contas.filter((item) => item.id !== id);
+    setContas(novaConta);
+    setNotificacao("Item removido!");
 
-    setContas(novaConta)
-    setNotificacao("Item removido!")
-
-    clearTimeout(timeoutRef.current)
+    clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      setNotificacao(null)
-    }, 2000)
+      setNotificacao(null);
+    }, 2000);
   }
 
-  function adicionarConta(){
-    if(nomeInput === "" || precoInput === "" || dataInput === ""){
-      alert("Preencha todos os campos")
-      return
+  function adicionarConta() {
+    if (nomeInput === "" || precoInput === "" || dataInput === "") {
+      alert("Preencha todos os campos");
+      return;
     }
 
     const novaConta = {
@@ -78,103 +82,177 @@ function App() {
       nome: nomeInput,
       preco: Number(precoInput),
       data: dataInput,
-      pago: false
-    }
-    setContas([...contas, novaConta])
+      pago: false,
+    };
+    setContas([...contas, novaConta]);
 
-    setNomeInput("")
-    setDataInput("")
-    setPrecoInput("")
+    setNomeInput("");
+    setDataInput("");
+    setPrecoInput("");
   }
 
-  function alternarStatus(id){
-    const lista = contas.map(item => {
-      if(item.id === id){
-        return {...item, pago: !item.pago}
-      }else{
-        return item
+  function alternarStatus(id) {
+    const lista = contas.map((item) => {
+      if (item.id === id) {
+        return { ...item, pago: !item.pago };
+      } else {
+        return item;
       }
-    })
-    setContas(lista)
+    });
+    setContas(lista);
   }
-  
 
-  //cards de resumo, logicas simples, melhor visualizaçao para o usuario
-    const apenasDevedores = contas.filter((item) => item.pago === false)
-    
-    const valorTotalDivida = apenasDevedores.reduce((total, item) => {
-      return total + item.preco
-    }, 0)
+  // --- CÁLCULOS DO DASHBOARD ---
+  const apenasDevedores = contas.filter((item) => item.pago === false);
 
-    const valorPagos = contas.filter((item) => item.pago === true)
+  const valorTotalDivida = apenasDevedores.reduce((total, item) => {
+    return total + item.preco;
+  }, 0);
 
-    const valoresPagos = valorPagos.reduce((total, item) => total + item.preco, 0)
+  const valorPagos = contas.filter((item) => item.pago === true);
+  const valoresPagos = valorPagos.reduce(
+    (total, item) => total + item.preco,
+    0,
+  );
 
+  // Nota: precoTotal está calculando o que FALTA pagar (igual ao valorTotalDivida)
   const precoTotal = contas.reduce((acc, item) => {
-    if(item.pago === true){
-      return acc
-    } else{
-      return acc + Number(item.preco)
+    if (item.pago === true) {
+      return acc;
+    } else {
+      return acc + Number(item.preco);
     }
-  }, 0)
+  }, 0);
 
-  const despesasTotal = contas.reduce((acc, item)=>{
-    return acc + item.preco
-  },0)
+  const despesasTotal = contas.reduce((acc, item) => {
+    return acc + item.preco;
+  }, 0);
 
-  console.log(contas)
-
+  // --- JSX (INTERFACE) ---
   return (
-  <div>
-    <div className="resumo-cards">
-    
-    <div className="card-resumo total">
-        <span>Total Mensal</span>
-        <h2 className="valor-total">R$ {despesasTotal.toFixed(2)}</h2>
-    </div>
+    // 1. WRAPPER PRINCIPAL (Para o footer funcionar)
+    <div className="app-wrapper">
+      <Header />
 
-    <div className="card-resumo divida">
-        <span>Falta Pagar</span>
-        <h2 className="valor-divida">R$ {valorTotalDivida.toFixed(2)}</h2>
-    </div>
+      {/* 2. CONTEÚDO PRINCIPAL (Isso vai esticar) */}
+      <main className="main-content">
+        {/* DASHBOARD */}
+        <div className="resumo-cards">
+          <div className="card-resumo total">
+            <div className="card-head">
+              <span>Total Mensal</span>
+              <FaMoneyBillWave size={24} color="#333" />
+            </div>
+            <h2 className="valor-total">R$ {despesasTotal.toFixed(2)}</h2>
+          </div>
 
-    <div className="card-resumo alivio">
-        <span>Já Pago</span>
-        <h2 className="valor-pago">R$ {valoresPagos.toFixed(2)}</h2>
-    </div>
+          <div className="card-resumo divida">
+            <div className="card-head">
+              <span>Falta Pagar</span>
+              <FaExclamationCircle size={24} color="#e63946" />
+            </div>
+            {valorTotalDivida === 0 ? (
+              <h2>R$ 00.00</h2>
+            ) : (
+              <h2 className="valor-divida">R$ {valorTotalDivida.toFixed(2)}</h2>
+            )}
+          </div>
 
-</div>
+          <div className="card-resumo alivio">
+            <div className="card-head">
+              <span>Já Pago</span>
+              <FaCheckCircle size={24} color="#2a9d8f" />
+            </div>
+            <h2 className="valor-pago">R$ {valoresPagos.toFixed(2)}</h2>
+          </div>
+        </div>
 
-    <div className="form">
-        <input type="text" placeholder="Nome" value={nomeInput} onChange={(e) => setNomeInput(e.target.value)} />
-        <input type="Number" placeholder="Preço" value={precoInput} onChange={(e) => setPrecoInput(e.target.value)}/>
-        <input type="Date" min="1" max="31" value={dataInput} onChange={(e) => setDataInput(e.target.value)}/>
-        <button onClick={adicionarConta}>+ Adicionar Conta</button>
-    </div>
-    <div className="container">
-      <div className="header-table">
-        <span>Nome</span>
-        <span>Preço</span>
-        <span>Vencimento</span>
-        <span>Status</span>
-        <span></span>
-        <span></span>
-        <span>Ação</span>        
-      </div>
+        {/* FORMULÁRIO */}
+        <div className="form">
+          <input
+            type="text"
+            placeholder="Nome"
+            value={nomeInput}
+            onChange={(e) => setNomeInput(e.target.value)}
+          />
+          <input
+            type="Number"
+            placeholder="Preço"
+            value={precoInput}
+            onChange={(e) => setPrecoInput(e.target.value)}
+          />
+          <input
+            type="Date"
+            value={dataInput}
+            onChange={(e) => setDataInput(e.target.value)}
+          />
+          <button onClick={adicionarConta}>+ Adicionar Conta</button>
+        </div>
 
-        {
-          contas.map((item) => (
-            <CardsContas key={item.id} pago={item.pago} foiPago={() => alternarStatus(item.id)} nome={item.nome} preco={item.preco} data={formatarData(item.data)} aoRemover={() => removerConta(item.id)} situacao={verificarSituacao(item.data) }/>
+        {/* LISTA DE CONTAS */}
+        <div className="container">
+          <div className="header-table">
+            <span>Nome</span>
+            <span>Preço</span>
+            <span>Vencimento</span>
+            <span>Status</span>
+            <span></span>
+            <span></span>
+            <span>Ação</span>
+          </div>
+
+          {contas.map((item) => (
+            <CardsContas
+              key={item.id}
+              pago={item.pago}
+              foiPago={() => alternarStatus(item.id)}
+              nome={item.nome}
+              preco={item.preco}
+              data={formatarData(item.data)}
+              aoRemover={() => removerConta(item.id)}
+              situacao={verificarSituacao(item.data)}
+            />
           ))}
-          <p>{notificacao}</p>
-    {
-      contas.length === 0 && <p>Nenhuma conta adicionada</p>
-    }          
-    <h2>Gasto Mensal: R$ {precoTotal.toFixed(2)}</h2>
-    </div>
 
-  </div>
-  )
+          <p>{notificacao}</p>
+
+          {contas.length === 0 && <p>Nenhuma conta adicionada</p>}
+
+          <h2 style={{ marginTop: "20px" }}>
+            Restante: R$ {precoTotal.toFixed(2)}
+          </h2>
+        </div>
+      </main>
+
+      <footer className="app-footer">
+        <div className="footer-content">
+          <strong>SubTracker</strong>
+          <span>&copy; 2026 - Todos os direitos reservados.</span>
+        </div>
+
+        <div className="footer-center">
+          <span>Desenvolvido por<strong> Felipe Costa</strong></span>
+        </div>
+
+        <div className="footer-socials">
+          <a
+            href="https://linkedin.com/in/SEU-LINKEDIN"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaLinkedin size={22} />
+          </a>
+          <a
+            href="https://github.com/SEU-GITHUB"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaGithub size={22} />
+          </a>
+        </div>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;

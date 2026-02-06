@@ -23,7 +23,7 @@
     opacity: 1;
     transition: all 0.3s;
     display: flex;
-    width: 900px;
+    width: 100%;
     height: 70px;
     flex-direction: column;
     align-items: flex-start;
@@ -39,7 +39,7 @@
 }
 
 .card.pago:hover {
-  opacity: 1; /* Volta ao normal se passar o mouse */
+  opacity: 1;
 }
 
 .container {
@@ -156,6 +156,7 @@ img.img-pago{
   opacity: 0.6;
   transition: 0.2s ease-in;
   cursor: pointer;
+  grid-column: 5;
 }
 
 .pagar:hover{
