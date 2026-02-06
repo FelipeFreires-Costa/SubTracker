@@ -236,14 +236,14 @@ function App() {
 
         <div className="footer-socials">
           <a
-            href="https://linkedin.com/in/SEU-LINKEDIN"
+            href="https://www.linkedin.com/in/felipefreires/"
             target="_blank"
             rel="noopener noreferrer"
           >
             <FaLinkedin size={22} />
           </a>
           <a
-            href="https://github.com/SEU-GITHUB"
+            href="https://github.com/FelipeFreires-Costa"
             target="_blank"
             rel="noopener noreferrer"
           >
