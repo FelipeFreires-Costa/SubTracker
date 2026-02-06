@@ -24,7 +24,7 @@
   width: 100%;
   max-width: 1000px;
   height: 50px;
-  grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 50px 1fr 100px;
+  grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 100px 50px 1fr;
   align-items: center;
   align-content: center;
   justify-content: center; 
@@ -32,6 +32,10 @@
   border-radius: 10px;
   color: #555;
 } 
+
+.header-table span:last-child{
+  justify-self: center;
+}
 
 .form{
   display: flex;

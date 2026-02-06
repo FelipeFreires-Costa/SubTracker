@@ -30,10 +30,10 @@ function App() {
   const [precoInput, setPrecoInput] = useState("");
   const [dataInput, setDataInput] = useState("");
 
+
   const [notificacao, setNotificacao] = useState(null);
   const timeoutRef = useRef();
 
-  // --- FUNÇÕES AUXILIARES ---
   function formatarData(dataAmericana) {
     if (!dataAmericana) return "";
     const partes = dataAmericana.split("-");
@@ -57,6 +57,31 @@ function App() {
       return "perto";
     } else {
       return "tranquilo";
+    }
+  }
+
+  function diasRestantes(dataVencimento){
+    if(!dataVencimento) return ""
+
+    //zerar a hora de hoje para comparar so o dia
+    const hoje = new Date()
+    hoje.setHours(0,0,0,0)
+
+    //criar a data da conta (T00:00:00 evitar bug)
+    const dataConta = new Date(dataVencimento + "T00:00:00");
+
+    const diferenciaTime = dataConta - hoje
+
+    const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24)); 
+
+    if(dias < 0) {
+      return `Venceu há ${Math.abs(dias)} dias`
+    }else if(dias === 0){
+      return 'Vence hoje!'
+    }else if(dias === 1){
+      return "Falta 1 dia"
+    }else{
+      return `Faltam ${dias} dias`
     }
   }
 
@@ -102,7 +127,6 @@ function App() {
     setContas(lista);
   }
 
-  // --- CÁLCULOS DO DASHBOARD ---
   const apenasDevedores = contas.filter((item) => item.pago === false);
 
   const valorTotalDivida = apenasDevedores.reduce((total, item) => {
@@ -115,7 +139,6 @@ function App() {
     0,
   );
 
-  // Nota: precoTotal está calculando o que FALTA pagar (igual ao valorTotalDivida)
   const precoTotal = contas.reduce((acc, item) => {
     if (item.pago === true) {
       return acc;
@@ -128,15 +151,14 @@ function App() {
     return acc + item.preco;
   }, 0);
 
-  // --- JSX (INTERFACE) ---
+
   return (
-    // 1. WRAPPER PRINCIPAL (Para o footer funcionar)
     <div className="app-wrapper">
       <Header />
 
-      {/* 2. CONTEÚDO PRINCIPAL (Isso vai esticar) */}
+
       <main className="main-content">
-        {/* DASHBOARD */}
+
         <div className="resumo-cards">
           <div className="card-resumo total">
             <div className="card-head">
@@ -167,7 +189,7 @@ function App() {
           </div>
         </div>
 
-        {/* FORMULÁRIO */}
+
         <div className="form">
           <input
             type="text"
@@ -189,7 +211,6 @@ function App() {
           <button onClick={adicionarConta}>+ Adicionar Conta</button>
         </div>
 
-        {/* LISTA DE CONTAS */}
         <div className="container">
           <div className="header-table">
             <span>Nome</span>
@@ -198,7 +219,7 @@ function App() {
             <span>Status</span>
             <span></span>
             <span></span>
-            <span>Ação</span>
+            <span className="alinhar-texto">Ação</span>
           </div>
 
           {contas.map((item) => (
@@ -211,6 +232,7 @@ function App() {
               data={formatarData(item.data)}
               aoRemover={() => removerConta(item.id)}
               situacao={verificarSituacao(item.data)}
+              textoDias={diasRestantes(item.data)}
             />
           ))}
 
