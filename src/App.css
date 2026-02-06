@@ -4,10 +4,25 @@
   font-family: "Sora", sans-serif;
 }
 
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .header-table{
   background-color: rgb(255, 255, 255);
   display: grid;
-  width: 900px;
+  width: 100%;
+  max-width: 1000px;
   height: 50px;
   grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 50px 1fr 100px;
   align-items: center;
@@ -113,3 +128,71 @@ h2.valor-divida{
   color: rgb(205, 0, 0);
 }
 h2.valor-pago { color: #2a9d8f; } 
+
+.card-head{
+  display: flex;
+  justify-content: space-between;
+}
+
+.app-footer {
+  width: 100%;
+  background-color: white;
+  border-top: 1px solid #eee;
+  padding: 25px 40px;
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #666;
+  bottom: 0;
+}
+
+/* 1. Lado Esquerdo */
+.footer-content {
+  display: flex;
+  flex-direction: column; /* SubTracker em cima, Copyright embaixo */
+  gap: 2px;
+}
+.footer-content strong {
+  color: #333;
+}
+.footer-content span {
+  font-size: 0.8rem;
+}
+
+.footer-center {
+  display: flex;
+  align-items: center;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 15px;
+}
+
+.footer-socials a {
+  color: #999;
+  transition: all 0.2s;
+}
+
+
+.footer-socials a:hover {
+  color: #0077ff;
+  transform: translateY(-3px);
+}
+
+
+@media (max-width: 768px) {
+  .app-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  
+  .footer-center {
+    order: 3;
+    font-size: 0.8rem;
+  }
+}
