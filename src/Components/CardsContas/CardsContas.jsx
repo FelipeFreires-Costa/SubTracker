@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import './CardsContas.css'
 
-// Seus imports de imagem (Mantive todos)
 import calendario from '../../assets/calendar-lines-svgrepo-com.svg'
 import check from '../../assets/check-svgrepo-com.svg'
 import checkPago from "../../assets/check-circle-svgrepo-com.svg"
 
-// Imports dos ícones
 import { TbTrashXFilled } from "react-icons/tb";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Adicionei para as setas
 
@@ -26,7 +24,6 @@ const CardsContas = ({ nome, preco, data, aoRemover, situacao, foiPago, pago, te
                 <h3 title={nome}>{nome}</h3>
                 
                 <p className='preco'>R$ {preco.toFixed(2)}</p>
-                
                 <p>
                     <img className='calendario' src={calendario} alt="" /> 
                     {data}
@@ -41,7 +38,6 @@ const CardsContas = ({ nome, preco, data, aoRemover, situacao, foiPago, pago, te
                     )}
                 </div>
 
-                {/* Botão Pagar */}
                 <button className='pagar' onClick={foiPago}>
                     <img src={check} alt="" />
                     {pago === false ? 'pagar' : "pago!"}
@@ -60,11 +56,10 @@ const CardsContas = ({ nome, preco, data, aoRemover, situacao, foiPago, pago, te
 
 
             {estaAberto && (
-                <div className='card-conteudo-extra'>
-                    
+                <div className={`card-conteudo-extra ${estaAberto ? "aberto" : ""}`}>
                     <div className="info-extra-texto">
                         <strong>Status do prazo: </strong>
-                        <span>{textoDias}</span>
+                        {pago ? (<span>Pago!</span>) : (<span>{textoDias} </span>)}
                     </div>
                 </div>
             )}
