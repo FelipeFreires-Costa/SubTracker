@@ -4,10 +4,19 @@
   font-family: "Sora", sans-serif;
 }
 
+:root {
+  --grid-layout-contas: 1.2fr 1fr 1.2fr 110px 110px 90px;
+}
+
+html {
+  overflow-y: scroll;
+}
+
 .app-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  
 }
 
 .main-content {
@@ -24,14 +33,22 @@
   width: 100%;
   max-width: 1000px;
   height: 50px;
-  grid-template-columns: minmax(100px, 1fr) 1fr 1.5fr 120px 100px 50px 1fr;
+  grid-template-columns: var(--grid-layout-contas);
+  justify-items: center;
+  gap: 20px;
   align-items: center;
   align-content: center;
-  justify-content: center; 
+  justify-content: center;
   padding: 20px;
   border-radius: 10px;
   color: #555;
 } 
+
+.header-table span:first-child {
+  justify-self: start;
+  text-align: left; 
+  padding-left: 5px;
+}
 
 .header-table span:last-child{
   justify-self: center;
@@ -40,9 +57,27 @@
 .form{
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 10rem;
+  align-items: flex-end;
   gap: 20px;
+  margin: 40px;
+}
+
+.card-span{
+  display: flex;
+  flex-direction: column;
+}
+
+.card-span label{
+      color: #777;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.card-btn{
+  display: flex;
+  flex-direction: column;
 }
 
 input[type="text"]{
@@ -144,18 +179,27 @@ h2.valor-pago { color: #2a9d8f; }
   border-top: 1px solid #eee;
   padding: 25px 40px;
   margin-top: 60px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  justify-items: center;
   align-items: center;
   font-size: 0.9rem;
   color: #666;
-  bottom: 0;
 }
 
-/* 1. Lado Esquerdo */
+.app-footer div:last-child{
+  justify-self: end;
+  vertical-align: bottom;
+}
+
+.app-footer div:first-child{
+  justify-self: start;
+}
+
 .footer-content {
   display: flex;
-  flex-direction: column; /* SubTracker em cima, Copyright embaixo */
+  flex-direction: column;
   gap: 2px;
 }
 .footer-content strong {
@@ -178,6 +222,8 @@ h2.valor-pago { color: #2a9d8f; }
 .footer-socials a {
   color: #999;
   transition: all 0.2s;
+  vertical-align: bottom;
+  display: flex;
 }
 
 

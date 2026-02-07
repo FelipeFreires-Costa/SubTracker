@@ -52,10 +52,10 @@ const Header = () => {
             <input
               type="text"
               value={nomeUsuario}
-              onChange={(e) => setNomeUsuario(e.target.value)} // Atualiza enquanto digita
-              onBlur={() => setEditandoNome(false)} // Salva se clicar fora
+              onChange={(e) => setNomeUsuario(e.target.value)} // atualiza enquanto digita
+              onBlur={() => setEditandoNome(false)} // salva se clicar fora
               onKeyDown={(e) => {
-                if (e.key === "Enter") setEditandoNome(false); // Salva se der Enter
+                if (e.key === "Enter") setEditandoNome(false); // salva se der Enter
               }}
               autoFocus //foca no input assim que ele aparece
               className="input-nome-editavel"
