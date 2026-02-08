@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Header.css";
+// Removi FaBars e FaTimes, mantive só os originais
 import { FaGithub, FaWallet, FaUserCircle } from "react-icons/fa";
 
 const Header = () => {
   const [nomeUsuario, setNomeUsuario] = useState(() => {
     const dadosSalvos = localStorage.getItem("Editar-nome")
-
     if(dadosSalvos){
       return JSON.parse(dadosSalvos)
     }else{
@@ -19,17 +18,19 @@ const Header = () => {
   },[nomeUsuario])
 
   const [editandoNome, setEditandoNome] = useState(false);
+
   return (
     <div className="app-header">
+      
+
       <div className="logo-area">
         <FaWallet size={28} color="#0077ff" />
         <h1>SubTracker</h1>
       </div>
 
+
       <nav className="nav-links">
-        <a href="#" className="active">
-          Dashboard
-        </a>
+        <a href="#" className="active">Dashboard</a>
         <a href="#">Relatórios</a>
         <a href="#">Configurações</a>
       </nav>
@@ -52,17 +53,19 @@ const Header = () => {
             <input
               type="text"
               value={nomeUsuario}
-              onChange={(e) => setNomeUsuario(e.target.value)} // atualiza enquanto digita
-              onBlur={() => setEditandoNome(false)} // salva se clicar fora
+              onChange={(e) => setNomeUsuario(e.target.value)}
+              onBlur={() => setEditandoNome(false)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") setEditandoNome(false); // salva se der Enter
+                if (e.key === "Enter") setEditandoNome(false);
               }}
-              autoFocus //foca no input assim que ele aparece
+              autoFocus
               className="input-nome-editavel"
             />
           ) : (
             <div className="profile">
-              <span onClick={() => setEditandoNome(true)} title="Clique para editar" >{nomeUsuario}</span>
+              <span onClick={() => setEditandoNome(true)} title="Clique para editar">
+                {nomeUsuario}
+              </span>
               <FaUserCircle size={32} color="#ccc" />
             </div>
           )}
