@@ -1,90 +1,80 @@
-/* O Header Principal */
+
 .app-header {
+  height: 70px;
   background-color: white;
-  height: 70px; /* Altura fixa elegante */
-  width: 100%;
-  padding: 0 30px; /* Espaço nas laterais */
-  
+  border-bottom: 1px solid #eee;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: space-between; /* Espalha: Logo na esq, Perfil na dir */
-  
-  /* A Sombra Mágica (Dá profundidade) */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  
-  /* Fixar no topo (opcional, se quiser que ele acompanhe a rolagem) */
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  padding: 0 40px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* 1. Área do Logo */
 .logo-area {
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .logo-area h1 {
   font-size: 1.5rem;
   color: #333;
-  margin: 0; /* Remove margem padrão do h1 */
-  font-weight: 700;
-  letter-spacing: -1px; /* Deixa as letras mais juntinhas (moderno) */
+  margin: 0;
 }
 
-/* 2. Área de Navegação (Links) */
 .nav-links {
   display: flex;
-  gap: 25px;
-}
-/* Esconde os links no celular para não quebrar */
-@media (max-width: 768px) {
-  .nav-links { display: none; }
+  gap: 30px;
 }
 
 .nav-links a {
   text-decoration: none;
-  color: #777;
+  color: #666;
   font-weight: 500;
-  font-size: 0.95rem;
   transition: color 0.2s;
-}
-.nav-links a:hover, 
-.nav-links a.active {
-  color: #0077ff; /* Cor ativa */
+  padding: 5px 0;
+  position: relative;
 }
 
-/* 3. Área do Usuário */
+.nav-links a:hover, 
+.nav-links a.active {
+  color: #0077ff;
+}
+
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #0077ff;
+  border-radius: 2px;
+}
+
 .user-area {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
-/* Botão GitHub estilizado */
 .github-link {
   display: flex;
   align-items: center;
   gap: 8px;
   text-decoration: none;
   color: #333;
-  font-weight: 600;
   font-size: 0.9rem;
-  
-  background: #f0f2f5;
-  padding: 8px 12px;
+  background-color: #66666631;
+  padding: 5px;
   border-radius: 20px;
-  transition: background 0.2s;
 }
-.github-link:hover {
-  background: #e4e6eb;
-}
-
 
 .divider {
   width: 1px;
   height: 25px;
-  background-color: #ddd;
+  background-color: #eee;
 }
 
 .profile {
@@ -93,36 +83,77 @@
   gap: 10px;
   cursor: pointer;
 }
-.profile span {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.profile span {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #333;
-  cursor: pointer;
-  border-bottom: 1px dashed transparent;
-  transition: all 0.2s;
-}
-
-.profile span:hover {
-  border-bottom: 1px dashed #999;
-  color: #0077ff;
-}
 
 .input-nome-editavel {
+  border: 1px solid #0077ff;
+  border-radius: 4px;
+  padding: 5px;
   font-size: 0.9rem;
-  font-weight: 600;
-  color: #333;
-  
-
-  border: none;
-  border-bottom: 2px solid #0077ff;
-  outline: none;
-  background: transparent;
   width: 120px;
-  padding: 0;
+}
+
+
+@media (max-width: 768px) {
+  
+  .app-header {
+    height: auto; /* Deixa a altura crescer conforme o conteúdo */
+    padding: 15px 20px;
+    flex-wrap: wrap; /* PERMITE QUEBRAR LINHA */
+    gap: 15px; /* Espaço entre a linha de cima e a de baixo */
+  }
+
+  /* 1. REORGANIZANDO A ORDEM */
+  
+  .logo-area {
+    order: 1; /* Primeiro Item */
+  }
+
+  .user-area {
+    order: 2; /* Segundo Item (ao lado do logo) */
+  }
+
+  .nav-links {
+    order: 3; /* Terceiro item (vai cair pra linha de baixo) */
+    width: 100%; /* Ocupa a linha inteira */
+    justify-content: center; /* Centraliza os links */
+    gap: 20px; /* Espaço menor entre links */
+    
+    padding-top: 10px;
+    border-top: 1px solid #f9f9f9; /* Uma linha sutil separando */
+  }
+
+  /* 2. AJUSTES VISUAIS PARA CABER NA TELA */
+
+  .logo-area h1 {
+    font-size: 1.2rem; /* Logo um pouco menor */
+  }
+
+  /* Esconde o texto "GitHub" no celular (fica só o ícone) */
+  .github-link span {
+    display: none;
+  }
+  
+  .divider {
+    height: 15px;
+    margin: 0 5px;
+  }
+  
+  /* Input menor para não estourar a tela */
+  .input-nome-editavel {
+    width: 90px;
+  }
+
+  /* Limita o tamanho do nome para não empurrar o layout */
+  .profile span {
+    font-size: 0.9rem;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .profile svg {
+    width: 28px; /* Ícone de usuário um pouco menor */
+    height: 28px;
+  }
 }

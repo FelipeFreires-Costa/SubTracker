@@ -233,16 +233,155 @@ h2.valor-pago { color: #2a9d8f; }
 }
 
 
-@media (max-width: 768px) {
-  .app-footer {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-    padding: 30px 20px;
+@media (max-width: 1024px) {
+  
+  :root {
+    /* Diminuímos a coluna do Nome (de 3fr para 1.5fr) para caber na tela */
+    --grid-layout-contas: 1.5fr 0.9fr 1.1fr 90px 100px 80px;
+  }
+
+  .container {
+    width: 95%; /* Usa mais largura da tela */
+    padding: 0 10px;
+  }
+
+  /* Reduz a fonte geral para tudo caber na linha */
+  .header-table, 
+  .infos {
+    font-size: 0.85rem; 
+    gap: 8px; /* Menos espaço entre colunas */
+    padding: 15px 10px; /* Card mais "magrinho" */
+  }
+
+  .infos h3 {
+    font-size: 0.95rem; /* Nome da conta menor */
+  }
+
+  .detalhes p {
+    font-size: 0.7rem; /* Badge de status menor */
+    padding: 2px 6px;
   }
   
-  .footer-center {
-    order: 3;
+  /* Botão de pagar fica mais compacto */
+  .pagar {
     font-size: 0.8rem;
+    padding: 2px;
+  }
+}
+
+/* =================================================================
+   NÍVEL 2: CELULARES (768px para baixo)
+   Aqui a tabela MORRE e vira CARD (Blocos verticais).
+   ================================================================= */
+@media (max-width: 768px) {
+
+  /* 1. Tira a barra de rolagem fixa (ganha espaço no celular) */
+  html {
+    overflow-y: auto;
+  }
+
+  /* 2. DASHBOARD (Cards do topo empilhados) */
+  .resumo-cards {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .card-resumo {
+    width: 100%;
+    padding: 15px; /* Menor padding para economizar tela */
+  }
+
+  /* 3. FORMULÁRIO (Um embaixo do outro) */
+  .form {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+  
+  .form input, .form button {
+    width: 100%;
+    height: 42px; /* Altura boa pro dedo */
+  }
+
+  /* 4. A GRANDE MUDANÇA DA LISTA */
+  
+  /* Esconde o cabeçalho da tabela */
+  .header-table { display: none; }
+
+  /* O Card Principal vira um Grid de Áreas */
+  .infos {
+    display: grid;
+    width: 100%;
+    /* Duas colunas iguais */
+    grid-template-columns: 1fr 1fr; 
+    
+    /* Desenha o layout do card mobile:
+       [ NOME       NOME   ]
+       [ PREÇO      DATA   ]
+       [ STATUS     PAGAR  ]
+       [ AÇÕES      AÇÕES  ] 
+    */
+    grid-template-areas: 
+      "nome nome"
+      "preco data"
+      "status pagar"
+      "acoes acoes";
+      
+    gap: 10px;
+    padding: 15px;
+    text-align: left;
+  }
+
+  /* --- Mapeando cada item para sua área --- */
+
+  /* Nome: Topo total */
+  .infos h3 {
+    grid-area: nome;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+
+  /* Preço: Esquerda */
+  .infos .preco {
+    grid-area: preco;
+    font-size: 1rem;
+    align-self: center;
+  }
+
+  /* Data: Direita */
+  .infos p:has(.calendario) {
+    grid-area: data;
+    justify-self: end;
+    font-size: 0.9rem;
+  }
+
+  /* Status: Esquerda (linha 3) */
+  .detalhes {
+    grid-area: status;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* Botão Pagar: Direita (linha 3) */
+  .pagar {
+    grid-area: pagar;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Ações: Rodapé total */
+  .acoes-btn {
+    grid-area: acoes;
+    justify-content: flex-end; /* Ícones na direita */
+    border-top: 1px solid #f9f9f9;
+    padding-top: 8px;
+    margin-top: 5px;
+  }
+
+  /* Aumenta ícones para toque */
+  .remover, .expandir {
+    padding: 8px;
   }
 }
