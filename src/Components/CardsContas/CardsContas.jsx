@@ -24,12 +24,11 @@ const CardsContas = ({ nome, preco, data, aoRemover, situacao, foiPago, pago, te
                 <h3 title={nome}>{nome}</h3>
                 
                 <p className='preco'>R$ {preco.toFixed(2)}</p>
-                <p>
+                <p className='vencimento'>
                     <img className='calendario' src={calendario} alt="" /> 
                     {data}
                 </p>
 
-                {/* Status / Badge */}
                 <div className={`detalhes ${situacao}`}>
                     {pago ? (
                         <img src={checkPago} className='img-pago' alt="Pago" />

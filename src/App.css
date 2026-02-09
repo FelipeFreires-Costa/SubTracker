@@ -267,35 +267,41 @@ h2.valor-pago { color: #2a9d8f; }
     font-size: 0.8rem;
     padding: 2px;
   }
+    .detalhes {
+    font-size: 10px;
+  }
 }
 
-/* =================================================================
-   NÍVEL 2: CELULARES (768px para baixo)
-   Aqui a tabela MORRE e vira CARD (Blocos verticais).
-   ================================================================= */
+
 @media (max-width: 768px) {
 
-  /* 1. Tira a barra de rolagem fixa (ganha espaço no celular) */
   html {
     overflow-y: auto;
   }
 
-  /* 2. DASHBOARD (Cards do topo empilhados) */
+
   .resumo-cards {
     flex-direction: column;
     gap: 10px;
+    display: flex;
+    width: 90%;
+    align-items: center;
   }
   
   .card-resumo {
     width: 100%;
-    padding: 15px; /* Menor padding para economizar tela */
+    padding: 15px;
   }
 
-  /* 3. FORMULÁRIO (Um embaixo do outro) */
   .form {
     flex-direction: column;
     gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     padding: 15px;
+    margin: 10px;
+    width: 100%;
   }
   
   .form input, .form button {
@@ -303,85 +309,87 @@ h2.valor-pago { color: #2a9d8f; }
     height: 42px; /* Altura boa pro dedo */
   }
 
-  /* 4. A GRANDE MUDANÇA DA LISTA */
-  
-  /* Esconde o cabeçalho da tabela */
   .header-table { display: none; }
 
-  /* O Card Principal vira um Grid de Áreas */
-  .infos {
-    display: grid;
-    width: 100%;
-    /* Duas colunas iguais */
-    grid-template-columns: 1fr 1fr; 
-    
-    /* Desenha o layout do card mobile:
-       [ NOME       NOME   ]
-       [ PREÇO      DATA   ]
-       [ STATUS     PAGAR  ]
-       [ AÇÕES      AÇÕES  ] 
-    */
-    grid-template-areas: 
-      "nome nome"
-      "preco data"
-      "status pagar"
-      "acoes acoes";
-      
-    gap: 10px;
-    padding: 15px;
-    text-align: left;
-  }
 
-  /* --- Mapeando cada item para sua área --- */
+.infos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "nome nome"
+    "preco data"
+    "pagar status"
+    "acoes acoes";
+  gap: 8px;
+  justify-items: start;
+  padding: 15px;
+  margin: 10px;
+  width: 100%;
+}
 
-  /* Nome: Topo total */
-  .infos h3 {
-    grid-area: nome;
-    font-size: 1.1rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
-  }
 
-  /* Preço: Esquerda */
-  .infos .preco {
-    grid-area: preco;
-    font-size: 1rem;
-    align-self: center;
-  }
+/* Nome */
+.infos h3 {
+  grid-area: nome;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
 
-  /* Data: Direita */
-  .infos p:has(.calendario) {
-    grid-area: data;
-    justify-self: end;
-    font-size: 0.9rem;
-  }
+/* Preço */
+.infos .preco {
+  grid-area: preco;
+  text-align: start;
+  font-size: 1rem;
+}
 
-  /* Status: Esquerda (linha 3) */
-  .detalhes {
-    grid-area: status;
-    width: 100%;
-    justify-content: flex-start;
-  }
+/* Linha da data */
+.infos p:not(.preco) {
+  grid-area: data;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-  /* Botão Pagar: Direita (linha 3) */
-  .pagar {
-    grid-area: pagar;
-    width: 100%;
-    justify-content: center;
-  }
+/* Status */
+.infos .detalhes {
+  display: flex;
+  justify-items: start;
+  grid-area: status;
+  justify-self: center;
+  width: 100px;
+}
 
-  /* Ações: Rodapé total */
-  .acoes-btn {
-    grid-area: acoes;
-    justify-content: flex-end; /* Ícones na direita */
-    border-top: 1px solid #f9f9f9;
-    padding-top: 8px;
-    margin-top: 5px;
-  }
+.infos .detalhes {
+  font-size: 9px;
+}
 
-  /* Aumenta ícones para toque */
-  .remover, .expandir {
-    padding: 8px;
-  }
+.infos .vencimento{
+display: flex;
+  justify-items: start;
+  grid-area: status;
+  justify-self: center;
+}
+
+/* Botão pagar */
+.infos .pagar {
+  grid-area: pagar;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Botões inferiores */
+.infos .acoes-btn {
+  grid-area: acoes;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #f9f9f9;
+}
+
+/* Área de toque maior */
+.remover,
+.expandir {
+  padding: 8px;
+}
 }
