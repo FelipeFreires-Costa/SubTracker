@@ -10,28 +10,6 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.link-normal {
-  color: white; /* ou a cor que estava antes */
-  text-decoration: none;
-  margin-right: 20px;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-/* O estilo "Mágico" quando o usuário está na página */
-.link-ativo {
-  color: #00eeff; /* Azul cyan ou a cor que preferir */
-  text-decoration: none;
-  margin-right: 20px;
-  font-weight: bold;
-  border-bottom: 2px solid #00eeff; /* Um sublinhado estiloso */
-}
-
-/* Efeito ao passar o mouse */
-.link-normal:hover {
-  color: #ccc;
-}
-
 .logo-area {
   display: flex;
   align-items: center;
