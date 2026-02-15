@@ -1,4 +1,4 @@
-import { ExpensesCharts } from '../components/ExpensesChart/ExpensesCharts';
+import { ExpensesCharts } from '../Components/ExpensesChart/ExpensesCharts';
 
 export function Relatorio() {
   return (
