@@ -8,6 +8,12 @@
   --grid-layout-contas: 1.2fr 1fr 1.2fr 110px 110px 90px;
 }
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 html {
   overflow-y: scroll;
 }
@@ -16,7 +22,12 @@ html {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  
+}
+
+.home-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
@@ -236,33 +247,32 @@ h2.valor-pago { color: #2a9d8f; }
 @media (max-width: 1024px) {
   
   :root {
-    /* Diminuímos a coluna do Nome (de 3fr para 1.5fr) para caber na tela */
     --grid-layout-contas: 1.5fr 0.9fr 1.1fr 90px 100px 80px;
   }
 
   .container {
-    width: 95%; /* Usa mais largura da tela */
+    width: 95%;
     padding: 0 10px;
   }
 
-  /* Reduz a fonte geral para tudo caber na linha */
+
   .header-table, 
   .infos {
     font-size: 0.85rem; 
-    gap: 8px; /* Menos espaço entre colunas */
-    padding: 15px 10px; /* Card mais "magrinho" */
+    gap: 8px;
+    padding: 15px 10px;
   }
 
   .infos h3 {
-    font-size: 0.95rem; /* Nome da conta menor */
+    font-size: 0.95rem;
   }
 
   .detalhes p {
-    font-size: 0.7rem; /* Badge de status menor */
+    font-size: 0.7rem;
     padding: 2px 6px;
   }
   
-  /* Botão de pagar fica mais compacto */
+
   .pagar {
     font-size: 0.8rem;
     padding: 2px;

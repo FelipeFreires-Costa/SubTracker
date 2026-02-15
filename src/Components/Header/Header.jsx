@@ -1,38 +1,45 @@
 import React, { useEffect, useState } from "react";
 import "./Header.css";
-// Removi FaBars e FaTimes, mantive só os originais
+import { Relatorio } from "../../pages/Relatorio";
+import { NavLink } from "react-router-dom";
 import { FaGithub, FaWallet, FaUserCircle } from "react-icons/fa";
 
 const Header = () => {
   const [nomeUsuario, setNomeUsuario] = useState(() => {
-    const dadosSalvos = localStorage.getItem("Editar-nome")
-    if(dadosSalvos){
-      return JSON.parse(dadosSalvos)
-    }else{
-      return "Editar Nome"
+    const dadosSalvos = localStorage.getItem("Editar-nome");
+    if (dadosSalvos) {
+      return JSON.parse(dadosSalvos);
+    } else {
+      return "Editar Nome";
     }
   });
 
   useEffect(() => {
-    localStorage.setItem('Editar-nome', JSON.stringify(nomeUsuario))
-  },[nomeUsuario])
+    localStorage.setItem("Editar-nome", JSON.stringify(nomeUsuario));
+  }, [nomeUsuario]);
 
   const [editandoNome, setEditandoNome] = useState(false);
 
   return (
     <div className="app-header">
-      
-
       <div className="logo-area">
         <FaWallet size={28} color="#0077ff" />
         <h1>SubTracker</h1>
       </div>
 
-
       <nav className="nav-links">
-        <a href="#" className="active">Dashboard</a>
-        <a href="#">Relatórios</a>
-        <a href="#">Configurações</a>
+        <NavLink
+          to="/"
+          end
+        >
+          Minhas Contas
+        </NavLink>
+
+        <NavLink
+          to="/relatorio"
+        >
+          Relatórios
+        </NavLink>
       </nav>
 
       <div className="user-area">
@@ -63,7 +70,10 @@ const Header = () => {
             />
           ) : (
             <div className="profile">
-              <span onClick={() => setEditandoNome(true)} title="Clique para editar">
+              <span
+                onClick={() => setEditandoNome(true)}
+                title="Clique para editar"
+              >
                 {nomeUsuario}
               </span>
               <FaUserCircle size={32} color="#ccc" />

@@ -10,6 +10,28 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
+.link-normal {
+  color: white; /* ou a cor que estava antes */
+  text-decoration: none;
+  margin-right: 20px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+/* O estilo "Mágico" quando o usuário está na página */
+.link-ativo {
+  color: #00eeff; /* Azul cyan ou a cor que preferir */
+  text-decoration: none;
+  margin-right: 20px;
+  font-weight: bold;
+  border-bottom: 2px solid #00eeff; /* Um sublinhado estiloso */
+}
+
+/* Efeito ao passar o mouse */
+.link-normal:hover {
+  color: #ccc;
+}
+
 .logo-area {
   display: flex;
   align-items: center;
@@ -31,26 +53,22 @@
   text-decoration: none;
   color: #666;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
   padding: 5px 0;
   position: relative;
+  border-bottom: 2px solid transparent;
 }
 
-.nav-links a:hover, 
+
 .nav-links a.active {
   color: #0077ff;
+  font-weight: bold;
+  border-bottom: 2px solid #0077ff;
 }
 
 
-.nav-links a.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #0077ff;
-  border-radius: 2px;
+.nav-links a:hover {
+  color: #0077ff;
 }
 
 .user-area {
@@ -96,39 +114,37 @@
 @media (max-width: 768px) {
   
   .app-header {
-    height: auto; /* Deixa a altura crescer conforme o conteúdo */
+    height: auto;
     padding: 15px 20px;
-    flex-wrap: wrap; /* PERMITE QUEBRAR LINHA */
-    gap: 15px; /* Espaço entre a linha de cima e a de baixo */
+    flex-wrap: wrap;
+    gap: 15px;
   }
 
-  /* 1. REORGANIZANDO A ORDEM */
+
   
   .logo-area {
-    order: 1; /* Primeiro Item */
+    order: 1;
   }
 
   .user-area {
-    order: 2; /* Segundo Item (ao lado do logo) */
+    order: 2;
   }
 
   .nav-links {
-    order: 3; /* Terceiro item (vai cair pra linha de baixo) */
-    width: 100%; /* Ocupa a linha inteira */
-    justify-content: center; /* Centraliza os links */
-    gap: 20px; /* Espaço menor entre links */
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 20px;
     
     padding-top: 10px;
-    border-top: 1px solid #f9f9f9; /* Uma linha sutil separando */
+    border-top: 1px solid #f9f9f9;
   }
 
-  /* 2. AJUSTES VISUAIS PARA CABER NA TELA */
 
   .logo-area h1 {
-    font-size: 1.2rem; /* Logo um pouco menor */
+    font-size: 1.2rem;
   }
 
-  /* Esconde o texto "GitHub" no celular (fica só o ícone) */
   .github-link span {
     display: none;
   }
@@ -138,12 +154,11 @@
     margin: 0 5px;
   }
   
-  /* Input menor para não estourar a tela */
+
   .input-nome-editavel {
     width: 90px;
   }
 
-  /* Limita o tamanho do nome para não empurrar o layout */
   .profile span {
     font-size: 0.9rem;
     max-width: 80px;
@@ -153,7 +168,7 @@
   }
   
   .profile svg {
-    width: 28px; /* Ícone de usuário um pouco menor */
+    width: 28px;
     height: 28px;
   }
 }
