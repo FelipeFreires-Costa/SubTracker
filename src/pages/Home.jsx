@@ -7,20 +7,41 @@ import {
   FaLinkedin,
   FaGithub,
 } from "react-icons/fa";
-
+import { Conta } from "../types/Conta";
 export function Home() {
-  const [contas, setContas] = useState(() => {
-    const dadosSalvos = localStorage.getItem("contas-pagar");
-    if (dadosSalvos) {
-      return JSON.parse(dadosSalvos);
-    } else {
-      return [];
-    }
-  });
+  // const [contas, setContas] = useState(() => {
+  //   const dadosSalvos = localStorage.getItem("contas-pagar");
+  //   if (dadosSalvos) {
+  //     return JSON.parse(dadosSalvos);
+  //   } else {
+  //     return [];
+  //   }
+  // });
 
+  const [contas, setContas] = useState<Conta[]>([]);
+
+// 2. useEffect para carregar os dados ASSIM QUE A TELA ABRIR
   useEffect(() => {
-    localStorage.setItem("contas-pagar", JSON.stringify(contas));
-  }, [contas]);
+    // Função assíncrona (promessa)
+    async function carregarDados() {
+      try {
+        // "Fetch" = Buscar. Bate na porta 3001
+        const resposta = await fetch('http://localhost:3001/api/contas');
+        
+        // Converte a resposta (texto) para JSON (objeto JS)
+        const dados = await resposta.json();
+
+        // Atualiza o estado com os dados do servidor!
+        setContas(dados);
+        
+      } catch (erro) {
+        console.error("Erro ao buscar contas:", erro);
+        alert("Erro ao conectar com o servidor! Verifique se ele está rodando.");
+      }
+    }
+
+    carregarDados();
+  }, []); // Array vazio = Roda apenas uma vez na montagem
 
   const [nomeInput, setNomeInput] = useState("");
   const [precoInput, setPrecoInput] = useState("");

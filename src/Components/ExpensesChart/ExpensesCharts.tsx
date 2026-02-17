@@ -46,7 +46,7 @@ export function ExpensesCharts({ contas }: ExpensesChartProps) {
               />
             ))}
           </Pie>
-          <Tooltip formatter={(value: number) => `R$ ${value.toFixed(2)}`} />
+          <Tooltip formatter={(value: any) => `R$ ${Number(value).toFixed(2)}`} />
           <Legend />
         </PieChart>
       </ResponsiveContainer>
