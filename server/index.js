@@ -19,3 +19,12 @@ app.get('/api/contas', (req, res) => {
 app.listen(3001, () => {
   console.log('🔥 Servidor rodando na porta 3001');
 });
+
+app.post('/api/contas', (req, res) => {
+  const novaConta = req.body;
+
+  contas.push(novaConta)
+
+  console.log("nova conta recebida: ", novaConta.nome)
+  res.status(201).json(novaConta)
+})

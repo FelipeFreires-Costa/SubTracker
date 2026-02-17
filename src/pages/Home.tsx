@@ -40,7 +40,6 @@ export function Home() {
     undefined,
   );
 
-
   function formatarData(dataAmericana: string) {
     if (!dataAmericana) return "";
     const partes = dataAmericana.split("-");
@@ -56,7 +55,6 @@ export function Home() {
     // Adicionamos T00:00:00 para garantir que pegue o início do dia local/UTC dependendo do navegador,
     // mas para comparação simples de dias, o .getTime() ajuda.
     const dataConta = new Date(dataVencimento + "T00:00:00");
-
 
     const diferenciaTime = dataConta.getTime() - hoje.getTime();
     const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24));
@@ -82,7 +80,6 @@ export function Home() {
     else return `Faltam ${dias} dias`;
   }
 
-
   function removerConta(id: number) {
     const novaConta = contas.filter((item) => item.id !== id);
     setContas(novaConta);
@@ -95,7 +92,7 @@ export function Home() {
     }, 2000);
   }
 
-  function adicionarConta() {
+  async function adicionarConta() {
     if (nomeInput === "" || precoInput === "" || dataInput === "") {
       alert("Preencha todos os campos");
       return;
@@ -107,6 +104,33 @@ export function Home() {
       data: dataInput,
       pago: false,
     };
+
+    try {
+      const resposta = await fetch("http://localhost:3001/api/contas", {
+        method: "POST", //metodo de criar
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(novaConta), //transforma objeto em texto
+      });
+      if (resposta.ok) {
+        //servidor aceitou
+        const contaCriada = await resposta.json();
+
+        //adiciona na lista local para aparecer na tela
+        setContas([...contas, contaCriada]);
+
+        //limpar os campos
+        setNomeInput("");
+        setDataInput("");
+        setPrecoInput("");
+      } else {
+        alert("Erro ao salvar no servidor!");
+      }
+    } catch (erro) {
+      console.error(erro);
+      alert("Erro de conexão! O servidor está rodando?");
+    }
 
     setContas([...contas, novaConta]);
     setNomeInput("");
@@ -143,7 +167,6 @@ export function Home() {
     <div className="home-content">
       <main className="main-content">
         <div className="resumo-cards">
-
           <div className="card-resumo total">
             <div className="card-head">
               <span>Total Mensal</span>
@@ -172,7 +195,6 @@ export function Home() {
             <h2 className="valor-pago">R$ {valoresPagos.toFixed(2)}</h2>
           </div>
         </div>
-
 
         <div className="form">
           <div className="card-span">
