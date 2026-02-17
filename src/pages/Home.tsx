@@ -7,60 +7,58 @@ import {
   FaLinkedin,
   FaGithub,
 } from "react-icons/fa";
+//certifique-se que o caminho está certo:
 import { Conta } from "../types/Conta";
-export function Home() {
-  // const [contas, setContas] = useState(() => {
-  //   const dadosSalvos = localStorage.getItem("contas-pagar");
-  //   if (dadosSalvos) {
-  //     return JSON.parse(dadosSalvos);
-  //   } else {
-  //     return [];
-  //   }
-  // });
 
+export function Home() {
   const [contas, setContas] = useState<Conta[]>([]);
 
-// 2. useEffect para carregar os dados ASSIM QUE A TELA ABRIR
+  //busca os dados do Servidor
   useEffect(() => {
-    // Função assíncrona (promessa)
     async function carregarDados() {
       try {
-        // "Fetch" = Buscar. Bate na porta 3001
-        const resposta = await fetch('http://localhost:3001/api/contas');
-        
-        // Converte a resposta (texto) para JSON (objeto JS)
+        const resposta = await fetch("http://localhost:3001/api/contas");
         const dados = await resposta.json();
-
-        // Atualiza o estado com os dados do servidor!
         setContas(dados);
-        
       } catch (erro) {
         console.error("Erro ao buscar contas:", erro);
-        alert("Erro ao conectar com o servidor! Verifique se ele está rodando.");
+        alert(
+          "Erro ao conectar com o servidor! Verifique se ele está rodando.",
+        );
       }
     }
-
     carregarDados();
-  }, []); // Array vazio = Roda apenas uma vez na montagem
+  }, []);
 
   const [nomeInput, setNomeInput] = useState("");
   const [precoInput, setPrecoInput] = useState("");
   const [dataInput, setDataInput] = useState("");
-  const [notificacao, setNotificacao] = useState(null);
-  const timeoutRef = useRef();
 
-  function formatarData(dataAmericana) {
+  const [notificacao, setNotificacao] = useState<string | null>(null);
+
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+
+
+  function formatarData(dataAmericana: string) {
     if (!dataAmericana) return "";
     const partes = dataAmericana.split("-");
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
   }
 
-  function verificarSituacao(dataVencimento) {
+  function verificarSituacao(dataVencimento: string) {
     if (!dataVencimento) return "";
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
+
+    // O input date já vem como yyyy-mm-dd, o construtor Date aceita bem
+    // Adicionamos T00:00:00 para garantir que pegue o início do dia local/UTC dependendo do navegador,
+    // mas para comparação simples de dias, o .getTime() ajuda.
     const dataConta = new Date(dataVencimento + "T00:00:00");
-    const diferenciaTime = dataConta - hoje;
+
+
+    const diferenciaTime = dataConta.getTime() - hoje.getTime();
     const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24));
 
     if (dias < 0) return "vencida";
@@ -69,12 +67,13 @@ export function Home() {
     else return "tranquilo";
   }
 
-  function diasRestantes(dataVencimento) {
+  function diasRestantes(dataVencimento: string) {
     if (!dataVencimento) return "";
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
     const dataConta = new Date(dataVencimento + "T00:00:00");
-    const diferenciaTime = dataConta - hoje;
+
+    const diferenciaTime = dataConta.getTime() - hoje.getTime();
     const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24));
 
     if (dias < 0) return `Venceu há ${Math.abs(dias)} dias`;
@@ -83,11 +82,14 @@ export function Home() {
     else return `Faltam ${dias} dias`;
   }
 
-  function removerConta(id) {
+
+  function removerConta(id: number) {
     const novaConta = contas.filter((item) => item.id !== id);
     setContas(novaConta);
     setNotificacao("Item removido!");
-    clearTimeout(timeoutRef.current);
+
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
     timeoutRef.current = setTimeout(() => {
       setNotificacao(null);
     }, 2000);
@@ -98,20 +100,21 @@ export function Home() {
       alert("Preencha todos os campos");
       return;
     }
-    const novaConta = {
+    const novaConta: Conta = {
       id: Date.now(),
       nome: nomeInput,
       preco: Number(precoInput),
       data: dataInput,
       pago: false,
     };
+
     setContas([...contas, novaConta]);
     setNomeInput("");
     setDataInput("");
     setPrecoInput("");
   }
 
-  function alternarStatus(id) {
+  function alternarStatus(id: number) {
     const lista = contas.map((item) => {
       if (item.id === id) {
         return { ...item, pago: !item.pago };
@@ -123,15 +126,24 @@ export function Home() {
   }
 
   const apenasDevedores = contas.filter((item) => item.pago === false);
-  const valorTotalDivida = apenasDevedores.reduce((total, item) => total + item.preco, 0);
+  const valorTotalDivida = apenasDevedores.reduce(
+    (total, item) => total + item.preco,
+    0,
+  );
+
   const valorPagos = contas.filter((item) => item.pago === true);
-  const valoresPagos = valorPagos.reduce((total, item) => total + item.preco, 0);
+  const valoresPagos = valorPagos.reduce(
+    (total, item) => total + item.preco,
+    0,
+  );
+
   const despesasTotal = contas.reduce((acc, item) => acc + item.preco, 0);
 
   return (
     <div className="home-content">
       <main className="main-content">
         <div className="resumo-cards">
+
           <div className="card-resumo total">
             <div className="card-head">
               <span>Total Mensal</span>
@@ -161,6 +173,7 @@ export function Home() {
           </div>
         </div>
 
+
         <div className="form">
           <div className="card-span">
             <label htmlFor="nome">Nome:</label>
@@ -177,7 +190,7 @@ export function Home() {
             <label htmlFor="preco">Preço:</label>
             <input
               id="preco"
-              type="Number"
+              type="number"
               placeholder="Ex: 75"
               value={precoInput}
               onChange={(e) => setPrecoInput(e.target.value)}
@@ -188,7 +201,7 @@ export function Home() {
             <label htmlFor="data">Data:</label>
             <input
               id="data"
-              type="Date"
+              type="date"
               value={dataInput}
               onChange={(e) => setDataInput(e.target.value)}
             />
@@ -199,6 +212,7 @@ export function Home() {
           </div>
         </div>
 
+        {/* ... TABELA ... */}
         <div className="container">
           <div className="header-table">
             <span>Nome</span>
@@ -223,8 +237,16 @@ export function Home() {
             />
           ))}
 
-          <p>{notificacao}</p>
-          {contas.length === 0 && <p>Nenhuma conta adicionada</p>}
+          {/* Renderização condicional da notificação */}
+          {notificacao && (
+            <p style={{ textAlign: "center", color: "green" }}>{notificacao}</p>
+          )}
+
+          {contas.length === 0 && (
+            <p style={{ textAlign: "center", marginTop: 20 }}>
+              Nenhuma conta encontrada.
+            </p>
+          )}
         </div>
       </main>
 
@@ -239,10 +261,18 @@ export function Home() {
           </span>
         </div>
         <div className="footer-socials">
-          <a href="https://www.linkedin.com/in/felipefreires/" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.linkedin.com/in/felipefreires/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <FaLinkedin size={22} />
           </a>
-          <a href="https://github.com/FelipeFreires-Costa" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://github.com/FelipeFreires-Costa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <FaGithub size={22} />
           </a>
         </div>
