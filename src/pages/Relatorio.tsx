@@ -1,6 +1,24 @@
 import { ExpensesCharts } from '../Components/ExpensesChart/ExpensesCharts';
+import { useEffect, useState } from "react";
+import { Conta } from "../types/Conta";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import './Relatorio.css'
 
 export function Relatorio() {
+const [contasSalvas, setContasSalvas] = useState<Conta[]>([])
+
+useEffect(() => {
+    // busca os dados do LocalStorage quando entra na página
+    const dados = localStorage.getItem("contas-pagar");
+    if (dados) {
+      setContasSalvas(JSON.parse(dados));
+    }
+  }, []);
+
+  const valorTotal = contasSalvas.reduce((total, conta) => {
+    return total + conta.preco;
+  }, 0)
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Painel Financeiro</h1>
@@ -19,7 +37,7 @@ export function Relatorio() {
           borderRadius: '8px', 
           boxShadow: '0 2px 10px rgba(0,0,0,0.1)' 
         }}>
-          <ExpensesCharts />
+          <ExpensesCharts contas={contasSalvas}/>
         </div>
 
 
@@ -30,8 +48,9 @@ export function Relatorio() {
           boxShadow: '0 2px 10px rgba(0,0,0,0.1)' 
         }}>
           <h3>Resumo Mensal</h3>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#e74c3c' }}>
-            R$ 1.170,00
+          <p className='valor-total' style={{ fontSize: '24px', fontWeight: 'bold', color: '#0077ff' }}>
+            R$ {valorTotal.toFixed(2)}
+          <FaMoneyBillTransfer size={32} color="#0077ff" opacity={1} />
           </p>
           <p style={{ color: '#7f8c8d' }}>Total em Assinaturas</p>
         </div>
