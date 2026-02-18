@@ -80,16 +80,32 @@ export function Home() {
     else return `Faltam ${dias} dias`;
   }
 
-  function removerConta(id: number) {
-    const novaConta = contas.filter((item) => item.id !== id);
-    setContas(novaConta);
-    setNotificacao("Item removido!");
+  async function removerConta(id: number) {
+    if(!confirm("Tem a certeza que deseja remover esta conta?")) return
 
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    try{
+      //manda o comando DELETE para o servidor com id na url
+      const resposta = await fetch(`http://localhost:3001/api/contas/${id}`, {
+        method: 'DELETE'
+      })
 
-    timeoutRef.current = setTimeout(() => {
-      setNotificacao(null);
-    }, 2000);
+      if(resposta.ok){
+        //remove da tela se o servido confirmar que apagou
+        const novaLista = contas.filter((item) => item.id !== id)
+        setContas(novaLista)
+
+        setNotificacao("item removido com sucesso!")
+        if(timeoutRef.current) clearTimeout(timeoutRef.current)
+          timeoutRef.current = setTimeout(() => {
+            setNotificacao(null)
+          }, 2000)
+      }else{
+        alert('Erro ao remover: A conta pode já não existir no servidor')
+      }
+    }catch (erro){
+      console.log(erro)
+      alert('Erro de conexão ao tentar remover')
+    }
   }
 
   async function adicionarConta() {
@@ -131,14 +147,43 @@ export function Home() {
       console.error(erro);
       alert("Erro de conexão! O servidor está rodando?");
     }
-
-    setContas([...contas, novaConta]);
-    setNomeInput("");
-    setDataInput("");
-    setPrecoInput("");
   }
 
-  function alternarStatus(id: number) {
+  async function alternarStatus(id: number) {
+    //encontra a conta atual para saber o oposto do status
+    const contaAtual = contas.find((c) => c.id === id)
+    if(!contaAtual) return
+
+    const novoStatus = !contaAtual.pago //inverte se era true vira false
+
+    try{
+      //manda para o servidor
+      const resposta = await fetch(`http://localhost:3001/api/contas/${id}`, {
+        method: 'PATCH', //metodo de atualizar parcialmente
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ pago: novoStatus }), //manda so oque mudou
+      })
+      if(resposta.ok){
+        //se o servidor aceitou, atualiza a tela
+        const contaAtualizada = await resposta.json()
+
+        const listaAtualizada = contas.map((item) => {
+          if(item.id === id) {
+            return contaAtualizada // usa o dado que veio do servidor
+          }
+          return item
+        })
+        setContas(listaAtualizada)
+      }else{
+        ("Erro ao atualizar status")
+      }
+    }catch (erro){
+      console.error(erro)
+      alert("Erro de conexão ao atualizar")
+    }
+
     const lista = contas.map((item) => {
       if (item.id === id) {
         return { ...item, pago: !item.pago };
