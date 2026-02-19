@@ -5,10 +5,10 @@ import calendario from '../../assets/calendar-lines-svgrepo-com.svg'
 import check from '../../assets/check-svgrepo-com.svg'
 import checkPago from "../../assets/check-circle-svgrepo-com.svg"
 
-import { TbTrashXFilled } from "react-icons/tb";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Adicionei para as setas
+import { FaChevronDown, FaChevronUp, FaRegTrashAlt } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 
-const CardsContas = ({ nome, preco, data, aoRemover, situacao, foiPago, pago, textoDias }) => {
+const CardsContas = ({ nome, preco, data, aoRemover, situacao, foiPago, pago, textoDias, aoEditar }) => {
     
     const [estaAberto, setEstaAberto] = useState(false)
 
@@ -43,13 +43,21 @@ const CardsContas = ({ nome, preco, data, aoRemover, situacao, foiPago, pago, te
                 </button>
 
                 <div className="acoes-btn">
-                    <button className='remover' onClick={aoRemover} title="Excluir conta">
-                    <TbTrashXFilled size={26} color='red' />
+
+                    <button className='editar-btn' onClick={aoEditar} title='Editar conta'>
+                        <MdEdit size={18} color="#0077ff"/>
                     </button>
 
                     <button className='expandir' onClick={alternar} title="Ver detalhes">
-                        {estaAberto ? <FaChevronUp size={20} color="#0077ff"/> : <FaChevronDown size={20} color="#0077ff"/>}
+                        {estaAberto ? <FaChevronUp size={18} color="#3a3a3a"/> : <FaChevronDown size={18} color="#3a3a3a"/>}
                     </button>
+
+
+
+                    <button className='remover' onClick={aoRemover} title="Excluir conta">
+                    <FaRegTrashAlt size={18} color='red' />
+                    </button>
+
                 </div>
             </div>
 

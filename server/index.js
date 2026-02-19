@@ -93,3 +93,23 @@ app.listen(3001, () => {
     console.log("🔥 Servidor rodando na porta 3001");
 });
 
+//rota PUT: editar os dados de uma conta
+app.put('/api/contas/:id', async (req, res) => {
+  const id = req.params.id;
+  const { nome, preco, data } = req.body
+  const db = await openDb()
+
+  //atualiza os campos no Sqlite onde o ID for igual ao da rota
+  await db.run(
+    'UPDATE contas SET nome = ?, preco = ?, data = ? WHERE id = ?',
+    [nome, preco, data, id]
+  )
+
+  //devolve a conta atualizada para o front
+  const contasAtualizada = await db.get('SELECT * FROM contas WHERE id = ?', [id])
+
+  res.json({
+    ...contasAtualizada,
+    pago: contasAtualizada.pago === 1
+  })
+})

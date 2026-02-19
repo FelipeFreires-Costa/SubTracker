@@ -1,23 +1,42 @@
-import { ExpensesCharts } from '../Components/ExpensesChart/ExpensesCharts';
 import { useEffect, useState } from "react";
 import { Conta } from "../types/Conta";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import './Relatorio.css'
+import './Relatorio.css';
+
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
 
 export function Relatorio() {
-const [contasSalvas, setContasSalvas] = useState<Conta[]>([])
+  const [contas, setContas] = useState<Conta[]>([]);
 
-useEffect(() => {
-    // busca os dados do LocalStorage quando entra na página
-    const dados = localStorage.getItem("contas-pagar");
-    if (dados) {
-      setContasSalvas(JSON.parse(dados));
+  //assim que a pagina abrir, pede os dados para o backend
+  useEffect(() => {
+    async function carregarDados() {
+      try {
+        const resposta = await fetch("http://localhost:3001/api/contas");
+        const dadosDB = await resposta.json();
+        setContas(dadosDB); //salva os dados do banco na variável
+      } catch (erro) {
+        console.error("Erro ao carregar dados para o gráfico: ", erro);
+      }
     }
+    carregarDados();
   }, []);
 
-  const valorTotal = contasSalvas.reduce((total, conta) => {
-    return total + conta.preco;
-  }, 0)
+
+  const dadosParaGrafico = contas.map(conta => ({
+    name: conta.nome,
+    value: Number(conta.preco)
+  }));
+
+  const valorTotal = contas.reduce((acumulador, conta) => acumulador + Number(conta.preco), 0);
 
   return (
     <div style={{ padding: '20px' }}>
@@ -37,7 +56,23 @@ useEffect(() => {
           borderRadius: '8px', 
           boxShadow: '0 2px 10px rgba(0,0,0,0.1)' 
         }}>
-          <ExpensesCharts contas={contasSalvas}/>
+          <h3 style={{ marginBottom: '20px', color: '#334155' }}>Custo por Serviço</h3>
+          
+          <div style={{ width: '100%', height: 250 }}>
+            <ResponsiveContainer>
+              <BarChart data={dadosParaGrafico} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 13 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 13 }} tickFormatter={(value) => `R$${value}`} />
+                <Tooltip 
+                  cursor={{ fill: '#f1f5f9' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}
+                  formatter={(value: any) => [`R$ ${Number(value).toFixed(2)}`, 'Valor']}
+                />
+                <Bar dataKey="value" fill="#0077ff" radius={[6, 6, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
 
@@ -45,15 +80,23 @@ useEffect(() => {
           background: '#fff', 
           padding: '20px', 
           borderRadius: '8px', 
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)' 
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
         }}>
-          <h3>Resumo Mensal</h3>
-          <p className='valor-total' style={{ fontSize: '24px', fontWeight: 'bold', color: '#0077ff' }}>
-            R$ {valorTotal.toFixed(2)}
-          <FaMoneyBillTransfer size={32} color="#0077ff" opacity={1} />
-          </p>
-          <p style={{ color: '#7f8c8d' }}>Total em Assinaturas</p>
+          <h3 style={{ color: '#334155', marginTop: 0 }}>Resumo Mensal</h3>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '10px' }}>
+            <p className='valor-total' style={{ fontSize: '32px', fontWeight: 'bold', color: '#0077ff', margin: 0 }}>
+              R$ {valorTotal.toFixed(2)}
+            </p>
+            <FaMoneyBillTransfer size={36} color="#0077ff" />
+          </div>
+          
+          <p style={{ color: '#7f8c8d', margin: '10px 0 0 0' }}>Total em Assinaturas</p>
         </div>
+
       </div>
     </div>
   );

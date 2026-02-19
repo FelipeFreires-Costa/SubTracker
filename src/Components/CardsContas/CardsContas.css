@@ -24,6 +24,7 @@ background-color: white;
   max-width: 1000px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding: 0;
   transition: background-color 0.3s, box-shadow 0.3s;
   align-items: stretch;
@@ -52,6 +53,7 @@ background-color: white;
   display: grid;
   grid-template-columns: var(--grid-layout-contas);
   justify-items: center;
+  height: 70px;
   gap: 20px;
   align-items: center;
   padding: 10px 20px 10px 20px;
@@ -127,11 +129,13 @@ p.preco{
 .remover{
     display: flex;
     border: none;
-    height: 50px;
     background-color: transparent;
     cursor: pointer;
     justify-content: center;
     align-items: center;
+  background-color:rgba(255, 0, 0, 0.252);
+  padding: 5px;
+  border-radius: 5px;
 }
 .remover:hover{
   transform: scale(1.05);
@@ -195,10 +199,21 @@ img.img-pago{
 .acoes-btn {
 display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     grid-column: 6;
     justify-content: center;
 
+}
+
+.editar-btn{
+  border: none;
+  background-color: transparent;
+  background-color: #0077ff4f;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
 }
 
 .expandir{
@@ -207,4 +222,7 @@ display: flex;
   border: none;
   background-color: transparent;
   cursor: pointer;
+  background-color: #3a3a3a1c;
+  padding: 5px;
+  border-radius: 5px;
 }

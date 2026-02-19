@@ -7,7 +7,6 @@ import {
   FaLinkedin,
   FaGithub,
 } from "react-icons/fa";
-//certifique-se que o caminho está certo:
 import { Conta } from "../types/Conta";
 
 export function Home() {
@@ -30,6 +29,8 @@ export function Home() {
     carregarDados();
   }, []);
 
+  const [editandoId, setEditandoId] = useState<number | null>(null);
+
   const [nomeInput, setNomeInput] = useState("");
   const [precoInput, setPrecoInput] = useState("");
   const [dataInput, setDataInput] = useState("");
@@ -39,6 +40,13 @@ export function Home() {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
+
+  function prepararEdicao(conta: Conta) {
+    setNomeInput(conta.nome);
+    setPrecoInput(conta.preco.toString());
+    setDataInput(conta.data);
+    setEditandoId(conta.id);
+  }
 
   function formatarData(dataAmericana: string) {
     if (!dataAmericana) return "";
@@ -51,9 +59,6 @@ export function Home() {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
 
-    // O input date já vem como yyyy-mm-dd, o construtor Date aceita bem
-    // Adicionamos T00:00:00 para garantir que pegue o início do dia local/UTC dependendo do navegador,
-    // mas para comparação simples de dias, o .getTime() ajuda.
     const dataConta = new Date(dataVencimento + "T00:00:00");
 
     const diferenciaTime = dataConta.getTime() - hoje.getTime();
@@ -81,30 +86,30 @@ export function Home() {
   }
 
   async function removerConta(id: number) {
-    if(!confirm("Tem a certeza que deseja remover esta conta?")) return
+    if (!confirm("Tem a certeza que deseja remover esta conta?")) return;
 
-    try{
+    try {
       //manda o comando DELETE para o servidor com id na url
       const resposta = await fetch(`http://localhost:3001/api/contas/${id}`, {
-        method: 'DELETE'
-      })
+        method: "DELETE",
+      });
 
-      if(resposta.ok){
+      if (resposta.ok) {
         //remove da tela se o servido confirmar que apagou
-        const novaLista = contas.filter((item) => item.id !== id)
-        setContas(novaLista)
+        const novaLista = contas.filter((item) => item.id !== id);
+        setContas(novaLista);
 
-        setNotificacao("item removido com sucesso!")
-        if(timeoutRef.current) clearTimeout(timeoutRef.current)
-          timeoutRef.current = setTimeout(() => {
-            setNotificacao(null)
-          }, 2000)
-      }else{
-        alert('Erro ao remover: A conta pode já não existir no servidor')
+        setNotificacao("item removido com sucesso!");
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+          setNotificacao(null);
+        }, 2000);
+      } else {
+        alert("Erro ao remover: A conta pode já não existir no servidor");
       }
-    }catch (erro){
-      console.log(erro)
-      alert('Erro de conexão ao tentar remover')
+    } catch (erro) {
+      console.log(erro);
+      alert("Erro de conexão ao tentar remover");
     }
   }
 
@@ -149,39 +154,78 @@ export function Home() {
     }
   }
 
-  async function alternarStatus(id: number) {
-    //encontra a conta atual para saber o oposto do status
-    const contaAtual = contas.find((c) => c.id === id)
-    if(!contaAtual) return
-
-    const novoStatus = !contaAtual.pago //inverte se era true vira false
+  async function salvarEdicao(){
+    if(nomeInput === "" || precoInput === "" || dataInput === ""){
+      alert("Preencha todos os campos")
+      return
+    }
 
     try{
+      const resposta = await fetch(`http://localhost:3001/api/contas/${editandoId}`, {
+        method: 'PUT',
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          nome: nomeInput,
+          preco: Number(precoInput),
+          data: dataInput
+        }),
+      });
+      if(resposta.ok){
+        const contaAtualizada = await resposta.json(); //devolve a conta arrumada
+
+        const listaAtualizada = contas.map(item =>
+          item.id === editandoId ? contaAtualizada : item
+        );
+        setContas(listaAtualizada) //atualiza a tela
+        setNomeInput("");
+        setPrecoInput("");
+        setDataInput("");
+        setEditandoId(null);
+
+        setNotificacao("Conta atualizada com sucesso!")
+        setTimeout(() => setNotificacao(null), 2000);
+      }else{
+        alert("Erro ao atualizar no servidor!")
+      }
+    } catch (erro){
+      console.error(erro)
+      alert("Erro de conexão")
+    }
+  }
+
+  async function alternarStatus(id: number) {
+    //encontra a conta atual para saber o oposto do status
+    const contaAtual = contas.find((c) => c.id === id);
+    if (!contaAtual) return;
+
+    const novoStatus = !contaAtual.pago; //inverte se era true vira false
+
+    try {
       //manda para o servidor
       const resposta = await fetch(`http://localhost:3001/api/contas/${id}`, {
-        method: 'PATCH', //metodo de atualizar parcialmente
+        method: "PATCH", //metodo de atualizar parcialmente
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ pago: novoStatus }), //manda so oque mudou
-      })
-      if(resposta.ok){
+      });
+      if (resposta.ok) {
         //se o servidor aceitou, atualiza a tela
-        const contaAtualizada = await resposta.json()
+        const contaAtualizada = await resposta.json();
 
         const listaAtualizada = contas.map((item) => {
-          if(item.id === id) {
-            return contaAtualizada // usa o dado que veio do servidor
+          if (item.id === id) {
+            return contaAtualizada; // usa o dado que veio do servidor
           }
-          return item
-        })
-        setContas(listaAtualizada)
-      }else{
-        ("Erro ao atualizar status")
+          return item;
+        });
+        setContas(listaAtualizada);
+      } else {
+        ("Erro ao atualizar status");
       }
-    }catch (erro){
-      console.error(erro)
-      alert("Erro de conexão ao atualizar")
+    } catch (erro) {
+      console.error(erro);
+      alert("Erro de conexão ao atualizar");
     }
 
     const lista = contas.map((item) => {
@@ -275,7 +319,29 @@ export function Home() {
           </div>
 
           <div className="card-btn">
-            <button onClick={adicionarConta}>+ Adicionar Conta</button>
+            {editandoId != null ? (
+              <button
+                style={{ backgroundColor: "#2a9d8f" }}
+                onClick={salvarEdicao}
+              >
+                ✔ Salvar Alteração
+              </button>
+            ) : (
+              <button onClick={adicionarConta}>+ Adicionar Conta</button>
+            )}
+            {editandoId !== null && (
+              <button
+                style={{ backgroundColor: "#6c757d", marginLeft: "10px" }}
+                onClick={() => {
+                  setEditandoId(null);
+                  setNomeInput("");
+                  setPrecoInput("");
+                  setDataInput("");
+                }}
+              >
+                Cancelar
+              </button>
+            )}
           </div>
         </div>
 
@@ -299,6 +365,7 @@ export function Home() {
               preco={item.preco}
               data={formatarData(item.data)}
               aoRemover={() => removerConta(item.id)}
+              aoEditar={() => prepararEdicao(item)}
               situacao={verificarSituacao(item.data)}
               textoDias={diasRestantes(item.data)}
             />
