@@ -6,6 +6,7 @@ export interface Conta {
   preco: number;
   data: string;
   pago: boolean;
+  categoria: string;
 }
 
 const [contas, setContas] = useState<Conta[]>([]);

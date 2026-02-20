@@ -34,7 +34,7 @@ export function Home() {
   const [nomeInput, setNomeInput] = useState("");
   const [precoInput, setPrecoInput] = useState("");
   const [dataInput, setDataInput] = useState("");
-
+  const [categoriaInput, setCategoriaInput] = useState("");
   const [notificacao, setNotificacao] = useState<string | null>(null);
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -46,6 +46,7 @@ export function Home() {
     setPrecoInput(conta.preco.toString());
     setDataInput(conta.data);
     setEditandoId(conta.id);
+    setCategoriaInput(conta.categoria)
   }
 
   function formatarData(dataAmericana: string) {
@@ -124,6 +125,7 @@ export function Home() {
       preco: Number(precoInput),
       data: dataInput,
       pago: false,
+      categoria: categoriaInput,
     };
 
     try {
@@ -145,6 +147,7 @@ export function Home() {
         setNomeInput("");
         setDataInput("");
         setPrecoInput("");
+        setCategoriaInput("")
       } else {
         alert("Erro ao salvar no servidor!");
       }
@@ -154,42 +157,46 @@ export function Home() {
     }
   }
 
-  async function salvarEdicao(){
-    if(nomeInput === "" || precoInput === "" || dataInput === ""){
-      alert("Preencha todos os campos")
-      return
+  async function salvarEdicao() {
+    if (nomeInput === "" || precoInput === "" || dataInput === "") {
+      alert("Preencha todos os campos");
+      return;
     }
 
-    try{
-      const resposta = await fetch(`http://localhost:3001/api/contas/${editandoId}`, {
-        method: 'PUT',
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          nome: nomeInput,
-          preco: Number(precoInput),
-          data: dataInput
-        }),
-      });
-      if(resposta.ok){
+    try {
+      const resposta = await fetch(
+        `http://localhost:3001/api/contas/${editandoId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome: nomeInput,
+            preco: Number(precoInput),
+            data: dataInput,
+            categoria: categoriaInput
+          }),
+        },
+      );
+      if (resposta.ok) {
         const contaAtualizada = await resposta.json(); //devolve a conta arrumada
 
-        const listaAtualizada = contas.map(item =>
-          item.id === editandoId ? contaAtualizada : item
+        const listaAtualizada = contas.map((item) =>
+          item.id === editandoId ? contaAtualizada : item,
         );
-        setContas(listaAtualizada) //atualiza a tela
+        setContas(listaAtualizada); //atualiza a tela
         setNomeInput("");
         setPrecoInput("");
         setDataInput("");
         setEditandoId(null);
-
-        setNotificacao("Conta atualizada com sucesso!")
+        setCategoriaInput("")
+        setNotificacao("Conta atualizada com sucesso!");
         setTimeout(() => setNotificacao(null), 2000);
-      }else{
-        alert("Erro ao atualizar no servidor!")
+      } else {
+        alert("Erro ao atualizar no servidor!");
       }
-    } catch (erro){
-      console.error(erro)
-      alert("Erro de conexão")
+    } catch (erro) {
+      console.error(erro);
+      alert("Erro de conexão");
     }
   }
 
@@ -318,6 +325,23 @@ export function Home() {
             />
           </div>
 
+          <div className="card-span">
+            <label htmlFor="categoria">Categoria:</label>
+            <select
+              id="categoria"
+              value={categoriaInput}
+              onChange={(e) => setCategoriaInput(e.target.value)}
+            >
+              <option value="">Selecione...</option>
+              <option value="Streaming">Streaming</option>
+              <option value="Moradia">Moradia</option>
+              <option value="Alimentação">Alimentação</option>
+              <option value="Educação">Educação</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+
           <div className="card-btn">
             {editandoId != null ? (
               <button
@@ -363,6 +387,7 @@ export function Home() {
               foiPago={() => alternarStatus(item.id)}
               nome={item.nome}
               preco={item.preco}
+              categoria={item.categoria}
               data={formatarData(item.data)}
               aoRemover={() => removerConta(item.id)}
               aoEditar={() => prepararEdicao(item)}
@@ -371,7 +396,6 @@ export function Home() {
             />
           ))}
 
-          {/* Renderização condicional da notificação */}
           {notificacao && (
             <p style={{ textAlign: "center", color: "green" }}>{notificacao}</p>
           )}

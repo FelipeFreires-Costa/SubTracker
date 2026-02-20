@@ -17,7 +17,8 @@ async function inicializarBanco() {
             nome TEXT,
             preco REAL,
             data TEXT,
-            pago INTEGER
+            pago INTEGER,
+            categoria TEXT
         )
     `);
   console.log("Banco de dados configurado!");
@@ -39,12 +40,12 @@ app.get('/api/contas', async (req, res) => {
 
 //rota POST, cria uma conta no banco de dados
 app.post('/api/contas', async (req, res) => {
-  const { nome, preco, data } = req.body
+  const { nome, preco, data, categoria } = req.body
   const db = await openDb()
 
   const result = await db.run(
-    'INSERT INTO contas (nome, preco, data, pago) VALUES (?, ?, ?, ?)',
-    [nome, preco, data, 0]
+    'INSERT INTO contas (nome, preco, data, pago, categoria) VALUES (?, ?, ?, ?, ?)',
+    [nome, preco, data, 0, categoria]
   )
 
   //devolve a conta criada com o ID do banco
@@ -96,13 +97,13 @@ app.listen(3001, () => {
 //rota PUT: editar os dados de uma conta
 app.put('/api/contas/:id', async (req, res) => {
   const id = req.params.id;
-  const { nome, preco, data } = req.body
+  const { nome, preco, data, categoria } = req.body
   const db = await openDb()
 
   //atualiza os campos no Sqlite onde o ID for igual ao da rota
   await db.run(
-    'UPDATE contas SET nome = ?, preco = ?, data = ? WHERE id = ?',
-    [nome, preco, data, id]
+    'UPDATE contas SET nome = ?, preco = ?, data = ?, categoria = ? WHERE id = ?',
+    [nome, preco, data, categoria, id]
   )
 
   //devolve a conta atualizada para o front
