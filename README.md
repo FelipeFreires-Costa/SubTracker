@@ -4,7 +4,8 @@
 
 ## 📸 Preview do Projeto
 
-(ainda irei colocar a foto do app)
+<img width="1903" height="873" alt="image" src="https://github.com/user-attachments/assets/3a9943b3-0d6d-4a51-94c9-c1ebd5cd64af" />
+
 
 ## 💡 Sobre o Projeto
 
