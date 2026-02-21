@@ -3,10 +3,6 @@ import "./CardsContas.css";
 
 // @ts-ignore
 import calendario from "../../assets/calendar-lines-svgrepo-com.svg";
-// @ts-ignore
-import check from "../../assets/check-svgrepo-com.svg";
-// @ts-ignore
-import checkPago from "../../assets/check-circle-svgrepo-com.svg";
 
 import {
   FaChevronDown,
@@ -14,7 +10,8 @@ import {
   FaRegTrashAlt
 } from "react-icons/fa";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdOutlineCreditCard } from "react-icons/md";
+import { IoIosCheckbox } from "react-icons/io";
 
 // regra do componente
 interface CardsContasProps {
@@ -83,20 +80,20 @@ const CardsContas = ({
 
         <div className={`detalhes ${situacao}`}>
           {pago ? (
-            <img src={checkPago} className="img-pago" alt="Pago" />
+            <IoIosCheckbox size={24} color="#10ae55"/>
           ) : (
             <p>{situacao.toUpperCase()}</p>
           )}
         </div>
 
         <button className="pagar" onClick={foiPago}>
-          <img src={check} alt="" />
-          {pago === false ? "pagar" : "pago!"}
+          <MdOutlineCreditCard size={20} color="white"/>
+          {pago === false ? "Pagar Agora" : "pago!"}
         </button>
 
         <div className="acoes-menu" ref={menuRef}>
           <button className="btn-tres-pontos" onClick={() => setMenuAberto(!menuAberto)}>
-            <HiOutlineDotsHorizontal size={18} color="#3a3a3a" />
+            <HiOutlineDotsHorizontal size={22} color="#3a3a3a" />
           </button>
 
           {/* menu flutuante */}

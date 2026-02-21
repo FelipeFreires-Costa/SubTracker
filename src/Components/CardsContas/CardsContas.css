@@ -149,24 +149,28 @@ img.img-pago{
 }
 
 .pagar{
-  width: 80%;
-  border: none;
-  padding: 3px;
-  background-color: rgb(16, 174, 85, 0.192);
-  border-radius: 14px;
-  font-weight: 600;
-  color: #10ae55;
-  display: flex;
-  justify-content: flex-start;
-  border: 1px solid #10ae55;
-  opacity: 0.6;
-  transition: 0.2s ease-in;
-  cursor: pointer;
-  grid-column: 5;
+    width: 100%;
+    border: none;
+    padding: 3px;
+    background-color: #10ae55;
+    border-radius: 13px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #10ae55;
+    transition: 0.2s ease-in;
+    cursor: pointer;
+    grid-column: 5;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagar svg{
+  margin-right: 3px;
 }
 
 .pagar:hover{
-  opacity: 1;
+  background-color: #0ab454;
 }
 
 .pagar img{
@@ -198,18 +202,18 @@ max-height: 0;
 }
 
 .acoes-menu {
-  position: relative; /* Crucial para o menu flutuar certinho embaixo do botão */
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  grid-column: 6; /* Mantém alinhado no fim da linha da conta */
+  grid-column: 6;
 }
 
-/* O botão dos 3 pontinhos */
+
 .btn-tres-pontos {
-  background-color: transparent;
+  background-color: #f1f5f9;
   border: none;
-  padding: 8px 12px;
+  padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
@@ -219,24 +223,23 @@ max-height: 0;
 }
 
 .btn-tres-pontos:hover {
-  background-color: #f1f5f9; /* Fica cinza clarinho ao passar o mouse no PC */
+  background-color: #f1f5f9;
 }
 
-/* A caixinha de opções (Dropdown) */
 .dropdown-menu {
   position: absolute;
-  top: 100%; /* Joga exatamente pra baixo do botão */
-  right: 0;  /* Alinha à direita */
+  top: 100%;
+  right: 0;
   background-color: white;
   box-shadow: 0 4px 15px rgba(0,0,0,0.15);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   min-width: 130px;
-  z-index: 100; /* Fica por cima de todos os outros cards */
+  z-index: 100;
   margin-top: 5px;
   border: 1px solid #e2e8f0;
-  overflow: hidden; /* Garante que os botões internos respeitem a borda arredondada */
+  overflow: hidden;
 }
 
 .dropdown-menu button {
@@ -256,7 +259,7 @@ max-height: 0;
 }
 
 .dropdown-menu button:last-child {
-  border-bottom: none; /* Tira a linha do último item */
+  border-bottom: none;
 }
 
 .dropdown-menu button:hover {

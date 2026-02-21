@@ -5,7 +5,7 @@
 }
 
 :root {
-  --grid-layout-contas: 1fr 1fr 1.2fr 110px 110px 110px;
+  --grid-layout-contas: 1fr 1fr 1.2fr 110px 120px 100px;
 }
 
 html, body, #root {
@@ -66,12 +66,16 @@ html {
 }
 
 .form{
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 20px;
-  margin: 40px;
-  width: 100%;
+display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    width: 90%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-between;
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .card-span{
@@ -91,6 +95,8 @@ html {
   display: flex;
   flex-direction: row;
 }
+
+
 
 input[type="text"]{
   padding: 10px;
@@ -335,17 +341,17 @@ h2.valor-pago { color: #2a9d8f; }
 
 .infos {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
-    "nome nome"
-    "preco data"
-    "pagar status"
-    "acoes acoes";
+  "nome nome"
+  "preco data"
+  "status pagar"
+  "acoes acoes";
   gap: 8px;
   justify-items: start;
-  padding: 15px;
-  margin: 10px;
-  width: 100%;
+  padding: 10px 15px 10px 15px;
+  margin: 5px 10px 5px 10px;
+  width: 95%;
 
 }
 
@@ -360,7 +366,7 @@ h2.valor-pago { color: #2a9d8f; }
 .infos .preco {
   grid-area: preco;
   text-align: start;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .infos p:not(.preco) {
@@ -368,6 +374,8 @@ h2.valor-pago { color: #2a9d8f; }
   display: flex;
   align-items: center;
   gap: 6px;
+  grid-column: 3;
+  grid-row: 2;
 }
 
 .infos .detalhes {
@@ -375,24 +383,30 @@ h2.valor-pago { color: #2a9d8f; }
   justify-items: start;
   grid-area: status;
   justify-self: center;
-  width: 100px;
+  min-height: 24px;
+  grid-column: 2;
+  grid-row: 2;
 }
 
-.infos .detalhes {
-  font-size: 9px;
+.detalhes p{
+  padding: 4px;
+  font-size: 11px;
 }
+
 
 .infos .vencimento{
-display: flex;
+  display: flex;
   justify-items: start;
   grid-area: status;
   justify-self: center;
+
 }
 
 .infos .pagar {
-  grid-area: pagar;
   width: 100%;
   justify-content: center;
+  grid-column: 1 / span 2;
+  grid-row: 3;
 }
 
 .infos .acoes-btn {
@@ -402,11 +416,14 @@ display: flex;
   border-top: 1px solid #f9f9f9;
 }
 
-.remover,
-.expandir {
-  padding: 8px;
-  width: 28px;
-  height: 28px;
-  vertical-align: middle;
+.acoes-menu {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 3;
+  margin: auto; 
+  grid-row: 3;
 }
+
 }

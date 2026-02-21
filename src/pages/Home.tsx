@@ -140,8 +140,13 @@ export function Home() {
         //servidor aceitou
         const contaCriada = await resposta.json();
 
+        const contaProntaPraTela = {
+            ...contaCriada,
+            categoria: categoriaInput 
+        };
+
         //adiciona na lista local para aparecer na tela
-        setContas([...contas, contaCriada]);
+        setContas([...contas, contaProntaPraTela]);
 
         //limpar os campos
         setNomeInput("");
@@ -342,9 +347,9 @@ export function Home() {
             </select>
           </div>
 
-          <div className="card-btn">
             {editandoId != null ? (
               <button
+                className="salvar-btn"
                 style={{ backgroundColor: "#2a9d8f" }}
                 onClick={salvarEdicao}
               >
@@ -354,8 +359,8 @@ export function Home() {
               <button onClick={adicionarConta}>+ Adicionar Conta</button>
             )}
             {editandoId !== null && (
-              <button
-                style={{ backgroundColor: "#6c757d", marginLeft: "10px" }}
+              <button className="cancelar-btn"
+                style={{ backgroundColor: "#6c757d"}}
                 onClick={() => {
                   setEditandoId(null);
                   setNomeInput("");
@@ -366,7 +371,6 @@ export function Home() {
                 Cancelar
               </button>
             )}
-          </div>
         </div>
 
         {/* ... TABELA ... */}
