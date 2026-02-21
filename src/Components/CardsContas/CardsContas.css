@@ -197,36 +197,72 @@ max-height: 0;
     font-weight: 600;
 }
 
-
-.acoes-btn {
-display: flex;
-    align-items: center;
-    gap: 15px;
-    grid-column: 6;
-    justify-content: center;
-
-}
-
-.editar-btn{
-  border: none;
-  background-color: transparent;
-  background-color: #0077ff4f;
-  padding: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 28px;
-  height: 28px;
-}
-
-.expandir{
+.acoes-menu {
+  position: relative; /* Crucial para o menu flutuar certinho embaixo do botão */
   display: flex;
-  vertical-align: bottom;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  background-color: #3a3a3a1c;
-  padding: 5px;
-  border-radius: 5px;
   justify-content: center;
   align-items: center;
+  grid-column: 6; /* Mantém alinhado no fim da linha da conta */
+}
+
+/* O botão dos 3 pontinhos */
+.btn-tres-pontos {
+  background-color: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.btn-tres-pontos:hover {
+  background-color: #f1f5f9; /* Fica cinza clarinho ao passar o mouse no PC */
+}
+
+/* A caixinha de opções (Dropdown) */
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Joga exatamente pra baixo do botão */
+  right: 0;  /* Alinha à direita */
+  background-color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  min-width: 130px;
+  z-index: 100; /* Fica por cima de todos os outros cards */
+  margin-top: 5px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden; /* Garante que os botões internos respeitem a borda arredondada */
+}
+
+.dropdown-menu button {
+  background: none;
+  border: none;
+  padding: 12px 15px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f1f5f9;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu button:last-child {
+  border-bottom: none; /* Tira a linha do último item */
+}
+
+.dropdown-menu button:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-excluir-drop {
+  color: #dc3545 !important;
 }
