@@ -8,9 +8,13 @@ import {
   FaGithub,
 } from "react-icons/fa";
 import { Conta } from "../types/Conta";
+import { ModalConfirmacao } from "../Components/ModalConfirmacao/ModalConfirmacao";
 
 export function Home() {
   const [contas, setContas] = useState<Conta[]>([]);
+
+  //state para o modal
+  const [contaParaApagar, setContaParaApagar] = useState<number | null>(null)
 
   //busca os dados do Servidor
   useEffect(() => {
@@ -86,31 +90,33 @@ export function Home() {
     else return `Faltam ${dias} dias`;
   }
 
-  async function removerConta(id: number) {
-    if (!confirm("Tem a certeza que deseja remover esta conta?")) return;
+  function abrirModalRemocao(id: number) {
+    setContaParaApagar(id);
+  }
+
+  async function confirmarRemocao() {
+    if (contaParaApagar === null) return;
 
     try {
-      //manda o comando DELETE para o servidor com id na url
-      const resposta = await fetch(`http://localhost:3001/api/contas/${id}`, {
-        method: "DELETE",
+      const resposta = await fetch(`http://localhost:3001/api/contas/${contaParaApagar}`, {
+        method: 'DELETE'
       });
 
       if (resposta.ok) {
-        //remove da tela se o servido confirmar que apagou
-        const novaLista = contas.filter((item) => item.id !== id);
+        const novaLista = contas.filter((item) => item.id !== contaParaApagar);
         setContas(novaLista);
-
-        setNotificacao("item removido com sucesso!");
+        
+        setNotificacao("Conta removida com sucesso!");
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => {
-          setNotificacao(null);
-        }, 2000);
+        timeoutRef.current = setTimeout(() => setNotificacao(null), 2000);
       } else {
-        alert("Erro ao remover: A conta pode já não existir no servidor");
+        alert('Erro ao remover do servidor.');
       }
     } catch (erro) {
       console.log(erro);
-      alert("Erro de conexão ao tentar remover");
+      alert('Erro de conexão ao tentar remover');
+    } finally {
+      setContaParaApagar(null); 
     }
   }
 
@@ -393,7 +399,7 @@ export function Home() {
               preco={item.preco}
               categoria={item.categoria}
               data={formatarData(item.data)}
-              aoRemover={() => removerConta(item.id)}
+              aoRemover={() => abrirModalRemocao(item.id)}
               aoEditar={() => prepararEdicao(item)}
               situacao={verificarSituacao(item.data)}
               textoDias={diasRestantes(item.data)}
@@ -410,8 +416,9 @@ export function Home() {
             </p>
           )}
         </div>
-      </main>
 
+      </main>
+          
       <footer className="app-footer">
         <div className="footer-content">
           <strong>SubTracker</strong>
@@ -419,7 +426,7 @@ export function Home() {
         </div>
         <div className="footer-center">
           <span>
-            Desenvolvido por<strong> Felipe Costa</strong>
+            Desenvolvido por <strong> Felipe Freires</strong>
           </span>
         </div>
         <div className="footer-socials">
@@ -439,6 +446,11 @@ export function Home() {
           </a>
         </div>
       </footer>
+              <ModalConfirmacao 
+        aberto={contaParaApagar !== null} 
+        aoConfirmar={confirmarRemocao} 
+        aoCancelar={() => setContaParaApagar(null)} 
+      />
     </div>
   );
 }

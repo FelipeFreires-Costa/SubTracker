@@ -211,7 +211,7 @@ max-height: 0;
 
 
 .btn-tres-pontos {
-  background-color: #f1f5f9;
+  background-color: #e9edee;
   border: none;
   padding: 5px 10px;
   border-radius: 6px;
@@ -223,7 +223,7 @@ max-height: 0;
 }
 
 .btn-tres-pontos:hover {
-  background-color: #f1f5f9;
+  background-color: #d7dbdc;
 }
 
 .dropdown-menu {
