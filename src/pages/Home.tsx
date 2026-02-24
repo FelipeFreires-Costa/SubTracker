@@ -25,7 +25,7 @@ export function Home() {
   useEffect(() => {
     async function carregarDados() {
       try {
-        const resposta = await fetch("http://localhost:3001/api/contas");
+        const resposta = await fetch("https:/api-subtracker.onrender.com");
         const dados = await resposta.json();
         setContas(dados);
       } catch (erro) {
@@ -103,7 +103,7 @@ export function Home() {
     if (contaParaApagar === null) return;
 
     try {
-      const resposta = await fetch(`http://localhost:3001/api/contas/${contaParaApagar}`, {
+      const resposta = await fetch(`https:/api-subtracker.onrender.com/${contaParaApagar}`, {
         method: 'DELETE'
       });
 
@@ -140,7 +140,7 @@ export function Home() {
     };
 
     try {
-      const resposta = await fetch("http://localhost:3001/api/contas", {
+      const resposta = await fetch("https:/api-subtracker.onrender.com", {
         method: "POST", //metodo de criar
         headers: {
           "Content-Type": "application/json",
@@ -181,7 +181,7 @@ export function Home() {
 
     try {
       const resposta = await fetch(
-        `http://localhost:3001/api/contas/${editandoId}`,
+        `https:/api-subtracker.onrender.com/${editandoId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -225,7 +225,7 @@ export function Home() {
 
     try {
       //manda para o servidor
-      const resposta = await fetch(`http://localhost:3001/api/contas/${id}`, {
+      const resposta = await fetch(`https:/api-subtracker.onrender.com/${id}`, {
         method: "PATCH", //metodo de atualizar parcialmente
         headers: {
           "Content-Type": "application/json",
