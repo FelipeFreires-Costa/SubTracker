@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import CardsContas from "../Components/CardsContas/CardsContas";
+
+//icones
 import {
   FaMoneyBillWave,
   FaExclamationCircle,
@@ -7,12 +9,15 @@ import {
   FaLinkedin,
   FaGithub,
 } from "react-icons/fa";
+//-------------------------------------------------
 import { Conta } from "../types/Conta";
 import { ModalConfirmacao } from "../Components/ModalConfirmacao/ModalConfirmacao";
 
+
+
 export function Home() {
   const [contas, setContas] = useState<Conta[]>([]);
-
+  
   //state para o modal
   const [contaParaApagar, setContaParaApagar] = useState<number | null>(null)
 
@@ -344,11 +349,11 @@ export function Home() {
               onChange={(e) => setCategoriaInput(e.target.value)}
             >
               <option value="">Selecione...</option>
-              <option value="Streaming">Streaming</option>
+              <option value="Streaming">  Streaming</option>
               <option value="Moradia">Moradia</option>
               <option value="Alimentação">Alimentação</option>
               <option value="Educação">Educação</option>
-              <option value="Transporte">Transporte</option>
+              <option value="Transporte"> Transporte</option>
               <option value="Outros">Outros</option>
             </select>
           </div>

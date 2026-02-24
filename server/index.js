@@ -1,14 +1,14 @@
 /* eslint-env node */
 const express = require('express');
 const cors = require('cors');
+// eslint-disable-next-line no-undef
 const openDb = require('./db');
 
 const app = express()
 app.use(cors());
 app.use(express.json());
 
-//verifica/cria a tabela quando o servidor liga
-
+// Verifica/cria a tabela quando o servidor liga
 async function inicializarBanco() {
   const db = await openDb();
   await db.exec(`
@@ -26,19 +26,20 @@ async function inicializarBanco() {
 
 inicializarBanco();
 
+// Rota GET: Busca todas as contas
 app.get('/api/contas', async (req, res) => {
-    const db = await openDb();
-    const contas = await db.all('SELECT * FROM contas');
+  const db = await openDb();
+  const contas = await db.all('SELECT * FROM contas');
 
-    const contasFormatadas = contas.map((conta) => ({
-        ...conta,
-        pago: conta.pago === 1 // se for 1 vira true, se for 0 vira false
-    }));
+  const contasFormatadas = contas.map((conta) => ({
+    ...conta,
+    pago: conta.pago === 1 // se for 1 vira true, se for 0 vira false
+  }));
 
-    res.json(contasFormatadas);
+  res.json(contasFormatadas);
 });
 
-//rota POST, cria uma conta no banco de dados
+// Rota POST: Cria uma conta no banco de dados
 app.post('/api/contas', async (req, res) => {
   const { nome, preco, data, categoria } = req.body
   const db = await openDb()
@@ -48,18 +49,18 @@ app.post('/api/contas', async (req, res) => {
     [nome, preco, data, 0, categoria]
   )
 
-  //devolve a conta criada com o ID do banco
+  // devolve a conta criada com o ID do banco
   res.status(201).json({
     id: result.lastID,
     nome,
     preco,
     data,
-    pago: false
+    pago: false,
+    categoria
   })
 })
 
-
-//rota DELETE
+// Rota DELETE: Apaga uma conta
 app.delete('/api/contas/:id', async (req, res) => {
   const id = req.params.id
   const db = await openDb()
@@ -68,45 +69,41 @@ app.delete('/api/contas/:id', async (req, res) => {
   res.status(204).send()
 })
 
-//rota PATCH: atualiza o status (pago/ nao pago)
+// Rota PATCH: Atualiza o status (pago/nao pago)
 app.patch('/api/contas/:id', async (req, res) => {
   const id = req.params.id
   const { pago } = req.body // vem true ou false do react
   const db = await openDb()
 
   await db.run(
-        'UPDATE contas SET pago = ? WHERE id = ?',
+    'UPDATE contas SET pago = ? WHERE id = ?',
     [pago ? 1 : 0, id]
   )
   const contasAtualizada = await db.get('SELECT * FROM contas WHERE id = ?', [id])
 
-  if(contasAtualizada){
+  if (contasAtualizada) {
     res.json({
       ...contasAtualizada,
       pago: contasAtualizada.pago === 1
     })
-  }else{
-    res.status(404).json({erros: "Contas não encontrada"})
+  } else {
+    res.status(404).json({ erros: "Contas não encontrada" })
   }
 })
 
-app.listen(3001, () => {
-    console.log("🔥 Servidor rodando na porta 3001");
-});
-
-//rota PUT: editar os dados de uma conta
+// Rota PUT: Editar os dados de uma conta
 app.put('/api/contas/:id', async (req, res) => {
   const id = req.params.id;
   const { nome, preco, data, categoria } = req.body
   const db = await openDb()
 
-  //atualiza os campos no Sqlite onde o ID for igual ao da rota
+  // atualiza os campos no Sqlite onde o ID for igual ao da rota
   await db.run(
     'UPDATE contas SET nome = ?, preco = ?, data = ?, categoria = ? WHERE id = ?',
     [nome, preco, data, categoria, id]
   )
 
-  //devolve a conta atualizada para o front
+  // devolve a conta atualizada para o front
   const contasAtualizada = await db.get('SELECT * FROM contas WHERE id = ?', [id])
 
   res.json({
@@ -114,3 +111,10 @@ app.put('/api/contas/:id', async (req, res) => {
     pago: contasAtualizada.pago === 1
   })
 })
+
+//porta dinamica
+// eslint-disable-next-line no-undef
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`servidor rodando na porta ${PORT}`);
+});
