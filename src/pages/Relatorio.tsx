@@ -24,7 +24,7 @@ export function Relatorio() {
   useEffect(() => {
     async function carregarDados() {
       try {
-        const resposta = await fetch("https://api-subtracker.onrender.com");
+        const resposta = await fetch("https://api-subtracker.onrender.com/api/contas");
         const dadosDB = await resposta.json();
         setContas(dadosDB);
       } catch (erro) {
