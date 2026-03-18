@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import CardsContas from "../Components/CardsContas/CardsContas";
+import { PluggyConnect } from 'react-pluggy-connect';
 
 //icones
 import {
@@ -16,8 +17,26 @@ import { ModalConfirmacao } from "../Components/ModalConfirmacao/ModalConfirmaca
 
 
 export function Home() {
+  const [connectToken, setConnetToken] = useState(null)
   const [contas, setContas] = useState<Conta[]>([]);
   
+  const abrirWidget = async () => {
+    try {
+      const resposta = await fetch('http://localhost:3000/api/connect-token')
+      const dados = await resposta.json()
+
+      setConnetToken(dados.accessToken)
+    }catch (erro) {
+      console.error("Erro ao buscar o token: ", erro)
+      alert('Verifique se o Back-end esta rodando na porta 3000')
+    }
+  }
+
+  const sucessoAoConectar = (itemData: any) => {
+    console.log('Banco conctado com sucesso! O ID da conecxao é:', itemData.item.id)
+    alert("sucesso! Olhe o console oara ver o item ID")
+  }
+
   //state para o modal
   const [contaParaApagar, setContaParaApagar] = useState<number | null>(null)
 
@@ -421,7 +440,29 @@ export function Home() {
             </p>
           )}
         </div>
+          <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
+      <h1>💸 SubTracker</h1>
+      <p>Conecte sua conta para encontrarmos suas assinaturas fantasmas.</p>
 
+      {/* Se não tem token, mostra o botão. Se tem, mostra o Widget da Pluggy */}
+      {!connectToken ? (
+        <button 
+          onClick={abrirWidget} 
+          style={{ padding: '10px 20px', fontSize: '18px', cursor: 'pointer', background: '#007bff', color: 'white', border: 'none', borderRadius: '5px' }}
+        >
+          Conectar Banco
+        </button>
+      ) : (
+        <div style={{ height: '600px', width: '400px', margin: '0 auto', border: '1px solid #ccc' }}>
+          <PluggyConnect
+            connectToken={connectToken}
+            includeSandbox={true} // Diz para a Pluggy mostrar os bancos de teste
+            onSuccess={sucessoAoConectar}
+            onError={(error) => console.error('Erro na Pluggy:', error)}
+          />
+        </div>
+      )}
+    </div>
       </main>
           
       <footer className="app-footer">
@@ -450,6 +491,7 @@ export function Home() {
             <FaGithub size={22} />
           </a>
         </div>
+        
       </footer>
               <ModalConfirmacao 
         aberto={contaParaApagar !== null} 
