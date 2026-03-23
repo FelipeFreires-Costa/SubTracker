@@ -17,35 +17,45 @@ const pluggyClient = new PluggyClient({
   clientSecret: process.env.PLUGGY_CLIENT_SECRET,
 });
 
-// 🚀 2. Rota de Teste: Vamos perguntar para a Pluggy quais bancos existem no Sandbox
-app.get('/api/test-pluggy', async (req, res) => {
-  try {
-    // fetchConnectors busca a lista de instituições financeiras suportadas
-    const connectors = await pluggyClient.fetchConnectors();
-
-    res.json({
-      mensagem: "Conexão com Pluggy realizada com sucesso! 🚀",
-      bancosDisponiveis: connectors.total
-    });
-  } catch (error) {
-    console.error("Erro na Pluggy:", error.message);
-    res.status(500).json({ erro: "Falha ao conectar na Pluggy", detalhes: error.message });
-  }
-});
-
+// 🚀 2. Rota de Teste:
 app.get('/api/connect-token', async (req, res) => {
   try {
-    const tokenResponse = await pluggyClient.createConnectToken()
+    const tokenResponse = await pluggyClient.createConnectToken();
 
     res.json({
       mensagem: "Token gerado com sucesso!",
       accessToken: tokenResponse.accessToken
-    })
+    });
   } catch (error) {
-    console.error("Erro ao gerar Connect Token: ", error.menssage);
-    res.status(500).json({ erro: 'Falha ap gerar o token para Widget', detalhes: error.messsage })
+    console.error("Erro ao gerar Connect Token: ", error.message);
+    res.status(500).json({ erro: 'Falha ao gerar o token para Widget', detalhes: error.message });
   }
-})
+});
+
+app.get('/api/transactions/:itemId', async (req, res) => {
+  try {
+    const { itemId } = req.params;
+
+    const accounts = await pluggyClient.fetchAccounts(itemId);
+
+    if (accounts.results.length === 0) {
+      return res.status(404).json({ erro: "Nenhuma conta encontrada para esta conexão" });
+    }
+
+    const accountId = accounts.results[0].id;
+    const transactions = await pluggyClient.fetchTransactions(accountId);
+
+    res.json({
+      mensagem: "Extrato recuperado com sucesso!",
+      contaId: accountId,
+      totalTransacoes: transactions.total,
+      extrato: transactions.results
+    });
+  } catch (error) {
+    console.error("Erro ao buscar transações: ", error.message);
+    res.status(500).json({ erro: 'Falha ao buscar transações na Pluggy', detalhes: error.message });
+  }
+});
 
 // 🚀 3. Liga o servidor
 // eslint-disable-next-line no-undef
