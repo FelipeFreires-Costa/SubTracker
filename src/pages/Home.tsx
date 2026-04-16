@@ -32,9 +32,39 @@ export function Home() {
     }
   }
 
-  const sucessoAoConectar = (itemData: any) => {
-    console.log('Banco conctado com sucesso! O ID da conecxao é:', itemData.item.id)
-    alert("sucesso! Olhe o console oara ver o item ID")
+const sucessoAoConectar = async (itemData: any) => {
+    const itemId = itemData.item.id;
+    console.log('Banco conectado com sucesso! O ID da conexão é:', itemId);
+    setNotificacao("Banco conectado! O robô está lendo seu extrato...");
+
+    try {
+      // 1. Bate na rota do nosso back-end passando o ID real que a Pluggy gerou
+      // Se tu for testar sem o widget hoje, pode colocar aquele ID chumbado no lugar do ${itemId}
+      const resposta = await fetch(`http://localhost:3000/api/transactions/${itemId}`);
+      const dados = await resposta.json();
+
+      // 2. Transforma o JSON da Pluggy no formato da tua interface Conta
+      const assinaturasEncontradas = dados.extratoFiltrado.map((item: any, index: number) => {
+        return {
+          id: Date.now() + index, // Gera um ID numérico pra bater com o teu sistema
+          nome: item.description,
+          preco: Math.abs(item.amount), // Tira o sinal de negativo
+          data: item.date.split('T')[0], // Corta a data feia pra ficar só "YYYY-MM-DD"
+          pago: false,
+          categoria: "Streaming" // Marca uma categoria padrão
+        };
+      });
+
+      // 3. Junta as contas que já estavam na tela com as novas que vieram do banco!
+      setContas((listaAntiga) => [...listaAntiga, ...assinaturasEncontradas]);
+
+      setNotificacao(`Mágica feita! ${assinaturasEncontradas.length} assinaturas encontradas e adicionadas.`);
+      setTimeout(() => setNotificacao(null), 4000);
+
+    } catch (erro) {
+      console.error("Erro ao buscar transações filtradas: ", erro);
+      alert("Conectou no banco, mas deu erro na hora de puxar as assinaturas.");
+    }
   }
 
   //state para o modal
