@@ -19,7 +19,22 @@ import { ModalConfirmacao } from "../Components/ModalConfirmacao/ModalConfirmaca
 export function Home() {
   const [connectToken, setConnetToken] = useState(null)
   const [contas, setContas] = useState<Conta[]>([]);
+  const totalMensal = contas.reduce((acumulador, conta) => acumulador + conta.preco, 0);
   
+  const totalPago = contas
+    .filter((conta) => conta.pago === true)
+    .reduce((acumulador, conta) => acumulador + conta.preco, 0);
+    
+  // 3. Soma o que a pessoa ainda tá devendo (pago: false)
+  const faltaPagar = contas
+    .filter((conta) => conta.pago === false)
+    .reduce((acumulador, conta) => acumulador + conta.preco, 0);
+
+  // Funçãozinha rápida pra deixar o número bonito (R$ 100,00)
+  const formatarDinheiro = (valor: number) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+  };
+
   const abrirWidget = async () => {
     try {
       const resposta = await fetch('http://localhost:3000/api/connect-token')
@@ -310,20 +325,6 @@ const sucessoAoConectar = async (itemData: any) => {
     setContas(lista);
   }
 
-  const apenasDevedores = contas.filter((item) => item.pago === false);
-  const valorTotalDivida = apenasDevedores.reduce(
-    (total, item) => total + item.preco,
-    0,
-  );
-
-  const valorPagos = contas.filter((item) => item.pago === true);
-  const valoresPagos = valorPagos.reduce(
-    (total, item) => total + item.preco,
-    0,
-  );
-
-  const despesasTotal = contas.reduce((acc, item) => acc + item.preco, 0);
-
   return (
     <div className="home-content">
       <main className="main-content">
@@ -333,7 +334,7 @@ const sucessoAoConectar = async (itemData: any) => {
               <span>Total Mensal</span>
               <FaMoneyBillWave size={24} color="#333" />
             </div>
-            <h2 className="valor-total">R$ {despesasTotal.toFixed(2)}</h2>
+            <h2 className="valor-total">{formatarDinheiro(totalMensal)}</h2>
           </div>
 
           <div className="card-resumo divida">
@@ -341,10 +342,10 @@ const sucessoAoConectar = async (itemData: any) => {
               <span>Falta Pagar</span>
               <FaExclamationCircle size={24} color="#e63946" />
             </div>
-            {valorTotalDivida === 0 ? (
+            {faltaPagar === 0 ? (
               <h2>R$ 00.00</h2>
             ) : (
-              <h2 className="valor-divida">R$ {valorTotalDivida.toFixed(2)}</h2>
+              <h2 className="valor-divida">R$ {formatarDinheiro(faltaPagar)}</h2>
             )}
           </div>
 
@@ -353,7 +354,7 @@ const sucessoAoConectar = async (itemData: any) => {
               <span>Já Pago</span>
               <FaCheckCircle size={24} color="#2a9d8f" />
             </div>
-            <h2 className="valor-pago">R$ {valoresPagos.toFixed(2)}</h2>
+            <h2 className="valor-pago">{formatarDinheiro(totalPago)}</h2>
           </div>
         </div>
 
