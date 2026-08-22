@@ -1,0 +1,41 @@
+.modal-conta {
+  max-width: 440px;
+  text-align: left;
+}
+
+.modal-conta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-conta-form label {
+  font-weight: 600;
+  color: #555;
+  margin-top: 8px;
+}
+
+.modal-conta-form input,
+.modal-conta-form select {
+  width: 100%;
+}
+
+.modal-conta .modal-botoes {
+  margin-top: 20px;
+}
+
+.btn-salvar-conta {
+  background-color: #1589b5;
+  color: white;
+  border: none;
+  padding: 14px 22px;
+  min-height: 48px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.btn-salvar-conta:hover {
+  background-color: #11739a;
+}

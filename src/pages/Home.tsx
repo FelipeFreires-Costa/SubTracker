@@ -1,328 +1,168 @@
-import { useEffect, useState, useRef } from "react";
-import CardsContas from "../Components/CardsContas/CardsContas";
+import { useState } from 'react';
+import CardsContas from '../Components/CardsContas/CardsContas';
 import { PluggyConnect } from 'react-pluggy-connect';
-
-//icones
 import {
   FaMoneyBillWave,
   FaExclamationCircle,
   FaCheckCircle,
   FaLinkedin,
   FaGithub,
-} from "react-icons/fa";
-//-------------------------------------------------
-import { Conta } from "../types/Conta";
-import { ModalConfirmacao } from "../Components/ModalConfirmacao/ModalConfirmacao";
-
-
+} from 'react-icons/fa';
+import { ModalConfirmacao } from '../Components/ModalConfirmacao/ModalConfirmacao';
+import { ModalConta } from '../Components/ModalConta/ModalConta';
+import { useContas } from '../hooks/useContas';
+import { pluggyService } from '../services/pluggyService';
+import {
+  calcularResumoFinanceiro,
+  diasRestantes,
+  formatarData,
+  formatarDinheiro,
+  verificarSituacao,
+} from '../utils/contaHelpers';
 
 export function Home() {
-  const [connectToken, setConnetToken] = useState(null)
-  const [contas, setContas] = useState<Conta[]>([]);
-  const totalMensal = contas.reduce((acumulador, conta) => acumulador + conta.preco, 0);
-  
-  const totalPago = contas
-    .filter((conta) => conta.pago === true)
-    .reduce((acumulador, conta) => acumulador + conta.preco, 0);
-    
-  // 3. Soma o que a pessoa ainda tá devendo (pago: false)
-  const faltaPagar = contas
-    .filter((conta) => conta.pago === false)
-    .reduce((acumulador, conta) => acumulador + conta.preco, 0);
+  const {
+    contas,
+    carregando,
+    erro,
+    notificacao,
+    criarConta,
+    atualizarConta,
+    alternarStatus,
+    removerConta,
+    importarDaPluggy,
+    tratarErro,
+  } = useContas();
 
-  // Funçãozinha rápida pra deixar o número bonito (R$ 100,00)
-  const formatarDinheiro = (valor: number) => {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
-  };
-
-  const abrirWidget = async () => {
-    try {
-      const resposta = await fetch('http://localhost:3000/api/connect-token')
-      const dados = await resposta.json()
-
-      setConnetToken(dados.accessToken)
-    }catch (erro) {
-      console.error("Erro ao buscar o token: ", erro)
-      alert('Verifique se o Back-end esta rodando na porta 3000')
-    }
-  }
-
-const sucessoAoConectar = async (itemData: any) => {
-    const itemId = itemData.item.id;
-    console.log('Banco conectado com sucesso! O ID da conexão é:', itemId);
-    setNotificacao("Banco conectado! O robô está lendo seu extrato...");
-
-    try {
-      // 1. Bate na rota do nosso back-end passando o ID real que a Pluggy gerou
-      // Se tu for testar sem o widget hoje, pode colocar aquele ID chumbado no lugar do ${itemId}
-      const resposta = await fetch(`http://localhost:3000/api/transactions/${itemId}`);
-      const dados = await resposta.json();
-
-      // 2. Transforma o JSON da Pluggy no formato da tua interface Conta
-      const assinaturasEncontradas = dados.extratoFiltrado.map((item: any, index: number) => {
-        return {
-          id: Date.now() + index, // Gera um ID numérico pra bater com o teu sistema
-          nome: item.description,
-          preco: Math.abs(item.amount), // Tira o sinal de negativo
-          data: item.date.split('T')[0], // Corta a data feia pra ficar só "YYYY-MM-DD"
-          pago: false,
-          categoria: "Streaming" // Marca uma categoria padrão
-        };
-      });
-
-      // 3. Junta as contas que já estavam na tela com as novas que vieram do banco!
-      setContas((listaAntiga) => [...listaAntiga, ...assinaturasEncontradas]);
-
-      setNotificacao(`Mágica feita! ${assinaturasEncontradas.length} assinaturas encontradas e adicionadas.`);
-      setTimeout(() => setNotificacao(null), 4000);
-
-    } catch (erro) {
-      console.error("Erro ao buscar transações filtradas: ", erro);
-      alert("Conectou no banco, mas deu erro na hora de puxar as assinaturas.");
-    }
-  }
-
-  //state para o modal
-  const [contaParaApagar, setContaParaApagar] = useState<number | null>(null)
-
-  //busca os dados do Servidor
-  useEffect(() => {
-    async function carregarDados() {
-      try {
-        const resposta = await fetch("https://api-subtracker.onrender.com/api/contas");
-        const dados = await resposta.json();
-        setContas(dados);
-      } catch (erro) {
-        console.error("Erro ao buscar contas:", erro);
-        alert(
-          "Erro ao conectar com o servidor! Verifique se ele está rodando.",
-        );
-      }
-    }
-    carregarDados();
-  }, []);
-
+  const [connectToken, setConnectToken] = useState<string | null>(null);
+  const [contaParaApagar, setContaParaApagar] = useState<number | null>(null);
+  const [modalContaAberto, setModalContaAberto] = useState(false);
   const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [nomeInput, setNomeInput] = useState('');
+  const [precoInput, setPrecoInput] = useState('');
+  const [dataInput, setDataInput] = useState('');
+  const [categoriaInput, setCategoriaInput] = useState('');
 
-  const [nomeInput, setNomeInput] = useState("");
-  const [precoInput, setPrecoInput] = useState("");
-  const [dataInput, setDataInput] = useState("");
-  const [categoriaInput, setCategoriaInput] = useState("");
-  const [notificacao, setNotificacao] = useState<string | null>(null);
+  const { totalMensal, totalPago, faltaPagar } = calcularResumoFinanceiro(contas);
 
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
-
-  function prepararEdicao(conta: Conta) {
-    setNomeInput(conta.nome);
-    setPrecoInput(conta.preco.toString());
-    setDataInput(conta.data);
-    setEditandoId(conta.id);
-    setCategoriaInput(conta.categoria)
+  function limparFormulario() {
+    setNomeInput('');
+    setPrecoInput('');
+    setDataInput('');
+    setCategoriaInput('');
+    setEditandoId(null);
+    setModalContaAberto(false);
   }
 
-  function formatarData(dataAmericana: string) {
-    if (!dataAmericana) return "";
-    const partes = dataAmericana.split("-");
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  function abrirNovaConta() {
+    setNomeInput('');
+    setPrecoInput('');
+    setDataInput('');
+    setCategoriaInput('');
+    setEditandoId(null);
+    setModalContaAberto(true);
   }
 
-  function verificarSituacao(dataVencimento: string) {
-    if (!dataVencimento) return "";
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-
-    const dataConta = new Date(dataVencimento + "T00:00:00");
-
-    const diferenciaTime = dataConta.getTime() - hoje.getTime();
-    const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24));
-
-    if (dias < 0) return "vencida";
-    else if (dias === 0) return "hoje";
-    else if (dias <= 3) return "perto";
-    else return "tranquilo";
+  function validarFormulario() {
+    if (!nomeInput || !precoInput || !dataInput) {
+      alert('Preencha todos os campos');
+      return false;
+    }
+    return true;
   }
 
-  function diasRestantes(dataVencimento: string) {
-    if (!dataVencimento) return "";
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    const dataConta = new Date(dataVencimento + "T00:00:00");
-
-    const diferenciaTime = dataConta.getTime() - hoje.getTime();
-    const dias = Math.ceil(diferenciaTime / (1000 * 60 * 60 * 24));
-
-    if (dias < 0) return `Venceu há ${Math.abs(dias)} dias`;
-    else if (dias === 0) return "Vence hoje!";
-    else if (dias === 1) return "Falta 1 dia";
-    else return `Faltam ${dias} dias`;
+  async function abrirWidget() {
+    try {
+      const dados = await pluggyService.obterConnectToken();
+      setConnectToken(dados.accessToken);
+    } catch (error) {
+      tratarErro(error, 'Verifique se o backend está rodando na porta 3000');
+      alert('Verifique se o backend está rodando na porta 3000');
+    }
   }
 
-  function abrirModalRemocao(id: number) {
-    setContaParaApagar(id);
+  async function sucessoAoConectar(itemData: { item: { id: string } }) {
+    try {
+      await importarDaPluggy(itemData.item.id);
+      setConnectToken(null);
+    } catch (error) {
+      console.error('Erro ao importar assinaturas:', error);
+      alert('Conectou no banco, mas deu erro ao importar as assinaturas.');
+    }
   }
 
   async function confirmarRemocao() {
     if (contaParaApagar === null) return;
 
     try {
-      const resposta = await fetch(`https://api-subtracker.onrender.com/api/contas/${contaParaApagar}`, {
-        method: 'DELETE'
-      });
-
-      if (resposta.ok) {
-        const novaLista = contas.filter((item) => item.id !== contaParaApagar);
-        setContas(novaLista);
-        
-        setNotificacao("Conta removida com sucesso!");
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => setNotificacao(null), 2000);
-      } else {
-        alert('Erro ao remover do servidor.');
-      }
-    } catch (erro) {
-      console.log(erro);
-      alert('Erro de conexão ao tentar remover');
+      await removerConta(contaParaApagar);
+    } catch (error) {
+      tratarErro(error, 'Erro ao remover conta.');
+      alert('Erro ao remover conta.');
     } finally {
-      setContaParaApagar(null); 
+      setContaParaApagar(null);
     }
   }
 
   async function adicionarConta() {
-    if (nomeInput === "" || precoInput === "" || dataInput === "") {
-      alert("Preencha todos os campos");
-      return;
-    }
-    const novaConta: Conta = {
-      id: Date.now(),
-      nome: nomeInput,
-      preco: Number(precoInput),
-      data: dataInput,
-      pago: false,
-      categoria: categoriaInput,
-    };
+    if (!validarFormulario()) return;
 
     try {
-      const resposta = await fetch("https://api-subtracker.onrender.com/api/contas", {
-        method: "POST", //metodo de criar
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(novaConta), //transforma objeto em texto
+      await criarConta({
+        nome: nomeInput,
+        preco: Number(precoInput),
+        data: dataInput,
+        pago: false,
+        categoria: categoriaInput || 'Outros',
       });
-      if (resposta.ok) {
-        //servidor aceitou
-        const contaCriada = await resposta.json();
-
-        const contaProntaPraTela = {
-            ...contaCriada,
-            categoria: categoriaInput 
-        };
-
-        //adiciona na lista local para aparecer na tela
-        setContas([...contas, contaProntaPraTela]);
-
-        //limpar os campos
-        setNomeInput("");
-        setDataInput("");
-        setPrecoInput("");
-        setCategoriaInput("")
-      } else {
-        alert("Erro ao salvar no servidor!");
-      }
-    } catch (erro) {
-      console.error(erro);
-      alert("Erro de conexão! O servidor está rodando?");
+      limparFormulario();
+    } catch (error) {
+      tratarErro(error, 'Erro ao salvar no servidor.');
+      alert('Erro ao salvar no servidor!');
     }
   }
 
   async function salvarEdicao() {
-    if (nomeInput === "" || precoInput === "" || dataInput === "") {
-      alert("Preencha todos os campos");
-      return;
-    }
+    if (!validarFormulario() || editandoId === null) return;
 
     try {
-      const resposta = await fetch(
-        `https://api-subtracker.onrender.com/api/contas/${editandoId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nome: nomeInput,
-            preco: Number(precoInput),
-            data: dataInput,
-            categoria: categoriaInput
-          }),
-        },
-      );
-      if (resposta.ok) {
-        const contaAtualizada = await resposta.json(); //devolve a conta arrumada
-
-        const listaAtualizada = contas.map((item) =>
-          item.id === editandoId ? contaAtualizada : item,
-        );
-        setContas(listaAtualizada); //atualiza a tela
-        setNomeInput("");
-        setPrecoInput("");
-        setDataInput("");
-        setEditandoId(null);
-        setCategoriaInput("")
-        setNotificacao("Conta atualizada com sucesso!");
-        setTimeout(() => setNotificacao(null), 2000);
-      } else {
-        alert("Erro ao atualizar no servidor!");
-      }
-    } catch (erro) {
-      console.error(erro);
-      alert("Erro de conexão");
+      await atualizarConta(editandoId, {
+        nome: nomeInput,
+        preco: Number(precoInput),
+        data: dataInput,
+        categoria: categoriaInput || 'Outros',
+      });
+      limparFormulario();
+    } catch (error) {
+      tratarErro(error, 'Erro ao atualizar no servidor.');
+      alert('Erro ao atualizar no servidor!');
     }
   }
 
-  async function alternarStatus(id: number) {
-    //encontra a conta atual para saber o oposto do status
-    const contaAtual = contas.find((c) => c.id === id);
-    if (!contaAtual) return;
-
-    const novoStatus = !contaAtual.pago; //inverte se era true vira false
-
+  async function handleAlternarStatus(id: number) {
     try {
-      //manda para o servidor
-      const resposta = await fetch(`https://api-subtracker.onrender.com/api/contas/${id}`, {
-        method: "PATCH", //metodo de atualizar parcialmente
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ pago: novoStatus }), //manda so oque mudou
-      });
-      if (resposta.ok) {
-        //se o servidor aceitou, atualiza a tela
-        const contaAtualizada = await resposta.json();
-
-        const listaAtualizada = contas.map((item) => {
-          if (item.id === id) {
-            return contaAtualizada; // usa o dado que veio do servidor
-          }
-          return item;
-        });
-        setContas(listaAtualizada);
-      } else {
-        ("Erro ao atualizar status");
-      }
-    } catch (erro) {
-      console.error(erro);
-      alert("Erro de conexão ao atualizar");
+      await alternarStatus(id);
+    } catch (error) {
+      tratarErro(error, 'Erro ao atualizar status.');
+      alert('Erro ao atualizar status.');
     }
+  }
 
-    const lista = contas.map((item) => {
-      if (item.id === id) {
-        return { ...item, pago: !item.pago };
-      } else {
-        return item;
-      }
-    });
-    setContas(lista);
+  function prepararEdicao(conta: (typeof contas)[number]) {
+    setNomeInput(conta.nome);
+    setPrecoInput(conta.preco.toString());
+    setDataInput(conta.data);
+    setCategoriaInput(conta.categoria);
+    setEditandoId(conta.id);
+    setModalContaAberto(true);
+  }
+
+  async function salvarConta() {
+    if (editandoId !== null) {
+      await salvarEdicao();
+      return;
+    }
+    await adicionarConta();
   }
 
   return (
@@ -342,11 +182,9 @@ const sucessoAoConectar = async (itemData: any) => {
               <span>Falta Pagar</span>
               <FaExclamationCircle size={24} color="#e63946" />
             </div>
-            {faltaPagar === 0 ? (
-              <h2>R$ 00.00</h2>
-            ) : (
-              <h2 className="valor-divida">R$ {formatarDinheiro(faltaPagar)}</h2>
-            )}
+            <h2 className={faltaPagar === 0 ? '' : 'valor-divida'}>
+              {formatarDinheiro(faltaPagar)}
+            </h2>
           </div>
 
           <div className="card-resumo alivio">
@@ -358,83 +196,30 @@ const sucessoAoConectar = async (itemData: any) => {
           </div>
         </div>
 
-        <div className="form">
-          <div className="card-span">
-            <label htmlFor="nome">Nome:</label>
-            <input
-              id="nome"
-              type="text"
-              placeholder="Ex: Conta de luz"
-              value={nomeInput}
-              onChange={(e) => setNomeInput(e.target.value)}
-            />
-          </div>
-
-          <div className="card-span">
-            <label htmlFor="preco">Preço:</label>
-            <input
-              id="preco"
-              type="number"
-              placeholder="Ex: 75"
-              value={precoInput}
-              onChange={(e) => setPrecoInput(e.target.value)}
-            />
-          </div>
-
-          <div className="card-span">
-            <label htmlFor="data">Data:</label>
-            <input
-              id="data"
-              type="date"
-              value={dataInput}
-              onChange={(e) => setDataInput(e.target.value)}
-            />
-          </div>
-
-          <div className="card-span">
-            <label htmlFor="categoria">Categoria:</label>
-            <select
-              id="categoria"
-              value={categoriaInput}
-              onChange={(e) => setCategoriaInput(e.target.value)}
-            >
-              <option value="">Selecione...</option>
-              <option value="Streaming">  Streaming</option>
-              <option value="Moradia">Moradia</option>
-              <option value="Alimentação">Alimentação</option>
-              <option value="Educação">Educação</option>
-              <option value="Transporte"> Transporte</option>
-              <option value="Outros">Outros</option>
-            </select>
-          </div>
-
-            {editandoId != null ? (
-              <button
-                className="salvar-btn"
-                style={{ backgroundColor: "#2a9d8f" }}
-                onClick={salvarEdicao}
-              >
-                ✔ Salvar Alteração
-              </button>
-            ) : (
-              <button onClick={adicionarConta}>+ Adicionar Conta</button>
-            )}
-            {editandoId !== null && (
-              <button className="cancelar-btn"
-                style={{ backgroundColor: "#6c757d"}}
-                onClick={() => {
-                  setEditandoId(null);
-                  setNomeInput("");
-                  setPrecoInput("");
-                  setDataInput("");
-                }}
-              >
-                Cancelar
-              </button>
-            )}
+        <div className="acoes-contas">
+          <button className="btn-nova-conta" onClick={abrirNovaConta}>
+            Adicionar conta
+          </button>
         </div>
 
-        {/* ... TABELA ... */}
+        <div className="pluggy-box">
+          <h2>Achar assinaturas no banco</h2>
+          <p>O sistema procura no extrato coisas como Netflix e Spotify e coloca na lista.</p>
+
+          {!connectToken ? (
+            <button onClick={abrirWidget}>Abrir conexão</button>
+          ) : (
+            <div className="pluggy-widget">
+              <PluggyConnect
+                connectToken={connectToken}
+                includeSandbox={true}
+                onSuccess={sucessoAoConectar}
+                onError={(error) => console.error('Erro na Pluggy:', error)}
+              />
+            </div>
+          )}
+        </div>
+
         <div className="container">
           <div className="header-table">
             <span>Nome</span>
@@ -445,16 +230,24 @@ const sucessoAoConectar = async (itemData: any) => {
             <span className="alinhar-texto">Ação</span>
           </div>
 
+          {carregando && (
+            <p style={{ textAlign: 'center', marginTop: 20 }}>Carregando contas...</p>
+          )}
+
+          {erro && !carregando && (
+            <p style={{ textAlign: 'center', marginTop: 20, color: '#e63946' }}>{erro}</p>
+          )}
+
           {contas.map((item) => (
             <CardsContas
               key={item.id}
               pago={item.pago}
-              foiPago={() => alternarStatus(item.id)}
+              foiPago={() => handleAlternarStatus(item.id)}
               nome={item.nome}
               preco={item.preco}
               categoria={item.categoria}
               data={formatarData(item.data)}
-              aoRemover={() => abrirModalRemocao(item.id)}
+              aoRemover={() => setContaParaApagar(item.id)}
               aoEditar={() => prepararEdicao(item)}
               situacao={verificarSituacao(item.data)}
               textoDias={diasRestantes(item.data)}
@@ -462,40 +255,17 @@ const sucessoAoConectar = async (itemData: any) => {
           ))}
 
           {notificacao && (
-            <p style={{ textAlign: "center", color: "green" }}>{notificacao}</p>
+            <p style={{ textAlign: 'center', color: 'green' }}>{notificacao}</p>
           )}
 
-          {contas.length === 0 && (
-            <p style={{ textAlign: "center", marginTop: 20 }}>
-              Nenhuma conta encontrada.
+          {!carregando && contas.length === 0 && !erro && (
+            <p style={{ textAlign: 'center', marginTop: 20 }}>
+              Nenhuma conta ainda. Toque em Adicionar conta ou busque no banco.
             </p>
           )}
         </div>
-          <div style={{ textAlign: 'center', marginTop: '50px', fontFamily: 'sans-serif' }}>
-      <h1>💸 SubTracker</h1>
-      <p>Conecte sua conta para encontrarmos suas assinaturas fantasmas.</p>
-
-      {/* Se não tem token, mostra o botão. Se tem, mostra o Widget da Pluggy */}
-      {!connectToken ? (
-        <button 
-          onClick={abrirWidget} 
-          style={{ padding: '10px 20px', fontSize: '18px', cursor: 'pointer', background: '#007bff', color: 'white', border: 'none', borderRadius: '5px' }}
-        >
-          Conectar Banco
-        </button>
-      ) : (
-        <div style={{ height: '600px', width: '400px', margin: '0 auto', border: '1px solid #ccc' }}>
-          <PluggyConnect
-            connectToken={connectToken}
-            includeSandbox={true} // Diz para a Pluggy mostrar os bancos de teste
-            onSuccess={sucessoAoConectar}
-            onError={(error) => console.error('Erro na Pluggy:', error)}
-          />
-        </div>
-      )}
-    </div>
       </main>
-          
+
       <footer className="app-footer">
         <div className="footer-content">
           <strong>SubTracker</strong>
@@ -522,12 +292,27 @@ const sucessoAoConectar = async (itemData: any) => {
             <FaGithub size={22} />
           </a>
         </div>
-        
       </footer>
-              <ModalConfirmacao 
-        aberto={contaParaApagar !== null} 
-        aoConfirmar={confirmarRemocao} 
-        aoCancelar={() => setContaParaApagar(null)} 
+
+      <ModalConta
+        aberto={modalContaAberto}
+        editando={editandoId !== null}
+        nome={nomeInput}
+        preco={precoInput}
+        data={dataInput}
+        categoria={categoriaInput}
+        onNome={setNomeInput}
+        onPreco={setPrecoInput}
+        onData={setDataInput}
+        onCategoria={setCategoriaInput}
+        onSalvar={salvarConta}
+        onCancelar={limparFormulario}
+      />
+
+      <ModalConfirmacao
+        aberto={contaParaApagar !== null}
+        aoConfirmar={confirmarRemocao}
+        aoCancelar={() => setContaParaApagar(null)}
       />
     </div>
   );

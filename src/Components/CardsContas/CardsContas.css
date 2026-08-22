@@ -19,25 +19,21 @@
 }
 
 .card {
-  background-color: white;
+  background-color: var(--folha);
   width: 100%;
   max-width: 1000px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 0;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  border: 1px solid var(--linha);
+  border-radius: 8px;
   align-items: stretch;
 }
 
 .card.pago {
-  background-color: #f0fff4;
-  border-left: 5px solid green;
-  opacity: 0.6;
-}
-
-.card.pago:hover {
-  opacity: 1;
+  background-color: #eef8f1;
+  border-left: 5px solid #2a9d8f;
 }
 
 .container {
@@ -62,7 +58,7 @@
 .infos h3 {
   justify-self: start;
   min-width: 0;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -71,25 +67,26 @@
 
 .infos p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #555;
+  font-size: 1.05rem;
+  color: var(--tinta-fraca);
 }
 
 .detalhes {
   align-items: center;
   display: flex;
-  width: 80px;
+  width: auto;
+  min-width: 88px;
   justify-content: center;
 }
 
 .detalhes p{
-  font-size: 11px;
+  font-size: 0.85rem;
   align-items: center;
   display: flex;
   width: 100%;
   justify-content: center;
-  border-radius: 14px;
-  padding: 4px;
+  border-radius: 8px;
+  padding: 6px 8px;
 }
 
 .detalhes.perto p{
@@ -150,19 +147,21 @@ img.img-pago{
 
 .pagar{
     width: 100%;
+    min-height: 42px;
     border: none;
-    padding: 3px;
-    background-color: #10ae55;
-    border-radius: 13px;
+    padding: 8px 10px;
+    background-color: #2a9d8f;
+    border-radius: 8px;
     color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
     display: flex;
     justify-content: center;
-    border: 1px solid #10ae55;
+    border: 1px solid #2a9d8f;
     transition: 0.2s ease-in;
     cursor: pointer;
     grid-column: 5;
     align-items: center;
-    justify-content: center;
 }
 
 .pagar svg{
@@ -213,8 +212,10 @@ max-height: 0;
 .btn-tres-pontos {
   background-color: #e9edee;
   border: none;
-  padding: 5px 10px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;

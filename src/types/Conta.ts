@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export interface Conta {
   id: number;
   nome: string;
@@ -9,4 +7,29 @@ export interface Conta {
   categoria: string;
 }
 
-const [contas, setContas] = useState<Conta[]>([]);
+export interface CriarContaPayload {
+  nome: string;
+  preco: number;
+  data: string;
+  pago?: boolean;
+  categoria?: string;
+}
+
+export interface AtualizarContaPayload {
+  nome: string;
+  preco: number;
+  data: string;
+  categoria?: string;
+}
+
+export interface ImportarPluggyResponse {
+  mensagem: string;
+  totalEncontradas: number;
+  totalImportadas: number;
+  totalIgnoradas: number;
+  contas: Conta[];
+}
+
+export interface ConnectTokenResponse {
+  accessToken: string;
+}

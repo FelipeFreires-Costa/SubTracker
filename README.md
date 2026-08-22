@@ -1,38 +1,56 @@
-# 💰 SubTracker - Gerenciador de Assinaturas
+# SubTracker
 
-> Controle seus gastos recorrentes, visualize vencimentos e evite surpresas no fim do mês.
+Aplicação web para controle de assinaturas e contas recorrentes. O usuário cadastra gastos, acompanha vencimentos e pode importar assinaturas a partir do extrato bancário (Pluggy / Open Finance).
 
-## 📸 Preview do Projeto
+Este repositório é o artefato de software do **TCC2**. O documento acadêmico deve seguir o modelo ABNT da biblioteca institucional; os rascunhos de trabalho estão em `docs/tcc2/`.
 
-<img width="1903" height="873" alt="image" src="https://github.com/user-attachments/assets/3a9943b3-0d6d-4a51-94c9-c1ebd5cd64af" />
+## O que o sistema faz
 
+- CRUD de contas (nome, valor, vencimento, categoria, pago/não pago)
+- Totais: mensal, já pago e em aberto
+- Alertas de prazo: vencida, vence hoje, próxima (até 3 dias) ou em dia
+- Relatório com gráficos por serviço e por categoria
+- Importação via Pluggy: filtra candidatos, remove duplicatas do mesmo serviço e grava no PostgreSQL
 
-## 💡 Sobre o Projeto
+## Como executar
 
-O **SubTracker** é uma aplicação Web desenvolvida para resolver uma dor comum: a desorganização financeira com assinaturas mensais (Netflix, Spotify, Academias, etc).
+### 1. PostgreSQL
 
-O objetivo foi criar uma solução onde o usuário pode cadastrar suas contas, visualizar quanto gasta no total e ser alertado visualmente sobre prazos de vencimento.
+Crie o banco `subtracker_db` e execute `subtracker-backend/database/schema.sql`.
 
-Este projeto foi fundamental para consolidar conhecimentos em **Lógica de Programação**, **Manipulação de Arrays** e **Persistência de Dados**.
+### 2. Backend
 
-## ⚙️ Funcionalidades e Regras de Negócio
+```powershell
+cd subtracker-backend
+```
 
-- **CRUD Completo:** Criação, Listagem e Remoção de assinaturas.
-- **Cálculo Automático:** O sistema soma o total de gastos mensais em tempo real (utilizando `.reduce`), ignorando contas já pagas.
-- **Inteligência de Datas:**
-  - 🔴 **Vencida:** Alerta visual se a data já passou.
-  - 🟡 **Próxima:** Alerta se faltam 3 dias ou menos.
-  - 🔵 **Em dia:** Status normal para datas futuras.
-- **Toggle de Pagamento:** Botão interativo para marcar/desmarcar uma conta como "Paga", alterando o visual e o cálculo total.
-- **Persistência Local:** Uso do `localStorage` para manter os dados salvos mesmo após recarregar a página.
+Copie `.env.example` para `.env` e preencha `PLUGGY_*` e `DB_*`.
 
-## 🧠 Aprendizados Técnicos
+```powershell
+npm install
+npm run dev
+```
 
-Durante o desenvolvimento, enfrentei e resolvi desafios como:
+API: `http://localhost:3000/api/health`
 
-- **Manipulação de Tempo:** Aprendi a comparar datas (`new Date`), zerar horas para evitar bugs de fuso horário e converter milissegundos em dias.
-- **Estado Complexo:** Gerenciamento de lista de objetos com `useState`.
-- **Imutabilidade:** Uso correto de `.map` e `.filter` para atualizar estados sem ferir a imutabilidade do React.
-- **Renderização Condicional:** Classes de CSS dinâmicas baseadas em múltiplos estados (Pago vs Vencido).
+### 3. Frontend
 
-irei fazer o deploy em breve
+```powershell
+cd ..
+npm install
+npm run dev
+```
+
+Interface: `http://localhost:5173`
+
+## Arquitetura
+
+```
+React (Vite)  →  Express  →  PostgreSQL
+                    ↓
+                 Pluggy
+```
+
+## Limitações acadêmicas
+
+A detecção automática é heurística (palavras-chave). O teste principal usou sandbox da Pluggy. O protótipo é single-user.

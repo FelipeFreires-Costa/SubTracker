@@ -15,7 +15,7 @@ export function ModalConfirmacao({ aberto, aoConfirmar, aoCancelar}: ModalProps)
     <div className='modal-overlay'>
       <div className='modal-box'>
         <h2>Excluir Conta</h2>
-        <p>Tem certeza que deseja excluir esta conta? Essa ação não pode ser desfeita.</p>
+        <p>Quer apagar esta conta? Depois não dá para recuperar.</p>
         <div className='modal-botoes'>
           <button className='btn-cancelar' onClick={aoCancelar}>
             Cancelar

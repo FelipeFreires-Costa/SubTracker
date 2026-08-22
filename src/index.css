@@ -1,12 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
 
-*{
+:root {
+  --papel: #ebeef0;
+  --tinta: #333333;
+  --tinta-fraca: #666666;
+  --agua: #1589b5;
+  --agua-escura: #11739a;
+  --folha: #ffffff;
+  --linha: #eeeeee;
+}
+
+* {
   font-family: "Sora", sans-serif;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
 
-body{
-  background-color: #ebeef0;
+body {
+  background-color: var(--papel);
+  color: var(--tinta);
+}
+
+button,
+a,
+input,
+select {
+  font-size: 1rem;
 }

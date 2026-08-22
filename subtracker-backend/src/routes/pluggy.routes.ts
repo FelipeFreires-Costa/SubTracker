@@ -1,12 +1,10 @@
-const express = require('express');
-const { PluggyController } = require('../controllers/pluggy.controller');
+import { Router } from 'express';
+import PluggyController from '../controllers/pluggy.controller';
 
-const router = express.Router();
+const router = Router();
 
-// Rota 1: http://localhost:3000/api/connect-token
 router.get('/connect-token', PluggyController.getConnectToken);
-
-// Rota 2: http://localhost:3000/api/transactions/{itemId}
 router.get('/transactions/:itemId', PluggyController.getTransactions);
+router.post('/pluggy/importar/:itemId', PluggyController.importarAssinaturas);
 
-module.exports = router;
+export default router;

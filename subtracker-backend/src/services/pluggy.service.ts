@@ -1,60 +1,67 @@
-const { PluggyClient } = require('pluggy-sdk');
-const dotenv = require('dotenv');
+import '../config/env';
+import { PluggyClient } from 'pluggy-sdk';
 
-// carrega as variaveis do arquivo .env
-dotenv.config();
+import type { TransacaoPluggy } from '../utils/transacao.mapper';
 
-// inicializa o cliente da pluggy
 const pluggyClient = new PluggyClient({
-  clientId: process.env.PLUGGY_CLIENT_ID || '',
-  clientSecret: process.env.PLUGGY_CLIENT_SECRET || '',
+  clientId: process.env.PLUGGY_CLIENT_ID ?? '',
+  clientSecret: process.env.PLUGGY_CLIENT_SECRET ?? '',
 });
 
+const PALAVRAS_CHAVE = [
+  'netflix',
+  'spotify',
+  'amazon',
+  'prime',
+  'hbo',
+  'disney',
+  'gympass',
+  'smartfit',
+  'adobe',
+  'apple',
+];
+
 const PluggyService = {
-  //gerar o connect token pro front-end
   async generateConnectToken() {
     const tokenResponse = await pluggyClient.createConnectToken();
     return tokenResponse.accessToken;
   },
-  // funcao 2: buscar e filtrar transacoes
+
   async getFilteredTransactions(itemId: string) {
     const accounts = await pluggyClient.fetchAccounts(itemId);
 
     if (accounts.results.length === 0) {
-      throw new Error("Nenhuma conta encontrada para esta conexão");
+      throw new Error('Nenhuma conta encontrada para esta conexão');
     }
 
-    let extratoCompleto: any[] = [];
+    let extratoCompleto: TransacaoPluggy[] = [];
 
     for (const conta of accounts.results) {
       const transactions = await pluggyClient.fetchTransactions(conta.id, {
-        from: '2022-01-01'
+        from: '2022-01-01',
       });
       extratoCompleto = extratoCompleto.concat(transactions.results);
     }
-    console.log("\n[LOG ESTRATÉGICO] Transações que vieram do Sandbox:", JSON.stringify(extratoCompleto, null, 2));
-    
-    // algoritmo de filtragem
-    const palavrasChave = [
-      'netflix', 'spotify', 'amazon', 'prime', 'hbo', 
-      'disney', 'gympass', 'smartfit', 'adobe', 'apple', 'boleto'
-    ];
-    
-    const assinaturasFiltradas = extratoCompleto.filter((transacao: any) => {
-      const descricao = transacao.description ? transacao.description.toLowerCase() : '';
-      const temPalavraChave = palavrasChave.some((palavra: string) => descricao.includes(palavra));
+
+    console.log(
+      `[PLUGGY] ${extratoCompleto.length} transações recebidas de ${accounts.results.length} conta(s)`,
+    );
+
+    const extratoFiltrado = extratoCompleto.filter((transacao) => {
+      const descricao = transacao.description?.toLowerCase() ?? '';
+      const temPalavraChave = PALAVRAS_CHAVE.some((palavra) => descricao.includes(palavra));
       const ehCategoriaAssinatura = transacao.category === 'Subscriptions';
 
-      return temPalavraChave || ehCategoriaAssinatura; 
-
+      return temPalavraChave || ehCategoriaAssinatura;
     });
 
     return {
       totalContasAnalisadas: accounts.results.length,
       totalTransacoesBrutas: extratoCompleto.length,
-      totalAssinaturasEncontradas: assinaturasFiltradas.length,
-      extratoFiltrado: assinaturasFiltradas
+      totalAssinaturasEncontradas: extratoFiltrado.length,
+      extratoFiltrado,
     };
-  }
+  },
 };
-module.exports = PluggyService;
+
+export default PluggyService;

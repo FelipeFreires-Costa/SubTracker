@@ -1,152 +1,175 @@
-
-.app-header {
-  height: 70px;
-  background-color: white;
-  border-bottom: 1px solid #eee;
+.app-sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #eee;
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  padding: 18px 12px;
+  flex-shrink: 0;
+  transition: width 0.2s ease;
+}
+
+.app-sidebar.aberta {
+  width: 230px;
+}
+
+.app-sidebar.fechada {
+  width: 72px;
+}
+
+.sidebar-topo {
+  display: flex;
   align-items: center;
-  padding: 0 40px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.app-sidebar.fechada .sidebar-topo {
+  flex-direction: column;
 }
 
 .logo-area {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .logo-area h1 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #333;
   margin: 0;
 }
 
+.btn-sidebar {
+  border: none;
+  background: #ebeef0;
+  color: #333;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sidebar:hover {
+  background: #dfe3e6;
+}
+
 .nav-links {
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 
 .nav-links a {
   text-decoration: none;
-  color: #666;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  padding: 5px 0;
-  position: relative;
-  border-bottom: 2px solid transparent;
+  color: #555;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  min-height: 46px;
 }
 
+.app-sidebar.fechada .nav-links a {
+  justify-content: center;
+}
 
 .nav-links a.active {
-  color: #0077ff;
-  font-weight: bold;
-  border-bottom: 2px solid #0077ff;
+  color: #1589b5;
+  background: #e8f5fb;
 }
 
-
 .nav-links a:hover {
-  color: #0077ff;
+  background: #f3f5f6;
 }
 
 .user-area {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
 }
 
-.github-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: #333;
-  font-size: 0.9rem;
-  background-color: #66666631;
-  padding: 5px;
-  border-radius: 20px;
-}
-
-.divider {
-  width: 1px;
-  height: 25px;
-  background-color: #eee;
-}
-
+.github-link,
 .profile {
   display: flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
+  color: #333;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
   cursor: pointer;
+  text-align: left;
+  min-height: 44px;
+}
+
+.app-sidebar.fechada .github-link,
+.app-sidebar.fechada .profile {
+  justify-content: center;
+}
+
+.github-link:hover,
+.profile:hover {
+  background: #f3f5f6;
+}
+
+.profile span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .input-nome-editavel {
-  border: 1px solid #0077ff;
-  border-radius: 4px;
-  padding: 5px;
-  font-size: 0.9rem;
-  width: 120px;
+  border: 1px solid #1589b5;
+  border-radius: 6px;
+  padding: 8px;
+  width: 100%;
 }
 
-
 @media (max-width: 768px) {
-  
-  .app-header {
-    height: auto;
-    padding: 15px 20px;
-    flex-wrap: wrap;
-    gap: 15px;
+  .app-sidebar {
+    min-height: auto;
+    width: 100% !important;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 12px;
+    border-right: none;
+    border-bottom: 1px solid #eee;
   }
 
-
-  
-  .logo-area {
-    order: 1;
-  }
-
-  .user-area {
-    order: 2;
+  .sidebar-topo {
+    margin-bottom: 0;
+    flex-direction: row;
   }
 
   .nav-links {
-    order: 3;
-    width: 100%;
+    flex-direction: row;
+    flex: 1;
     justify-content: center;
-    gap: 20px;
-    
-    padding-top: 10px;
-    border-top: 1px solid #f9f9f9;
   }
 
-
-  .logo-area h1 {
-    font-size: 1.2rem;
+  .user-area {
+    flex-direction: row;
+    border-top: none;
+    padding-top: 0;
   }
 
-  .github-link span {
-    display: none;
-  }
-  
-  .divider {
-    height: 15px;
-    margin: 0 5px;
-  }
-  
-
-  .input-nome-editavel {
-    width: 90px;
-  }
-
+  .logo-area h1,
+  .nav-links span,
+  .github-link span,
   .profile span {
-    font-size: 0.9rem;
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .profile svg {
-    width: 28px;
-    height: 28px;
+    display: none;
   }
 }

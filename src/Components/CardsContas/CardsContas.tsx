@@ -67,6 +67,13 @@ const CardsContas = ({
     setEstaAberto(!estaAberto);
   }
 
+  const textoSituacao =
+    situacao === 'vencida' ? 'Atrasada' :
+    situacao === 'perto' ? 'Quase' :
+    situacao === 'hoje' ? 'Hoje' :
+    situacao === 'tranquilo' ? 'Em dia' :
+    situacao;
+
   return (
     <div className={`card ${pago ? "pago" : situacao}`}>
       <div className="infos">
@@ -82,13 +89,13 @@ const CardsContas = ({
           {pago ? (
             <IoIosCheckbox size={24} color="#10ae55"/>
           ) : (
-            <p>{situacao.toUpperCase()}</p>
+            <p>{textoSituacao}</p>
           )}
         </div>
 
         <button className="pagar" onClick={foiPago}>
           <MdOutlineCreditCard size={20} color="white"/>
-          {pago === false ? "Pagar Agora" : "pago!"}
+          {pago === false ? "Paguei" : "Desfazer"}
         </button>
 
         <div className="acoes-menu" ref={menuRef}>

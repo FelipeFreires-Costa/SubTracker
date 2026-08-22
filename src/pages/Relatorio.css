@@ -1,6 +1,48 @@
-.valor-total{
+.relatorio-pagina {
+  width: min(1100px, 92%);
+  margin: 24px auto 40px;
+}
+
+.relatorio-pagina h1 {
+  font-size: 1.7rem;
+  color: var(--tinta);
+  margin-bottom: 6px;
+}
+
+.relatorio-pagina > p {
+  color: var(--tinta-fraca);
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.relatorio-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.relatorio-card {
+  background: var(--folha);
+  padding: 22px;
+  border-radius: 8px;
+  border: 1px solid var(--linha);
+}
+
+.relatorio-card h3 {
+  margin: 0 0 16px;
+  color: var(--tinta);
+  font-size: 1.15rem;
+}
+
+.relatorio-total {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--agua);
+  margin: 0;
+}
+
+.valor-total {
   display: flex;
   align-items: center;
   gap: 10px;
-  
 }
