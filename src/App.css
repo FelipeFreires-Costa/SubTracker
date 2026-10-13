@@ -10,6 +10,7 @@ html, body, #root {
 
 html {
   overflow-y: scroll;
+  scrollbar-color: #2a2a2a var(--papel);
 }
 
 .app-wrapper {
@@ -23,6 +24,7 @@ html {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  margin-left: var(--sidebar-w);
 }
 
 .home-content {
@@ -36,7 +38,7 @@ html {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  padding: 12px 28px 0;
 }
 
 .header-table{
@@ -52,7 +54,7 @@ html {
   align-content: center;
   justify-content: center;
   padding: 16px 20px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   color: var(--tinta-fraca);
   font-size: 0.95rem;
   font-weight: 600;
@@ -69,28 +71,81 @@ html {
   justify-self: center;
 }
 
+.home-cabecalho {
+  margin: 8px 0 12px;
+}
+
+.home-cabecalho h1 {
+  margin: 0 0 6px;
+  font-size: 1.7rem;
+  color: var(--tinta);
+}
+
+.home-cabecalho p {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--tinta-fraca);
+  font-size: 1.02rem;
+  line-height: 1.45;
+}
+
+.card-resumo-nota {
+  margin: 0;
+  color: var(--tinta-fraca);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
 .acoes-contas {
-  width: 90%;
-  max-width: 1000px;
-  margin: 24px auto 20px;
+  width: 100%;
+  margin: 16px 0;
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.acoes-contas button {
+  padding: 10px 16px;
+  min-height: 44px;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  background: var(--folha);
+  color: var(--tinta);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.acoes-contas .btn-nova-conta {
+  background-color: var(--marca);
+  color: #f2f2f2;
+}
+
+.acoes-contas button.pluggy-secundario {
+  color: var(--tinta-fraca);
+  background: transparent;
+}
+
+.acao-nota {
+  color: var(--tinta-fraca);
+  font-size: 0.9rem;
+  margin-left: auto;
 }
 
 .btn-nova-conta {
   padding: 12px 20px;
   min-height: 48px;
-  border: none;
-  border-radius: 8px;
-  background-color: #1589b5;
-  color: white;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  background-color: var(--marca);
+  color: #f2f2f2;
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
 }
 
 .btn-nova-conta:hover {
-  background-color: #11739a;
+  background-color: var(--marca-hover);
 }
 
 .form{
@@ -131,8 +186,8 @@ input[type="date"],
 select {
   padding: 12px 14px;
   min-height: 48px;
-  border-radius: 8px;
-  border: solid 2px var(--agua);
+  border-radius: var(--raio);
+  border: 1px solid var(--linha);
   background: var(--folha);
   color: var(--tinta);
   font-size: 1.05rem;
@@ -141,17 +196,16 @@ select {
 input:focus,
 select:focus,
 button:focus-visible {
-  outline: 3px solid #f0c56e;
+  outline: 1px solid #555;
   outline-offset: 2px;
 }
 
 .pluggy-box {
-  width: 90%;
-  max-width: 1000px;
-  margin: 0 auto 32px;
+  width: 100%;
+  margin: 0 0 24px;
   padding: 22px 24px;
   background: var(--folha);
-  border-radius: 8px;
+  border-radius: var(--raio);
   border: 1px solid var(--linha);
   text-align: left;
 }
@@ -169,16 +223,34 @@ button:focus-visible {
   line-height: 1.45;
 }
 
+.pluggy-sync {
+  margin-top: -8px !important;
+  font-size: 0.95rem !important;
+}
+
+.pluggy-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .pluggy-box button {
   padding: 12px 22px;
   min-height: 48px;
   font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
-  background: var(--agua);
-  color: white;
-  border: none;
-  border-radius: 8px;
+  background: var(--marca);
+  color: #f2f2f2;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+}
+
+.pluggy-box button.pluggy-secundario {
+  background: transparent;
+  color: var(--tinta-fraca);
+  border: 1px solid var(--linha);
+  box-shadow: none;
 }
 
 .pluggy-widget {
@@ -186,14 +258,14 @@ button:focus-visible {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
 }
 
 .form button{
   padding: 12px 16px;
   min-height: 48px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   background-color: var(--agua);
   color: white;
   font-weight: 700;
@@ -220,13 +292,10 @@ button:focus-visible {
 
 
 .resumo-cards {
-  margin-top: 20px;
+  margin-top: 16px;
   display: flex;
-  gap: 20px;
+  gap: 16px;
   width: 100%;
-  max-width: 1000px; 
-  margin-left: auto;
-  margin-right: auto;
 }
 
 @media (max-width: 768px) {
@@ -239,16 +308,16 @@ button:focus-visible {
   background: var(--folha);
   flex: 1;
   padding: 18px 20px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   border: 1px solid var(--linha);
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.card-resumo.total { border-left: 6px solid var(--agua); }
-.card-resumo.divida { border-left: 6px solid #c0392b; }
-.card-resumo.alivio { border-left: 6px solid #2a9d8f; }
+.card-resumo.total { border-left: 3px solid var(--agua); }
+.card-resumo.divida { border-left: 3px solid var(--alerta); }
+.card-resumo.alivio { border-left: 3px solid var(--ok); }
 
 .card-resumo span {
   color: var(--tinta-fraca);
@@ -258,16 +327,19 @@ button:focus-visible {
 
 .card-resumo h2 {
   color: var(--tinta);
-  font-size: 1.7rem;
+  font-size: 1.45rem;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-h2.valor-total { color: #333; }
+h2.valor-total { color: var(--tinta); }
 
 h2.valor-divida{
-  color: rgb(205, 0, 0);
+  color: var(--alerta);
 }
-h2.valor-pago { color: #2a9d8f; } 
+h2.valor-pago { color: var(--ok); } 
 
 .card-head{
   display: flex;
@@ -279,14 +351,14 @@ h2.valor-pago { color: #2a9d8f; }
   background-color: var(--folha);
   border-top: 1px solid var(--linha);
   padding: 25px 40px;
-  margin-top: 60px;
+  margin-top: 40px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   justify-content: center;
   justify-items: center;
   align-items: center;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--tinta-fraca);
 }
 
 .app-footer div:last-child{
@@ -304,7 +376,7 @@ h2.valor-pago { color: #2a9d8f; }
   gap: 2px;
 }
 .footer-content strong {
-  color: #333;
+  color: var(--tinta);
 }
 .footer-content span {
   font-size: 0.8rem;
@@ -321,7 +393,7 @@ h2.valor-pago { color: #2a9d8f; }
 }
 
 .footer-socials a {
-  color: #999;
+  color: var(--tinta-fraca);
   transition: all 0.2s;
   vertical-align: bottom;
   display: flex;
@@ -329,8 +401,7 @@ h2.valor-pago { color: #2a9d8f; }
 
 
 .footer-socials a:hover {
-  color: #0077ff;
-  transform: translateY(-3px);
+  color: var(--tinta);
 }
 
 
@@ -383,13 +454,21 @@ h2.valor-pago { color: #2a9d8f; }
     flex-direction: column;
   }
 
+  .app-main {
+    margin-left: 0;
+  }
+
+  .main-content {
+    padding: 8px 14px 0;
+  }
+
 
   .resumo-cards {
     flex-direction: column;
     gap: 10px;
     display: flex;
-    width: 90%;
-    align-items: center;
+    width: 100%;
+    align-items: stretch;
   }
   .card{
     height: 100%;
@@ -497,7 +576,7 @@ h2.valor-pago { color: #2a9d8f; }
   border-top: 1px solid #f9f9f9;
 }
 
-.acoes-menu {
+.infos .acoes-menu {
   position: relative;
   display: flex;
   justify-content: center;

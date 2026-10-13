@@ -1,11 +1,15 @@
 .app-sidebar {
-  background-color: #ffffff;
-  border-right: 1px solid #eee;
-  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  height: 100vh;
+  background-color: #0c0c0c;
+  border-right: 1px solid var(--linha);
   display: flex;
   flex-direction: column;
   padding: 18px 12px;
-  flex-shrink: 0;
+  overflow-y: auto;
   transition: width 0.2s ease;
 }
 
@@ -36,19 +40,23 @@
   min-width: 0;
 }
 
+.logo-area .logo-icone {
+  color: var(--agua);
+}
+
 .logo-area h1 {
   font-size: 1.2rem;
-  color: #333;
+  color: var(--tinta);
   margin: 0;
 }
 
 .btn-sidebar {
-  border: none;
-  background: #ebeef0;
-  color: #333;
+  border: 1px solid var(--linha);
+  background: var(--folha-2);
+  color: var(--tinta);
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -56,7 +64,8 @@
 }
 
 .btn-sidebar:hover {
-  background: #dfe3e6;
+  border-color: #3a3a3a;
+  background: #1c1c1c;
 }
 
 .nav-links {
@@ -68,13 +77,13 @@
 
 .nav-links a {
   text-decoration: none;
-  color: #555;
+  color: var(--tinta-fraca);
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   min-height: 46px;
 }
 
@@ -83,12 +92,13 @@
 }
 
 .nav-links a.active {
-  color: #1589b5;
-  background: #e8f5fb;
+  color: #f2f2f2;
+  background: var(--marca);
 }
 
 .nav-links a:hover {
-  background: #f3f5f6;
+  background: #1a1a1a;
+  color: var(--tinta);
 }
 
 .user-area {
@@ -96,7 +106,7 @@
   flex-direction: column;
   gap: 12px;
   padding-top: 12px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--linha);
 }
 
 .github-link,
@@ -105,14 +115,18 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #333;
+  color: var(--tinta);
   background: none;
   border: none;
   padding: 8px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   cursor: pointer;
   text-align: left;
   min-height: 44px;
+}
+
+.profile-icone {
+  color: var(--tinta-fraca);
 }
 
 .app-sidebar.fechada .github-link,
@@ -122,7 +136,7 @@
 
 .github-link:hover,
 .profile:hover {
-  background: #f3f5f6;
+  background: #1a1a1a;
 }
 
 .profile span {
@@ -132,21 +146,29 @@
 }
 
 .input-nome-editavel {
-  border: 1px solid #1589b5;
-  border-radius: 6px;
+  border: 1px solid var(--linha);
+  background: var(--folha);
+  color: var(--tinta);
+  border-radius: var(--raio);
   padding: 8px;
   width: 100%;
 }
 
 @media (max-width: 768px) {
+  :root {
+    --sidebar-w: 0px;
+  }
+
   .app-sidebar {
-    min-height: auto;
+    position: sticky;
+    height: auto;
     width: 100% !important;
     flex-direction: row;
     align-items: center;
     padding: 10px 12px;
     border-right: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--linha);
+    overflow-y: visible;
   }
 
   .sidebar-topo {

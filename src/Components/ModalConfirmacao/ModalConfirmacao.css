@@ -14,24 +14,25 @@
 }
 
 .modal-box {
-  background-color: white;
+  background-color: var(--folha);
   padding: 30px;
-  border-radius: 12px;
+  border-radius: var(--raio);
   max-width: 400px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--linha);
   animation: deslizarModal 0.3s ease-out;
 }
 
 .modal-box h2 {
   margin-top: 0;
-  color: #1e293b;
+  color: var(--tinta);
   font-size: 22px;
 }
 
 .modal-box p {
-  color: #64748b;
+  color: var(--tinta-fraca);
   margin-bottom: 25px;
   line-height: 1.5;
 }
@@ -43,12 +44,12 @@
 }
 
 .btn-cancelar {
-  background-color: #eef1ef;
-  color: #3d4541;
-  border: none;
+  background-color: var(--folha-2);
+  color: var(--tinta);
+  border: 1px solid var(--linha);
   padding: 14px 22px;
   min-height: 48px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
@@ -56,16 +57,16 @@
 }
 
 .btn-cancelar:hover {
-  background-color: #e2e8f0;
+  border-color: #3a3a3a;
 }
 
 .btn-excluir {
-  background-color: #c0392b;
-  color: white;
-  border: none;
+  background-color: transparent;
+  color: var(--alerta);
+  border: 1px solid var(--alerta);
   padding: 14px 22px;
   min-height: 48px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
@@ -73,7 +74,7 @@
 }
 
 .btn-excluir:hover {
-  background-color: #dc2626;
+  background-color: rgba(255, 77, 109, 0.12);
 }
 
 @keyframes deslizarModal {

@@ -26,7 +26,14 @@ export function errorHandler(
 
     if (error.code === '42P01') {
       res.status(503).json({
-        erro: 'Tabela não encontrada. Execute o arquivo database/schema.sql.',
+        erro: 'Tabela não encontrada. Na pasta subtracker-backend rode: node scripts/migrate-recorrencia.js',
+      });
+      return;
+    }
+
+    if (error.code === '42703') {
+      res.status(503).json({
+        erro: 'O banco precisa da atualização de recorrência. Na pasta subtracker-backend rode: node scripts/migrate-recorrencia.js',
       });
       return;
     }

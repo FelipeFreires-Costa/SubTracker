@@ -1,6 +1,6 @@
 .relatorio-pagina {
-  width: min(1100px, 92%);
-  margin: 24px auto 40px;
+  width: auto;
+  margin: 24px 28px 40px;
 }
 
 .relatorio-pagina h1 {
@@ -11,38 +11,231 @@
 
 .relatorio-pagina > p {
   color: var(--tinta-fraca);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   margin-bottom: 20px;
+}
+
+.relatorio-resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.relatorio-resumo div {
+  background: var(--folha);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 16px 18px;
+}
+
+.relatorio-resumo span {
+  display: block;
+  color: var(--tinta-fraca);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.relatorio-resumo strong {
+  font-size: 1.25rem;
+  color: var(--tinta);
 }
 
 .relatorio-grade {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: minmax(240px, 0.8fr) minmax(280px, 1.2fr);
+  gap: 16px;
 }
 
 .relatorio-card {
   background: var(--folha);
-  padding: 22px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: var(--raio);
   border: 1px solid var(--linha);
 }
 
-.relatorio-card h3 {
-  margin: 0 0 16px;
+.relatorio-card h2 {
+  margin: 0 0 14px;
   color: var(--tinta);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
 }
 
-.relatorio-total {
-  font-size: 2rem;
+.relatorio-pizza {
+  width: 100%;
+  height: 200px;
+}
+
+.relatorio-legendas,
+.relatorio-lista {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.relatorio-legendas li,
+.relatorio-lista li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--linha);
+  color: var(--tinta);
+}
+
+.relatorio-legendas li:last-child,
+.relatorio-lista li:last-child {
+  border-bottom: none;
+}
+
+.relatorio-legendas i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.relatorio-lista span {
+  display: block;
+  color: var(--tinta-fraca);
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.relatorio-legendas em,
+.relatorio-lista em {
+  font-style: normal;
   font-weight: 700;
+}
+
+.relatorio-resumo-nota {
+  display: block;
+  margin-top: 4px;
+  color: var(--tinta-fraca);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.relatorio-lista span.relatorio-selo {
+  display: inline-block;
+  margin: 0 0 0 8px;
+  padding: 1px 6px;
+  border: 1px solid var(--agua);
+  border-radius: var(--raio);
   color: var(--agua);
+  font-size: 0.72rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.relatorio-legenda-nome {
+  display: flex;
+  align-items: center;
+}
+
+.relatorio-legendas em,
+.relatorio-ranking em {
+  text-align: right;
+}
+
+.relatorio-legendas small,
+.relatorio-ranking small {
+  display: block;
+  color: var(--tinta-fraca);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.relatorio-ranking li {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.relatorio-ranking-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.relatorio-barra {
+  height: 4px;
+  background: var(--linha);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.relatorio-barra div {
+  height: 100%;
+  background: var(--agua);
+}
+
+.relatorio-proximas {
+  margin-top: 16px;
+}
+
+.relatorio-proximas h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.relatorio-proximas h2 span {
+  color: var(--tinta-fraca);
+  font-weight: 600;
+}
+
+.relatorio-lista span.relatorio-atrasada {
+  color: var(--alerta);
+}
+
+.relatorio-nota,
+.relatorio-vazio {
+  color: var(--tinta-fraca);
+  margin: 16px 0 0;
+}
+
+.relatorio-tecnico {
+  margin-top: 24px;
+  color: var(--tinta-fraca);
+  font-size: 0.95rem;
+}
+
+.relatorio-tecnico summary {
+  cursor: pointer;
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.relatorio-tecnico p {
+  margin: 10px 0;
+}
+
+.relatorio-tecnico ul {
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
-.valor-total {
+.relatorio-tecnico li {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--linha);
+}
+
+.relatorio-erro {
+  color: var(--alerta);
+}
+
+@media (max-width: 768px) {
+  .relatorio-pagina {
+    margin: 16px 14px 32px;
+  }
+
+  .relatorio-grade {
+    grid-template-columns: 1fr;
+  }
 }

@@ -11,7 +11,7 @@
 
 .modal-conta-form label {
   font-weight: 600;
-  color: #555;
+  color: var(--tinta-fraca);
   margin-top: 8px;
 }
 
@@ -25,17 +25,17 @@
 }
 
 .btn-salvar-conta {
-  background-color: #1589b5;
-  color: white;
-  border: none;
+  background-color: var(--marca);
+  color: #f2f2f2;
+  border: 1px solid var(--linha);
   padding: 14px 22px;
   min-height: 48px;
-  border-radius: 8px;
+  border-radius: var(--raio);
   cursor: pointer;
   font-weight: 700;
   font-size: 1rem;
 }
 
 .btn-salvar-conta:hover {
-  background-color: #11739a;
+  background-color: var(--marca-hover);
 }

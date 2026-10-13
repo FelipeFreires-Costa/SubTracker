@@ -1,38 +1,30 @@
 import React, { useEffect, useState } from "react";
 import "./Header.css";
 import { NavLink } from "react-router-dom";
-import { FaGithub, FaWallet, FaUserCircle, FaListUl, FaChartPie, FaRegClock } from "react-icons/fa";
+import { FaWallet, FaListUl, FaChartPie, FaCreditCard } from "react-icons/fa";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 const Header = () => {
-  const [nomeUsuario, setNomeUsuario] = useState(() => {
-    const dadosSalvos = localStorage.getItem("Editar-nome");
-    if (dadosSalvos) {
-      return JSON.parse(dadosSalvos);
-    }
-    return "Editar Nome";
-  });
-
   const [sidebarAberta, setSidebarAberta] = useState(() => {
     const salvo = localStorage.getItem("sidebar-aberta");
-    return salvo === null ? true : salvo === "true";
+    const aberta = salvo === null ? true : salvo === "true";
+    document.documentElement.style.setProperty("--sidebar-w", aberta ? "230px" : "72px");
+    return aberta;
   });
-
-  useEffect(() => {
-    localStorage.setItem("Editar-nome", JSON.stringify(nomeUsuario));
-  }, [nomeUsuario]);
 
   useEffect(() => {
     localStorage.setItem("sidebar-aberta", String(sidebarAberta));
+    document.documentElement.style.setProperty(
+      "--sidebar-w",
+      sidebarAberta ? "230px" : "72px",
+    );
   }, [sidebarAberta]);
-
-  const [editandoNome, setEditandoNome] = useState(false);
 
   return (
     <aside className={`app-sidebar ${sidebarAberta ? "aberta" : "fechada"}`}>
       <div className="sidebar-topo">
         <div className="logo-area">
-          <FaWallet size={26} color="#1589b5" />
+          <FaWallet size={26} className="logo-icone" />
           {sidebarAberta && <h1>SubTracker</h1>}
         </div>
 
@@ -52,53 +44,16 @@ const Header = () => {
           {sidebarAberta && <span>Contas</span>}
         </NavLink>
 
-        <NavLink to="/relatorio" title="Relatórios">
+        <NavLink to="/relatorio" title="Relatório">
           <FaChartPie size={18} />
-          {sidebarAberta && <span>Relatórios</span>}
+          {sidebarAberta && <span>Relatório</span>}
         </NavLink>
 
-        <NavLink to="/historico" title="Histórico">
-          <FaRegClock size={18} />
-          {sidebarAberta && <span>Histórico</span>}
+        <NavLink to="/fatura" title="Fatura">
+          <FaCreditCard size={18} />
+          {sidebarAberta && <span>Fatura</span>}
         </NavLink>
       </nav>
-
-      <div className="user-area">
-        <a
-          href="https://github.com/FelipeFreires-Costa"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="github-link"
-          title="GitHub"
-        >
-          <FaGithub size={18} />
-          {sidebarAberta && <span>GitHub</span>}
-        </a>
-
-        {editandoNome && sidebarAberta ? (
-          <input
-            type="text"
-            value={nomeUsuario}
-            onChange={(e) => setNomeUsuario(e.target.value)}
-            onBlur={() => setEditandoNome(false)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") setEditandoNome(false);
-            }}
-            autoFocus
-            className="input-nome-editavel"
-          />
-        ) : (
-          <button
-            type="button"
-            className="profile"
-            onClick={() => sidebarAberta && setEditandoNome(true)}
-            title={sidebarAberta ? "Clique para editar o nome" : nomeUsuario}
-          >
-            <FaUserCircle size={28} color="#999" />
-            {sidebarAberta && <span>{nomeUsuario}</span>}
-          </button>
-        )}
-      </div>
     </aside>
   );
 };

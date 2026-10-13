@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "migrate:recorrencia": "node scripts/migrate-recorrencia.js",
+    "avaliar": "node -r ts-node/register/transpile-only scripts/avaliar-heuristica.ts",
+    "sandbox": "node -r ts-node/register/transpile-only scripts/testar-sandbox.ts",
+    "avaliar:teste": "node -r ts-node/register/transpile-only scripts/avaliar-teste.ts"
   },
   "keywords": [],
   "author": "",

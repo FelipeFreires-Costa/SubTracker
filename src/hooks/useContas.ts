@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { AtualizarContaPayload, Conta, CriarContaPayload } from '../types/Conta';
+import type {
+  AtualizarContaPayload,
+  ConexaoPluggyStatus,
+  Conta,
+  CriarContaPayload,
+} from '../types/Conta';
 import { contaService } from '../services/contaService';
 import { pluggyService } from '../services/pluggyService';
 import { ApiError } from '../services/apiClient';
@@ -9,6 +14,10 @@ export function useContas() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [notificacao, setNotificacao] = useState<string | null>(null);
+  const [conexao, setConexao] = useState<ConexaoPluggyStatus>({
+    conectado: false,
+    ultimaSincronizacao: null,
+  });
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const mostrarNotificacao = useCallback((mensagem: string, duracao = 2000) => {
@@ -31,15 +40,25 @@ export function useContas() {
       const dados = await contaService.listar();
       setContas(dados);
     } catch (error) {
-      tratarErro(error, 'Erro ao conectar com o servidor.');
+      tratarErro(error, 'Não foi possível carregar suas contas.');
     } finally {
       setCarregando(false);
     }
   }, [tratarErro]);
 
+  const carregarConexao = useCallback(async () => {
+    try {
+      const status = await pluggyService.statusConexao();
+      setConexao(status);
+    } catch {
+      setConexao({ conectado: false, ultimaSincronizacao: null });
+    }
+  }, []);
+
   useEffect(() => {
     carregarContas();
-  }, [carregarContas]);
+    carregarConexao();
+  }, [carregarContas, carregarConexao]);
 
   const criarConta = useCallback(
     async (payload: CriarContaPayload) => {
@@ -80,26 +99,55 @@ export function useContas() {
 
   const importarDaPluggy = useCallback(
     async (itemId: string) => {
-      mostrarNotificacao('Banco conectado! Importando assinaturas...', 5000);
+      mostrarNotificacao('Banco conectado! Buscando suas assinaturas...', 5000);
       const resultado = await pluggyService.importarAssinaturas(itemId);
       await carregarContas();
+      await carregarConexao();
       mostrarNotificacao(resultado.mensagem, 4000);
       return resultado;
     },
-    [carregarContas, mostrarNotificacao],
+    [carregarContas, carregarConexao, mostrarNotificacao],
   );
+
+  const sincronizarPluggy = useCallback(async () => {
+    mostrarNotificacao('Atualizando assinaturas do banco...', 5000);
+    const resultado = await pluggyService.sincronizar();
+    await carregarContas();
+    await carregarConexao();
+    mostrarNotificacao(resultado.mensagem, 4000);
+    return resultado;
+  }, [carregarContas, carregarConexao, mostrarNotificacao]);
+
+  const importarSandbox = useCallback(async () => {
+    mostrarNotificacao('Carregando cenários de teste...', 5000);
+    const resultado = await pluggyService.importarSandbox();
+    await carregarContas();
+    mostrarNotificacao(resultado.mensagem, 4000);
+    return resultado;
+  }, [carregarContas, mostrarNotificacao]);
+
+  const desconectarPluggy = useCallback(async () => {
+    const status = await pluggyService.desconectar();
+    setConexao(status);
+    mostrarNotificacao('Banco desconectado. As contas da lista foram mantidas.');
+    return status;
+  }, [mostrarNotificacao]);
 
   return {
     contas,
     carregando,
     erro,
     notificacao,
+    conexao,
     carregarContas,
     criarConta,
     atualizarConta,
     alternarStatus,
     removerConta,
     importarDaPluggy,
+    sincronizarPluggy,
+    importarSandbox,
+    desconectarPluggy,
     mostrarNotificacao,
     tratarErro,
   };

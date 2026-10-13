@@ -68,6 +68,22 @@ function validarPago(pago: unknown) {
   return pago;
 }
 
+function validarPeriodicidade(
+  valor: unknown,
+  obrigatorio = false,
+): 'mensal' | 'bimestral' | 'anual' | null {
+  if (valor === undefined || valor === null || valor === '') {
+    if (obrigatorio) return 'mensal' as const;
+    return null;
+  }
+
+  if (valor === 'mensal' || valor === 'bimestral' || valor === 'anual') {
+    return valor;
+  }
+
+  throw new AppError('Periodicidade inválida.');
+}
+
 export function validarCriarConta(body: unknown) {
   if (!body || typeof body !== 'object') {
     throw new AppError('Dados inválidos.');
@@ -85,6 +101,7 @@ export function validarCriarConta(body: unknown) {
     })(),
     pago: dados.pago === undefined ? false : validarPago(dados.pago),
     categoria: validarCategoria(dados.categoria),
+    periodicidade: validarPeriodicidade(dados.periodicidade, true),
   };
 }
 
@@ -102,6 +119,7 @@ export function validarAtualizarConta(body: unknown) {
     preco: validarPreco(dados.preco),
     data,
     categoria: validarCategoria(dados.categoria),
+    periodicidade: validarPeriodicidade(dados.periodicidade, true),
   };
 }
 

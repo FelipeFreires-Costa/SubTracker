@@ -1,3 +1,6 @@
+export type Periodicidade = 'mensal' | 'bimestral' | 'anual' | 'indefinida';
+export type OrigemConta = 'manual' | 'pluggy';
+
 export interface Conta {
   id: number;
   nome: string;
@@ -5,6 +8,12 @@ export interface Conta {
   data: string;
   pago: boolean;
   categoria: string;
+  recorrente: boolean;
+  periodicidade: Periodicidade | null;
+  proximaCobranca: string | null;
+  origem: OrigemConta;
+  parcelaAtual: number | null;
+  parcelaTotal: number | null;
 }
 
 export interface CriarContaInput {
@@ -13,6 +22,12 @@ export interface CriarContaInput {
   data: string;
   pago?: boolean;
   categoria?: string;
+  recorrente?: boolean;
+  periodicidade?: Periodicidade | null;
+  proximaCobranca?: string | null;
+  origem?: OrigemConta;
+  parcelaAtual?: number | null;
+  parcelaTotal?: number | null;
 }
 
 export interface AtualizarContaInput {
@@ -20,6 +35,8 @@ export interface AtualizarContaInput {
   preco: number;
   data: string;
   categoria?: string;
+  periodicidade?: Periodicidade | null;
+  proximaCobranca?: string | null;
 }
 
 export interface AtualizarStatusInput {

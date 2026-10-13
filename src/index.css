@@ -1,13 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
 
 :root {
-  --papel: #ebeef0;
-  --tinta: #333333;
-  --tinta-fraca: #666666;
-  --agua: #1589b5;
-  --agua-escura: #11739a;
-  --folha: #ffffff;
-  --linha: #eeeeee;
+  --sidebar-w: 230px;
+  --papel: #090909;
+  --folha: #121212;
+  --folha-2: #181818;
+  --tinta: #f2f2f2;
+  --tinta-fraca: #8a8a8a;
+  --linha: #222222;
+  --agua: #5a7d9a;
+  --agua-escura: #4a6880;
+  --marca: #1c2a38;
+  --detalhes: #381c1c;
+  --marca-hover: #243646;
+  --ok: #4caf50;
+  --alerta: #e54b4b;
+  --ouro: #f5b041;
+  --raio: 3px;
 }
 
 * {
@@ -15,6 +24,10 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
@@ -27,4 +40,9 @@ a,
 input,
 select {
   font-size: 1rem;
+}
+
+option {
+  background: var(--folha);
+  color: var(--tinta);
 }

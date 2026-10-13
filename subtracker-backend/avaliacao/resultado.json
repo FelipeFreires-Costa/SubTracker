@@ -1,0 +1,232 @@
+{
+  "geradoEm": "2026-09-25T13:42:22.433Z",
+  "totalCasos": 21,
+  "verdadeirosPositivos": 10,
+  "verdadeirosNegativos": 11,
+  "falsosPositivos": 0,
+  "falsosNegativos": 0,
+  "acuracia": 100,
+  "precisao": 100,
+  "recall": 100,
+  "f1": 100,
+  "acertoDeCicloEntreRecorrentes": 100,
+  "linhas": [
+    {
+      "nome": "Netflix",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 4
+    },
+    {
+      "nome": "Spotify (cartão)",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "Adobe",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "Internet Vivo",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 4
+    },
+    {
+      "nome": "Smart Fit",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "bimestral",
+      "periodicidadeObtida": "bimestral",
+      "cicloCorreto": true,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "Seguro auto",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "anual",
+      "periodicidadeObtida": "anual",
+      "cicloCorreto": true,
+      "ocorrencias": 2
+    },
+    {
+      "nome": "Claro TV (fim do mês)",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "Amazon Prime (extrato)",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "YouTube Premium",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "iFood",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "periodicidadeObtida": "indefinida",
+      "cicloCorreto": null,
+      "ocorrencias": 4
+    },
+    {
+      "nome": "Uber",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "periodicidadeObtida": "indefinida",
+      "cicloCorreto": null,
+      "ocorrencias": 4
+    },
+    {
+      "nome": "Supermercado",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "periodicidadeObtida": "indefinida",
+      "cicloCorreto": null,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "Amazon compra única",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "periodicidadeObtida": "indefinida",
+      "cicloCorreto": null,
+      "ocorrencias": 1
+    },
+    {
+      "nome": "Prime Video avulso",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "periodicidadeObtida": "indefinida",
+      "cicloCorreto": null,
+      "ocorrencias": 1
+    },
+    {
+      "nome": "PIX único",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "cicloCorreto": null,
+      "ocorrencias": 1
+    },
+    {
+      "nome": "PIX mensal para pessoa",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "cicloCorreto": null,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "TED periódico",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "cicloCorreto": null,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "PIX condomínio",
+      "esperado": "recorrente",
+      "obtido": "recorrente",
+      "veredito": "VP",
+      "periodicidadeEsperada": "mensal",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": true,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "Padaria",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "periodicidadeObtida": "indefinida",
+      "cicloCorreto": null,
+      "ocorrencias": 2
+    },
+    {
+      "nome": "Parcela de loja",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "periodicidadeObtida": "mensal",
+      "cicloCorreto": null,
+      "ocorrencias": 3
+    },
+    {
+      "nome": "Fatura do cartão",
+      "esperado": "eventual",
+      "obtido": "eventual",
+      "veredito": "VN",
+      "cicloCorreto": null,
+      "ocorrencias": 3
+    }
+  ],
+  "observacao": "Dataset sintético rotulado, sem extrato real nem dado pessoal. As métricas medem o acordo com este gabarito, não a acurácia em contas de usuários. A linha de base marca recorrente só por repetir a descrição; a heurística adiciona valor, ciclo e filtros.",
+  "linhaDeBase": {
+    "nome": "Repetição da descrição (≥ 2 vezes), sem valor, ciclo nem filtro de PIX",
+    "verdadeirosPositivos": 10,
+    "verdadeirosNegativos": 3,
+    "falsosPositivos": 8,
+    "falsosNegativos": 0,
+    "acuracia": 61.9,
+    "precisao": 55.6,
+    "recall": 100,
+    "f1": 71.4,
+    "casosCorrigidos": [
+      "iFood",
+      "Uber",
+      "Supermercado",
+      "PIX mensal para pessoa",
+      "TED periódico",
+      "Padaria",
+      "Parcela de loja",
+      "Fatura do cartão"
+    ]
+  }
+}

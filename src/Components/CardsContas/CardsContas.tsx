@@ -1,19 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./CardsContas.css";
+import { useEffect, useRef, useState, type RefObject } from 'react';
+import './CardsContas.css';
+import { FaArrowUp, FaCheck, FaChevronDown, FaChevronUp, FaRegTrashAlt } from 'react-icons/fa';
+import { HiOutlineDotsHorizontal } from 'react-icons/hi';
+import { MdEdit } from 'react-icons/md';
+import { nomeParaExibicao } from '../../utils/contaHelpers';
 
-// @ts-ignore
-import calendario from "../../assets/calendar-lines-svgrepo-com.svg";
-
-import {
-  FaChevronDown,
-  FaChevronUp,
-  FaRegTrashAlt
-} from "react-icons/fa";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { MdEdit, MdOutlineCreditCard } from "react-icons/md";
-import { IoIosCheckbox } from "react-icons/io";
-
-// regra do componente
 interface CardsContasProps {
   nome: string;
   preco: number;
@@ -25,6 +16,84 @@ interface CardsContasProps {
   textoDias: string;
   aoEditar: () => void;
   categoria?: string;
+  periodicidade?: string | null;
+}
+
+function rotuloSituacao(situacao: string) {
+  if (situacao === 'vencida') return 'Atrasada';
+  if (situacao === 'perto') return 'Vence em breve';
+  if (situacao === 'hoje') return 'Hoje';
+  if (situacao === 'tranquilo') return 'Em dia';
+  return situacao;
+}
+
+function MenuAcoes({
+  menuRef,
+  menuAberto,
+  setMenuAberto,
+  estaAberto,
+  aoEditar,
+  aoExpandir,
+  aoRemover,
+}: {
+  menuRef: RefObject<HTMLDivElement | null>;
+  menuAberto: boolean;
+  setMenuAberto: (aberto: boolean) => void;
+  estaAberto: boolean;
+  aoEditar: () => void;
+  aoExpandir: () => void;
+  aoRemover: () => void;
+}) {
+  return (
+    <div className="acoes-menu" ref={menuRef}>
+      <button
+        className="btn-tres-pontos"
+        type="button"
+        aria-label="Mais ações"
+        onClick={() => setMenuAberto(!menuAberto)}
+      >
+        <HiOutlineDotsHorizontal size={20} />
+      </button>
+
+      {menuAberto && (
+        <div className="dropdown-menu">
+          <button
+            type="button"
+            onClick={() => {
+              aoEditar();
+              setMenuAberto(false);
+            }}
+          >
+            <MdEdit size={14} /> Editar
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              aoExpandir();
+              setMenuAberto(false);
+            }}
+          >
+            {estaAberto ? (
+              <FaChevronUp size={14} />
+            ) : (
+              <FaChevronDown size={14} />
+            )}{' '}
+            Detalhes
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              aoRemover();
+              setMenuAberto(false);
+            }}
+            className="btn-excluir-drop"
+          >
+            <FaRegTrashAlt size={14} /> Excluir
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 const CardsContas = ({
@@ -38,101 +107,94 @@ const CardsContas = ({
   textoDias,
   aoEditar,
   categoria,
+  periodicidade,
 }: CardsContasProps) => {
   const [estaAberto, setEstaAberto] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const textoSituacao = rotuloSituacao(situacao);
+  const valor = preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   useEffect(() => {
-    //funçao para verificar onde o usuario toca
-    function lidarComClique(event: MouseEvent){
-      //se a antena existe E o clique nao acontecer dentro dela
+    function lidarComClique(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuAberto(false); // ...fecha o menu!
+        setMenuAberto(false);
       }
     }
-    //so liga seo  menu estiver aberto
-    if(menuAberto){
-      document.addEventListener('mousedown', lidarComClique)
-    }else{
-      document.removeEventListener("mousedown", lidarComClique);
+
+    if (menuAberto) {
+      document.addEventListener('mousedown', lidarComClique);
     }
 
-    return() => {
-      document.removeEventListener("mousedown", lidarComClique);
-    }
-  }, [menuAberto])
+    return () => {
+      document.removeEventListener('mousedown', lidarComClique);
+    };
+  }, [menuAberto]);
 
-  function alternar() {
-    setEstaAberto(!estaAberto);
-  }
-
-  const textoSituacao =
-    situacao === 'vencida' ? 'Atrasada' :
-    situacao === 'perto' ? 'Quase' :
-    situacao === 'hoje' ? 'Hoje' :
-    situacao === 'tranquilo' ? 'Em dia' :
-    situacao;
+  const textoData = pago
+    ? `Próxima ${data}`
+    : situacao === 'vencida'
+      ? `Venceu ${data}`
+      : `Vence ${data}`;
+  const apoio = [periodicidade || 'Recorrente', textoData, pago ? 'Paga' : textoSituacao]
+    .filter(Boolean)
+    .join(' · ');
+  const titulo = nomeParaExibicao(nome);
 
   return (
-    <div className={`card ${pago ? "pago" : situacao}`}>
-      <div className="infos">
-        <h3 title={nome}>{nome}</h3>
+    <article className={`linha-conta ${pago ? 'pago' : situacao}`}>
+      <div className="linha-conta-corpo">
+        <span className={`linha-icone ${pago ? 'entrada' : 'saida'}`} aria-hidden="true">
+          {pago ? <FaCheck size={12} /> : <FaArrowUp size={12} />}
+        </span>
 
-        <p className="preco">R$ {preco.toFixed(2)}</p>
-        <p className="vencimento">
-          <img className="calendario" src={calendario} alt="" />
-          {data}
+        <div className="linha-info">
+          <h3 title={titulo}>{titulo}</h3>
+          <p>{apoio}</p>
+        </div>
+
+        <p className={`linha-valor ${pago ? 'pago' : 'saida'}`}>
+          {pago ? `R$ ${valor}` : `R$ -${valor}`}
         </p>
 
-        <div className={`detalhes ${situacao}`}>
-          {pago ? (
-            <IoIosCheckbox size={24} color="#10ae55"/>
-          ) : (
-            <p>{textoSituacao}</p>
-          )}
-        </div>
-
-        <button className="pagar" onClick={foiPago}>
-          <MdOutlineCreditCard size={20} color="white"/>
-          {pago === false ? "Paguei" : "Desfazer"}
+        <button className="pagar" type="button" onClick={foiPago}>
+          {pago ? 'Desfazer' : 'Paguei'}
         </button>
 
-        <div className="acoes-menu" ref={menuRef}>
-          <button className="btn-tres-pontos" onClick={() => setMenuAberto(!menuAberto)}>
-            <HiOutlineDotsHorizontal size={22} color="#3a3a3a" />
-          </button>
-
-          {/* menu flutuante */}
-          {menuAberto && (
-            <div className="dropdown-menu">
-              <button onClick={() => { aoEditar(); setMenuAberto(false); }}>
-                <MdEdit size={14} color="#555"/> Editar
-              </button>
-              <button onClick={() => { alternar(); setMenuAberto(false); }}>
-                {estaAberto ? <FaChevronUp size={14} color="#555"/> : <FaChevronDown size={14} color="#555"/>} Expandir
-              </button>
-              <button onClick={() => { aoRemover(); setMenuAberto(false); }} className="btn-excluir-drop">
-                <FaRegTrashAlt size={14} color="red"/> Excluir
-              </button>
-            </div>
-          )}
-        </div>
+        <MenuAcoes
+          menuRef={menuRef}
+          menuAberto={menuAberto}
+          setMenuAberto={setMenuAberto}
+          estaAberto={estaAberto}
+          aoEditar={aoEditar}
+          aoExpandir={() => setEstaAberto((aberto) => !aberto)}
+          aoRemover={aoRemover}
+        />
       </div>
 
-      <div className={`card-conteudo-extra ${estaAberto ? "aberto" : ""}`}>
+      <div className={`card-conteudo-extra ${estaAberto ? 'aberto' : ''}`}>
         <div className="info-extra-texto">
           <p>
-            <strong>Status do prazo: </strong>
-            {pago ? <span>Pago!</span> : <span>{textoDias}</span>}
+            <strong>Situação: </strong>
+            {pago ? <span>Paga</span> : <span>{textoDias}</span>}
           </p>
           <p>
             <strong>Categoria: </strong>
-            {categoria ? categoria : "Sem categoria"}
+            {categoria || 'Sem categoria'}
+          </p>
+          {periodicidade && (
+            <p>
+              <strong>Ciclo: </strong>
+              {periodicidade}
+            </p>
+          )}
+          <p>
+            <strong>Próxima cobrança: </strong>
+            {data}
           </p>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

@@ -12,6 +12,8 @@ interface ModalContaProps {
   onPreco: (valor: string) => void;
   onData: (valor: string) => void;
   onCategoria: (valor: string) => void;
+  periodicidade: string;
+  onPeriodicidade: (valor: string) => void;
   onSalvar: () => void;
   onCancelar: () => void;
 }
@@ -27,6 +29,8 @@ export function ModalConta({
   onPreco,
   onData,
   onCategoria,
+  periodicidade,
+  onPeriodicidade,
   onSalvar,
   onCancelar,
 }: ModalContaProps) {
@@ -85,6 +89,17 @@ export function ModalConta({
             <option value="Educação">Educação</option>
             <option value="Transporte">Transporte</option>
             <option value="Outros">Outros</option>
+          </select>
+
+          <label htmlFor="modal-ciclo">Ciclo</label>
+          <select
+            id="modal-ciclo"
+            value={periodicidade}
+            onChange={(e) => onPeriodicidade(e.target.value)}
+          >
+            <option value="mensal">Mensal</option>
+            <option value="bimestral">Bimestral</option>
+            <option value="anual">Anual</option>
           </select>
 
           <div className="modal-botoes">
