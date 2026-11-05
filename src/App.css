@@ -126,6 +126,11 @@ html {
   background: transparent;
 }
 
+.acoes-contas button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .acao-nota {
   color: var(--tinta-fraca);
   font-size: 0.9rem;

@@ -74,12 +74,6 @@ export function ehParcela(conta: Pick<Conta, 'parcelaTotal'>) {
   return conta.parcelaTotal != null && conta.parcelaTotal > 1;
 }
 
-export function ehAssinaturaMonitorada(conta: Pick<Conta, 'recorrente' | 'parcelaTotal'>) {
-  if (ehParcela(conta)) return false;
-  if (conta.recorrente === false) return false;
-  return true;
-}
-
 export function rotuloPeriodicidade(periodicidade?: Periodicidade | null) {
   if (periodicidade === 'mensal') return 'Mensal';
   if (periodicidade === 'bimestral') return 'Bimestral';
@@ -242,35 +236,6 @@ export function agruparPorMes(contas: Conta[]) {
       chave,
       rotulo: chave === 'sem-data' ? 'Sem data' : cabecalhoDoMes(chave),
       total: itens.reduce((soma, conta) => soma + Number(conta.preco), 0),
-      contas: itens,
-    }));
-}
-
-export function cabecalhoDoDia(iso: string) {
-  const data = new Date(`${iso}T00:00:00`);
-  const semana = data.toLocaleDateString('pt-BR', { weekday: 'long' });
-
-  return {
-    dia: data.getDate(),
-    semana: semana.charAt(0).toUpperCase() + semana.slice(1),
-  };
-}
-
-export function agruparPorVencimento(contas: Conta[]) {
-  const grupos = new Map<string, Conta[]>();
-
-  for (const conta of contas) {
-    const iso = dataDeAlerta(conta);
-    const lista = grupos.get(iso) ?? [];
-    lista.push(conta);
-    grupos.set(iso, lista);
-  }
-
-  return Array.from(grupos.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([iso, itens]) => ({
-      iso,
-      ...cabecalhoDoDia(iso),
       contas: itens,
     }));
 }

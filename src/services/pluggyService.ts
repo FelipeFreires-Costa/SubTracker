@@ -5,7 +5,7 @@ import type {
   ImportarPluggyResponse,
   RelatorioAvaliacaoHeuristica,
 } from '../types/Conta';
-import { apiRequest } from './apiClient';
+import { apiDownload, apiRequest } from './apiClient';
 
 export const pluggyService = {
   obterConnectToken(): Promise<ConnectTokenResponse> {
@@ -40,6 +40,11 @@ export const pluggyService = {
 
   faturaMesAtual(): Promise<FaturaMesAtual> {
     return apiRequest<FaturaMesAtual>('/pluggy/fatura');
+  },
+
+  baixarExtrato(): Promise<void> {
+    const hoje = new Date().toISOString().slice(0, 10);
+    return apiDownload('/pluggy/extrato.csv', `subtracker-extrato-${hoje}.csv`);
   },
 
   importarSandbox(): Promise<ImportarPluggyResponse> {

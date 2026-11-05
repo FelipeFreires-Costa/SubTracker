@@ -54,6 +54,7 @@ export function Home() {
 
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState<'todos' | 'pagar' | 'pagas'>('todos');
+  const [baixandoExtrato, setBaixandoExtrato] = useState(false);
 
   const listaContas = useMemo(
     () => contas.filter((conta) => !ehParcela(conta)),
@@ -142,6 +143,23 @@ export function Home() {
     } catch (error) {
       tratarErro(error, 'Não deu para carregar os cenários de teste.');
       alert('Não deu para carregar os cenários de teste.');
+    }
+  }
+
+  async function baixarExtrato() {
+    if (!conexao.conectado) {
+      alert('Conecte o banco primeiro para baixar o extrato.');
+      return;
+    }
+
+    try {
+      setBaixandoExtrato(true);
+      await pluggyService.baixarExtrato();
+    } catch (error) {
+      tratarErro(error, 'Não deu para baixar o extrato.');
+      alert('Não deu para baixar o extrato. Conecte o banco e tente de novo.');
+    } finally {
+      setBaixandoExtrato(false);
     }
   }
 
@@ -320,6 +338,16 @@ export function Home() {
           {!connectToken && (
             <button type="button" onClick={abrirWidget}>
               {conexao.conectado ? 'Trocar banco' : 'Conectar banco'}
+            </button>
+          )}
+          {!connectToken && conexao.exportarExtratoAtivo && (
+            <button
+              type="button"
+              className="pluggy-secundario"
+              onClick={baixarExtrato}
+              disabled={!conexao.conectado || baixandoExtrato}
+            >
+              {baixandoExtrato ? 'Baixando...' : 'Baixar extrato'}
             </button>
           )}
           {!connectToken && conexao.conectado && (

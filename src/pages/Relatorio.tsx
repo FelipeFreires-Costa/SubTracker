@@ -145,9 +145,9 @@ export function Relatorio() {
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value: number | string, name: string) => [
+                      formatter={(value, name) => [
                         `${formatarDinheiro(Number(value))}/mês`,
-                        name,
+                        String(name),
                       ]}
                       contentStyle={ESTILO_TOOLTIP}
                     />

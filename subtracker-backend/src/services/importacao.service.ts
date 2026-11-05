@@ -36,6 +36,10 @@ function localizarExistente(porNome: Map<string, Conta>, chaves: string[]): Cont
  * Marcação manual de "Paguei" só vale enquanto for o mesmo ciclo.
  * Quando o extrato mostra outra última cobrança ou outra data esperada, o banco decide.
  */
+function csvCampo(valor: string): string {
+  return `"${valor.replace(/"/g, '""')}"`;
+}
+
 function pagoAposSincronizar(existente: Conta, ultimaCobranca: string, proximaCobranca: string, pagoDetectado: boolean) {
   const mesmoCiclo = existente.data === ultimaCobranca && existente.proximaCobranca === proximaCobranca;
   return mesmoCiclo ? existente.pago || pagoDetectado : pagoDetectado;
@@ -213,6 +217,40 @@ const ImportacaoService = {
     return PluggyService.obterFaturaMesAtual(conexao.itemId);
   },
 
+  /** O download do extrato fica desligado, salvo EXTRATO_EXPORT=true no .env. */
+  exportacaoAtiva() {
+    return process.env.EXTRATO_EXPORT === 'true';
+  },
+
+  /** Extrato na hora, para download. Não persiste transações nem roda a heurística. */
+  async exportarExtratoCsv() {
+    const conexao = await ConexaoRepository.obter();
+
+    if (!conexao) {
+      throw new AppError('Nenhum banco conectado. Conecte na tela Contas.', 400);
+    }
+
+    const { transacoes } = await PluggyService.listarTransacoes(conexao.itemId);
+    const ordenadas = [...transacoes].sort(
+      (a, b) => a.date.localeCompare(b.date) || a.description.localeCompare(b.description),
+    );
+
+    const linhas = [
+      ['Data', 'Descrição', 'Valor', 'Tipo de conta', 'Categoria'].join(';'),
+      ...ordenadas.map((item) =>
+        [
+          csvCampo(item.date),
+          csvCampo(item.description),
+          csvCampo(item.amount.toFixed(2)),
+          csvCampo(item.tipoConta ?? ''),
+          csvCampo(item.category ?? ''),
+        ].join(';'),
+      ),
+    ];
+
+    return `\uFEFF${linhas.join('\n')}\n`;
+  },
+
   async statusConexao() {
     const conexao = await ConexaoRepository.obter();
 
@@ -222,6 +260,7 @@ const ImportacaoService = {
       transacoesAnalisadas: conexao?.transacoesAnalisadas ?? null,
       recorrentesEncontradas: conexao?.recorrentesEncontradas ?? null,
       eventuaisDescartadas: conexao?.eventuaisDescartadas ?? null,
+      exportarExtratoAtivo: this.exportacaoAtiva(),
     };
   },
 

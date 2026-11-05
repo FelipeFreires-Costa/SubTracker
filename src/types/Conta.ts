@@ -52,6 +52,7 @@ export interface ConexaoPluggyStatus {
   transacoesAnalisadas?: number | null;
   recorrentesEncontradas?: number | null;
   eventuaisDescartadas?: number | null;
+  exportarExtratoAtivo?: boolean;
 }
 
 export interface ConnectTokenResponse {

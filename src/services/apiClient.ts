@@ -43,3 +43,28 @@ export async function apiRequest<T>(
 
   return parseResponse<T>(response);
 }
+
+export async function apiDownload(path: string, nomeArquivo: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}${path}`);
+
+  if (!response.ok) {
+    let mensagem = 'Não foi possível baixar o arquivo.';
+    try {
+      const body = (await response.json()) as ApiErrorBody;
+      mensagem = body.erro ?? mensagem;
+    } catch {
+      // resposta não era JSON
+    }
+    throw new ApiError(mensagem, response.status);
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = nomeArquivo;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}

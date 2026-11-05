@@ -74,6 +74,23 @@ const PluggyController = {
       next(error);
     }
   },
+
+  async exportarExtrato(_req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!ImportacaoService.exportacaoAtiva()) {
+        res.status(404).json({ erro: 'A exportação do extrato está desativada.' });
+        return;
+      }
+
+      const csv = await ImportacaoService.exportarExtratoCsv();
+      const hoje = new Date().toISOString().slice(0, 10);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="subtracker-extrato-${hoje}.csv"`);
+      res.send(csv);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 export default PluggyController;

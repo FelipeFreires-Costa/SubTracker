@@ -1,10 +1,14 @@
 import pg from 'pg';
 
+if (!process.env.DB_PASSWORD) {
+  throw new Error('Defina DB_PASSWORD no arquivo .env do backend (veja .env.example).');
+}
+
 const pool = new pg.Pool({
   user: process.env.DB_USER ?? 'postgres',
   host: process.env.DB_HOST ?? 'localhost',
   database: process.env.DB_NAME ?? 'subtracker_db',
-  password: process.env.DB_PASSWORD ?? 'root',
+  password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT ?? 5432),
 });
 

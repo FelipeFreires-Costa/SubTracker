@@ -129,7 +129,7 @@ const PluggyService = {
     return tokenResponse.accessToken;
   },
 
-  async analisarRecorrencias(itemId: string): Promise<AnaliseRecorrencia> {
+  async listarTransacoes(itemId: string): Promise<{ transacoes: TransacaoAnalise[]; totalContas: number }> {
     const accounts = await pluggyClient.fetchAccounts(itemId);
 
     if (accounts.results.length === 0) {
@@ -149,7 +149,12 @@ const PluggyService = {
       }
     }
 
-    return resumirAnalise(transacoes, accounts.results.length, 'PLUGGY');
+    return { transacoes, totalContas: accounts.results.length };
+  },
+
+  async analisarRecorrencias(itemId: string): Promise<AnaliseRecorrencia> {
+    const { transacoes, totalContas } = await this.listarTransacoes(itemId);
+    return resumirAnalise(transacoes, totalContas, 'PLUGGY');
   },
 
   async obterFaturaMesAtual(itemId: string): Promise<FaturaMesAtual> {

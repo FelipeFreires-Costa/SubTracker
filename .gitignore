@@ -12,6 +12,19 @@ dist
 dist-ssr
 *.local
 
+# Avaliação com extrato real (dados pessoais — não versionar)
+subtracker-backend/scripts/avaliacao-real/entrada/*
+!subtracker-backend/scripts/avaliacao-real/entrada/.gitkeep
+subtracker-backend/scripts/avaliacao-real/transacoes_reais_anonimizadas.csv
+subtracker-backend/scripts/avaliacao-real/gabarito_manual.csv
+subtracker-backend/scripts/avaliacao-real/resultado_casos_reais.csv
+subtracker-backend/scripts/avaliacao-real/metricas_reais.json
+subtracker-backend/scripts/avaliacao-real/distribuicao_mensal.csv
+subtracker-backend/scripts/avaliacao-real/algoritmo_congelado.json
+subtracker-backend/scripts/avaliacao-real/backup/
+subtracker-backend/scripts/avaliacao-real/config.json
+subtracker-backend/scripts/avaliacao-real/redact_extra.txt
+
 # Editor directories and files
 .env
 .vscode/*
