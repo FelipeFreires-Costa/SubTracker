@@ -1,4 +1,4 @@
-import db from '../config/database';
+import db, { type DbExecutor } from '../config/database';
 
 export interface SaldoBancario {
   nome: string;
@@ -105,9 +105,9 @@ const ConexaoRepository = {
     }
   },
 
-  async salvar(itemId: string, resumo?: ResumoAnalise): Promise<boolean> {
+  async salvar(itemId: string, resumo?: ResumoAnalise, executor: DbExecutor = db): Promise<boolean> {
     try {
-      await db.query(
+      await executor.query(
         `INSERT INTO conexao_open_finance
           (id, item_id, sincronizado_em, transacoes_analisadas, recorrentes_encontradas, eventuais_descartadas, saldos)
          VALUES (1, $1, NOW(), $2, $3, $4, $5)

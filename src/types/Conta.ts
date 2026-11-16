@@ -14,6 +14,9 @@ export interface Conta {
   origem?: OrigemConta;
   parcelaAtual?: number | null;
   parcelaTotal?: number | null;
+  ocorrencias?: number | null;
+  primeiraCobranca?: string | null;
+  totalGasto?: number | null;
 }
 
 export interface CriarContaPayload {

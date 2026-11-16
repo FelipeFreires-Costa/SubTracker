@@ -30,3 +30,9 @@ ALTER TABLE conexao_open_finance
 ALTER TABLE contas
   ADD COLUMN IF NOT EXISTS parcela_atual INTEGER,
   ADD COLUMN IF NOT EXISTS parcela_total INTEGER;
+
+-- Histórico derivado da última análise (não é extrato bruto).
+ALTER TABLE contas
+  ADD COLUMN IF NOT EXISTS ocorrencias INTEGER,
+  ADD COLUMN IF NOT EXISTS primeira_cobranca DATE,
+  ADD COLUMN IF NOT EXISTS total_gasto NUMERIC(12, 2);

@@ -21,11 +21,15 @@ import {
   proximasCobrancas,
   resumoDeGastos,
   rotuloPeriodicidade,
+  textoHistoricoGasto,
+  totalJaGasto,
   verificarSituacao,
 } from '../utils/contaHelpers';
 import './Relatorio.css';
 
 const CORES = ['#5a7d9a', '#9b8ab8', '#3d7a75', '#c4a35a', '#6b8e6b', '#4a6880'];
+/** Bloco acadêmico do Relatório (TCC2). Desligue com VITE_MOSTRAR_AVALIACAO=false. */
+const MOSTRAR_AVALIACAO = import.meta.env.VITE_MOSTRAR_AVALIACAO !== 'false';
 
 const ESTILO_TOOLTIP = {
   background: '#121212',
@@ -52,10 +56,12 @@ export function Relatorio() {
         setCarregando(false);
       }
 
-      try {
-        setAvaliacao(await pluggyService.avaliacaoHeuristica());
-      } catch {
-        setAvaliacao(null);
+      if (MOSTRAR_AVALIACAO) {
+        try {
+          setAvaliacao(await pluggyService.avaliacaoHeuristica());
+        } catch {
+          setAvaliacao(null);
+        }
       }
 
       try {
@@ -70,6 +76,7 @@ export function Relatorio() {
 
   const assinaturas = useMemo(() => contas.filter((conta) => !ehParcela(conta)), [contas]);
   const gastos = useMemo(() => resumoDeGastos(assinaturas), [assinaturas]);
+  const jaGasto = useMemo(() => totalJaGasto(assinaturas), [assinaturas]);
   const ranking = useMemo(
     () => [...assinaturas].sort((a, b) => custoMensal(b) - custoMensal(a)),
     [assinaturas],
@@ -93,7 +100,7 @@ export function Relatorio() {
   return (
     <div className="relatorio-pagina">
       <h1>Relatório</h1>
-      <p>Quanto suas assinaturas custam e para onde vai o dinheiro.</p>
+      <p>O que drena o mês, quanto já saiu no histórico e para onde vai o dinheiro.</p>
 
       {carregando && <p>Carregando...</p>}
       {erro && <p className="relatorio-erro">{erro}</p>}
@@ -108,11 +115,11 @@ export function Relatorio() {
           <strong>{formatarDinheiro(gastos.porAno)}</strong>
         </div>
         <div>
-          <span>Assinaturas</span>
-          <strong>{assinaturas.length}</strong>
+          <span>Já saiu</span>
+          <strong>{formatarDinheiro(jaGasto)}</strong>
         </div>
         <div>
-          <span>Maior gasto</span>
+          <span>Maior dreno</span>
           <strong>
             {maior
               ? `${nomeParaExibicao(maior.nome)} · ${formatarDinheiro(custoMensal(maior))}/mês`
@@ -191,6 +198,7 @@ export function Relatorio() {
                           {[
                             rotuloPeriodicidade(conta.periodicidade),
                             `${formatarDinheiro(custoAnual(conta))} por ano`,
+                            textoHistoricoGasto(conta),
                           ]
                             .filter(Boolean)
                             .join(' · ')}
@@ -241,18 +249,34 @@ export function Relatorio() {
         )}
       </section>
 
-      {conexao?.conectado && conexao.ultimaSincronizacao && (
+      {conexao?.conectado && (
         <p className="relatorio-nota">
-          Banco atualizado em {new Date(conexao.ultimaSincronizacao).toLocaleDateString('pt-BR')}.
+          {conexao.ultimaSincronizacao
+            ? `Última leitura Open Finance em ${new Date(conexao.ultimaSincronizacao).toLocaleDateString('pt-BR')}.`
+            : 'Banco conectado.'}
+          {conexao.transacoesAnalisadas != null
+            ? ` ${conexao.transacoesAnalisadas} transações analisadas`
+            : ''}
+          {conexao.recorrentesEncontradas != null
+            ? `, ${conexao.recorrentesEncontradas} recorrentes`
+            : ''}
+          {conexao.eventuaisDescartadas != null
+            ? `, ${conexao.eventuaisDescartadas} eventuais descartadas`
+            : ''}
+          {conexao.transacoesAnalisadas != null ||
+          conexao.recorrentesEncontradas != null ||
+          conexao.eventuaisDescartadas != null
+            ? '. O extrato bruto não é guardado.'
+            : ''}
         </p>
       )}
 
       {avaliacao && (
-        <details className="relatorio-tecnico">
+        <details className="relatorio-tecnico" open>
           <summary>Como a detecção automática foi testada</summary>
           <p>
-            Em {avaliacao.totalCasos} casos de teste, a detecção acertou {avaliacao.acuracia}% das
-            contas.
+            Em {avaliacao.totalCasos} casos de teste (conjunto de desenvolvimento), a detecção
+            acertou {avaliacao.acuracia}% das contas.
             {avaliacao.linhaDeBase
               ? ` Considerando apenas nomes repetidos no extrato, o acerto seria de ${avaliacao.linhaDeBase.acuracia}%.`
               : ''}

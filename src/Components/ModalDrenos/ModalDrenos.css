@@ -1,0 +1,147 @@
+.modal-drenos {
+  max-width: 560px;
+  width: min(94vw, 560px);
+  text-align: left;
+  padding: 22px 22px 18px;
+  max-height: min(88vh, 720px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-drenos-topo {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.modal-drenos-icone {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--raio);
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--alerta) 18%, transparent);
+  color: var(--alerta);
+  flex-shrink: 0;
+}
+
+.modal-drenos-topo h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.modal-drenos-topo p {
+  margin: 4px 0 0;
+  color: var(--tinta-fraca);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.modal-drenos-resumo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modal-drenos-pill {
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+  background: var(--folha-2, #141414);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-drenos-pill span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tinta-fraca);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.modal-drenos-pill strong {
+  font-size: 1.2rem;
+}
+
+.modal-drenos-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-drenos-lista li {
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 12px 14px;
+  background: transparent;
+}
+
+.modal-drenos-item-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.modal-drenos-item-topo strong {
+  font-size: 1rem;
+}
+
+.modal-drenos-item-topo em {
+  font-style: normal;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.modal-drenos-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 8px;
+  color: var(--tinta-fraca);
+  font-size: 0.84rem;
+}
+
+.modal-drenos-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-drenos-barra {
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: #222;
+  overflow: hidden;
+}
+
+.modal-drenos-barra > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--alerta);
+}
+
+.modal-drenos .modal-botoes {
+  margin-top: 4px;
+}
+
+@media (max-width: 520px) {
+  .modal-drenos-resumo {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-drenos-item-topo {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

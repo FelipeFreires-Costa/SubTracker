@@ -21,6 +21,8 @@ export interface RecorrenciaDetectada {
   preco: number;
   ultimaCobranca: string;
   proximaCobranca: string;
+  primeiraCobranca: string;
+  totalGasto: number;
   periodicidade: Periodicidade;
   categoria: string;
   ocorrencias: number;
@@ -507,7 +509,12 @@ export function identificarRecorrencias(
       });
     const periodicidade: Periodicidade = ehParcela ? 'mensal' : periodicidadeDetectada;
     const preco = Math.abs(mediana(valores.slice(-3)));
+    const primeira = ordenada[0];
+    const primeiraCobranca = (primeira?.date.split('T')[0] ?? primeira?.date) || '';
     const ultimaCobranca = ultima.date.split('T')[0] ?? ultima.date;
+    const totalGasto = Number(
+      valores.reduce((soma, valor) => soma + Math.abs(valor), 0).toFixed(2),
+    );
     const planoQuitado = ehParcela && parcelaAtual !== null && parcelaTotal !== null && parcelaAtual >= parcelaTotal;
     const ciclo = planoQuitado
       ? { situacao: 'encerrada' as const, pago: true, proximaCobranca: ultimaCobranca }
@@ -520,6 +527,8 @@ export function identificarRecorrencias(
       preco,
       ultimaCobranca,
       proximaCobranca: ciclo.proximaCobranca,
+      primeiraCobranca,
+      totalGasto,
       periodicidade,
       categoria,
       ocorrencias: ordenada.length,

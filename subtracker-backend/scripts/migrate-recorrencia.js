@@ -34,7 +34,10 @@ async function migrar() {
     SELECT column_name
     FROM information_schema.columns
     WHERE table_name = 'contas'
-      AND column_name IN ('recorrente', 'periodicidade', 'proxima_cobranca', 'origem', 'parcela_atual', 'parcela_total')
+      AND column_name IN (
+        'recorrente', 'periodicidade', 'proxima_cobranca', 'origem',
+        'parcela_atual', 'parcela_total', 'ocorrencias', 'primeira_cobranca', 'total_gasto'
+      )
     ORDER BY column_name
   `);
 

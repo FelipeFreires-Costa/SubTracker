@@ -76,7 +76,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin: 18px 0 4px;
+  margin: 18px 0 10px;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -104,34 +104,73 @@
 }
 
 .linha-conta {
-  border-bottom: 1px solid var(--linha);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  margin-bottom: 10px;
+  background: color-mix(in srgb, var(--folha-2, #141414) 70%, transparent);
+  border-left-width: 3px;
+  border-left-color: var(--linha);
+  overflow: visible;
+}
+
+.linha-conta.vencida {
+  border-left-color: var(--alerta);
+  background: color-mix(in srgb, var(--alerta) 7%, transparent);
+}
+
+.linha-conta.hoje,
+.linha-conta.perto {
+  border-left-color: #d4a017;
+  background: color-mix(in srgb, #d4a017 8%, transparent);
+}
+
+.linha-conta.tranquilo,
+.linha-conta.aberta {
+  border-left-color: var(--agua);
+}
+
+.linha-conta.pago {
+  border-left-color: var(--ok);
+  opacity: 0.88;
 }
 
 .linha-conta-corpo {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) auto auto auto;
-  gap: 14px;
+  grid-template-columns: 42px minmax(0, 1fr) auto auto auto;
+  gap: 12px;
   align-items: center;
-  padding: 14px 0;
+  padding: 12px 14px;
 }
 
 .linha-icone {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--raio);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   flex-shrink: 0;
+  background: var(--detalhes, #1c1c1c);
 }
 
-.linha-icone.saida {
-  background: var(--detalhes);
+.linha-icone.vencida {
+  background: color-mix(in srgb, var(--alerta) 18%, transparent);
   color: var(--alerta);
 }
 
-.linha-icone.entrada {
+.linha-icone.hoje,
+.linha-icone.perto {
+  background: color-mix(in srgb, #d4a017 18%, transparent);
+  color: #d4a017;
+}
+
+.linha-icone.tranquilo,
+.linha-icone.aberta {
+  background: color-mix(in srgb, var(--agua) 18%, transparent);
+  color: var(--agua);
+}
+
+.linha-icone.pago {
   background: #1c2e1c;
   color: var(--ok);
 }
@@ -140,28 +179,97 @@
   min-width: 0;
 }
 
+.linha-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
 .linha-info h3 {
   margin: 0;
-  font-size: 1.08rem;
-  font-weight: 600;
-  line-height: 1.4;
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.linha-info p {
-  margin: 4px 0 0;
+.status-pill {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.status-pill.vencida {
+  color: var(--alerta);
+  background: color-mix(in srgb, var(--alerta) 14%, transparent);
+  border-color: color-mix(in srgb, var(--alerta) 35%, transparent);
+}
+
+.status-pill.hoje,
+.status-pill.perto {
+  color: #d4a017;
+  background: color-mix(in srgb, #d4a017 14%, transparent);
+  border-color: color-mix(in srgb, #d4a017 35%, transparent);
+}
+
+.status-pill.tranquilo,
+.status-pill.aberta {
+  color: var(--agua);
+  background: color-mix(in srgb, var(--agua) 14%, transparent);
+  border-color: color-mix(in srgb, var(--agua) 35%, transparent);
+}
+
+.status-pill.pago {
+  color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+}
+
+.linha-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--folha) 80%, #000);
+  border: 1px solid var(--linha);
   color: var(--tinta-fraca);
-  font-size: 0.88rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.meta-urgencia {
+  color: var(--alerta);
+  border-color: color-mix(in srgb, var(--alerta) 40%, var(--linha));
+}
+
+.linha-valor-bloco {
+  text-align: right;
+  min-width: 5.5rem;
 }
 
 .linha-valor {
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
-  text-align: right;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .linha-valor.saida {
@@ -169,6 +277,16 @@
 }
 
 .linha-valor.pago {
+  color: var(--tinta-fraca);
+}
+
+.linha-valor-rotulo {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--tinta-fraca);
 }
 
@@ -182,11 +300,18 @@
   font-weight: 700;
   font-size: 0.88rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .pagar:hover {
   border-color: var(--ok);
   color: var(--ok);
+}
+
+.pagar.pago {
+  color: var(--tinta-fraca);
 }
 
 .acoes-menu {
@@ -264,7 +389,7 @@
 .card-conteudo-extra.aberto {
   max-height: 220px;
   opacity: 1;
-  padding: 0 0 12px 50px;
+  padding: 0 14px 12px 54px;
 }
 
 .info-extra-texto {
@@ -274,6 +399,18 @@
 
 .info-extra-texto p {
   margin: 4px 0;
+}
+
+.info-historico {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.info-historico svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+  color: var(--ok);
 }
 
 .lista-extrato-rodape {
@@ -315,7 +452,7 @@
     grid-area: info;
   }
 
-  .linha-valor {
+  .linha-valor-bloco {
     grid-area: valor;
   }
 
@@ -327,5 +464,9 @@
   .acoes-menu {
     grid-area: acoes;
     justify-self: end;
+  }
+
+  .status-pill {
+    display: none;
   }
 }

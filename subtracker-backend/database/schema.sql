@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS contas (
   origem VARCHAR(20) NOT NULL DEFAULT 'manual',
   parcela_atual INTEGER,
   parcela_total INTEGER,
+  ocorrencias INTEGER,
+  primeira_cobranca DATE,
+  total_gasto NUMERIC(12, 2),
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import '../ModalConfirmacao/ModalConfirmacao.css';
 import './ModalConta.css';
 
@@ -34,12 +35,37 @@ export function ModalConta({
   onSalvar,
   onCancelar,
 }: ModalContaProps) {
+  const tituloId = 'modal-conta-titulo';
+  const primeiroCampoRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!aberto) return;
+
+    primeiroCampoRef.current?.focus();
+
+    function aoTeclar(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onCancelar();
+      }
+    }
+
+    document.addEventListener('keydown', aoTeclar);
+    return () => document.removeEventListener('keydown', aoTeclar);
+  }, [aberto, onCancelar]);
+
   if (!aberto) return null;
 
   return (
     <div className="modal-overlay" onClick={onCancelar}>
-      <div className="modal-box modal-conta" onClick={(e) => e.stopPropagation()}>
-        <h2>{editando ? 'Editar conta' : 'Nova conta'}</h2>
+      <div
+        className="modal-box modal-conta"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={tituloId}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 id={tituloId}>{editando ? 'Editar conta' : 'Nova conta'}</h2>
         <p>{editando ? 'Mude o que precisar e salve.' : 'Preencha os dados da conta que você quer acompanhar.'}</p>
 
         <form
@@ -52,11 +78,11 @@ export function ModalConta({
           <label htmlFor="modal-nome">Nome da conta</label>
           <input
             id="modal-nome"
+            ref={primeiroCampoRef}
             type="text"
             placeholder="Ex: Conta de luz"
             value={nome}
             onChange={(e) => onNome(e.target.value)}
-            autoFocus
           />
 
           <label htmlFor="modal-preco">Valor</label>

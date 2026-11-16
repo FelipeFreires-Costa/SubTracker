@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import './CardsContas.css';
-import { FaArrowUp, FaCheck, FaChevronDown, FaChevronUp, FaRegTrashAlt } from 'react-icons/fa';
+import {
+  FaCheck,
+  FaChevronDown,
+  FaChevronUp,
+  FaHome,
+  FaRegTrashAlt,
+  FaTag,
+  FaTv,
+  FaWallet,
+} from 'react-icons/fa';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
-import { MdEdit } from 'react-icons/md';
+import { MdEdit, MdOutlineEventBusy, MdOutlineSchedule, MdToday } from 'react-icons/md';
 import { nomeParaExibicao } from '../../utils/contaHelpers';
 
 interface CardsContasProps {
@@ -17,14 +26,30 @@ interface CardsContasProps {
   aoEditar: () => void;
   categoria?: string;
   periodicidade?: string | null;
+  historico?: string | null;
 }
 
-function rotuloSituacao(situacao: string) {
+function rotuloSituacao(situacao: string, pago: boolean) {
+  if (pago) return 'Paga';
   if (situacao === 'vencida') return 'Atrasada';
-  if (situacao === 'perto') return 'Vence em breve';
+  if (situacao === 'perto') return 'Em breve';
   if (situacao === 'hoje') return 'Hoje';
   if (situacao === 'tranquilo') return 'Em dia';
-  return situacao;
+  return situacao || 'Aberta';
+}
+
+function iconeSituacao(situacao: string, pago: boolean) {
+  if (pago) return <FaCheck size={14} />;
+  if (situacao === 'vencida') return <MdOutlineEventBusy size={16} />;
+  if (situacao === 'hoje') return <MdToday size={16} />;
+  return <MdOutlineSchedule size={16} />;
+}
+
+function iconeCategoria(categoria?: string) {
+  const chave = (categoria || '').toLowerCase();
+  if (chave.includes('stream')) return <FaTv size={12} />;
+  if (chave.includes('moradia') || chave.includes('casa')) return <FaHome size={12} />;
+  return <FaTag size={12} />;
 }
 
 function MenuAcoes({
@@ -50,13 +75,15 @@ function MenuAcoes({
         className="btn-tres-pontos"
         type="button"
         aria-label="Mais ações"
+        aria-haspopup="menu"
+        aria-expanded={menuAberto}
         onClick={() => setMenuAberto(!menuAberto)}
       >
         <HiOutlineDotsHorizontal size={20} />
       </button>
 
       {menuAberto && (
-        <div className="dropdown-menu">
+        <div className="dropdown-menu" role="menu">
           <button
             type="button"
             onClick={() => {
@@ -73,12 +100,7 @@ function MenuAcoes({
               setMenuAberto(false);
             }}
           >
-            {estaAberto ? (
-              <FaChevronUp size={14} />
-            ) : (
-              <FaChevronDown size={14} />
-            )}{' '}
-            Detalhes
+            {estaAberto ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />} Detalhes
           </button>
           <button
             type="button"
@@ -108,12 +130,25 @@ const CardsContas = ({
   aoEditar,
   categoria,
   periodicidade,
+  historico,
 }: CardsContasProps) => {
   const [estaAberto, setEstaAberto] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const textoSituacao = rotuloSituacao(situacao);
-  const valor = preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const status = rotuloSituacao(situacao, pago);
+  const valor = preco.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  const titulo = nomeParaExibicao(nome);
+  const classeStatus = pago ? 'pago' : situacao || 'aberta';
+  const textoQuando = pago
+    ? `Próxima ${data}`
+    : situacao === 'vencida'
+      ? `Venceu ${data}`
+      : situacao === 'hoje'
+        ? `Vence hoje`
+        : `Vence ${data}`;
 
   useEffect(() => {
     function lidarComClique(event: MouseEvent) {
@@ -131,34 +166,51 @@ const CardsContas = ({
     };
   }, [menuAberto]);
 
-  const textoData = pago
-    ? `Próxima ${data}`
-    : situacao === 'vencida'
-      ? `Venceu ${data}`
-      : `Vence ${data}`;
-  const apoio = [periodicidade || 'Recorrente', textoData, pago ? 'Paga' : textoSituacao]
-    .filter(Boolean)
-    .join(' · ');
-  const titulo = nomeParaExibicao(nome);
-
   return (
-    <article className={`linha-conta ${pago ? 'pago' : situacao}`}>
+    <article className={`linha-conta ${classeStatus}`}>
       <div className="linha-conta-corpo">
-        <span className={`linha-icone ${pago ? 'entrada' : 'saida'}`} aria-hidden="true">
-          {pago ? <FaCheck size={12} /> : <FaArrowUp size={12} />}
+        <span className={`linha-icone ${classeStatus}`} aria-hidden="true">
+          {iconeSituacao(situacao, pago)}
         </span>
 
         <div className="linha-info">
-          <h3 title={titulo}>{titulo}</h3>
-          <p>{apoio}</p>
+          <div className="linha-topo">
+            <h3 title={titulo}>{titulo}</h3>
+            <span className={`status-pill ${classeStatus}`}>{status}</span>
+          </div>
+
+          <div className="linha-meta">
+            {categoria && (
+              <span className="meta-chip">
+                {iconeCategoria(categoria)}
+                {categoria}
+              </span>
+            )}
+            {periodicidade && <span className="meta-chip">{periodicidade}</span>}
+            <span className="meta-chip meta-quando">{textoQuando}</span>
+            {!pago && textoDias && <span className="meta-chip meta-urgencia">{textoDias}</span>}
+          </div>
         </div>
 
-        <p className={`linha-valor ${pago ? 'pago' : 'saida'}`}>
-          {pago ? `R$ ${valor}` : `R$ -${valor}`}
-        </p>
+        <div className="linha-valor-bloco">
+          <p className={`linha-valor ${pago ? 'pago' : 'saida'}`}>
+            {pago ? `R$ ${valor}` : `R$ -${valor}`}
+          </p>
+          <span className="linha-valor-rotulo">{pago ? 'pago' : 'a pagar'}</span>
+        </div>
 
-        <button className="pagar" type="button" onClick={foiPago}>
-          {pago ? 'Desfazer' : 'Paguei'}
+        <button
+          className={`pagar ${pago ? 'pago' : ''}`}
+          type="button"
+          onClick={foiPago}
+        >
+          {pago ? (
+            <>
+              <FaCheck size={12} aria-hidden="true" /> Desfazer
+            </>
+          ) : (
+            'Paguei'
+          )}
         </button>
 
         <MenuAcoes
@@ -192,6 +244,15 @@ const CardsContas = ({
             <strong>Próxima cobrança: </strong>
             {data}
           </p>
+          {historico && (
+            <p className="info-historico">
+              <FaWallet size={12} aria-hidden="true" />
+              <span>
+                <strong>Já saiu: </strong>
+                {historico}
+              </span>
+            </p>
+          )}
         </div>
       </div>
     </article>

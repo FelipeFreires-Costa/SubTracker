@@ -1,3 +1,4 @@
+import db, { type DbExecutor } from '../config/database';
 import ContaRepository from '../repositories/conta.repository';
 import ConexaoRepository from '../repositories/conexao.repository';
 import PluggyService, { resumirAnalise, type AnaliseRecorrencia } from './pluggy.service';
@@ -45,8 +46,8 @@ function pagoAposSincronizar(existente: Conta, ultimaCobranca: string, proximaCo
   return mesmoCiclo ? existente.pago || pagoDetectado : pagoDetectado;
 }
 
-async function persistirAnalise(analise: AnaliseRecorrencia) {
-  const contasExistentes = await ContaRepository.listar();
+async function persistirAnaliseNoExecutor(analise: AnaliseRecorrencia, executor: DbExecutor) {
+  const contasExistentes = await ContaRepository.listar(executor);
   const porNome = new Map(contasExistentes.map((conta) => [normalizarNome(conta.nome), conta]));
 
   const importadas: Conta[] = [];
@@ -72,17 +73,24 @@ async function persistirAnalise(analise: AnaliseRecorrencia) {
     }
 
     if (existente) {
-      const conta = await ContaRepository.atualizarMonitoramento(existente.id, {
-        nome,
-        preco: Number(assinatura.preco.toFixed(2)),
-        data: assinatura.ultimaCobranca,
-        periodicidade: assinatura.periodicidade,
-        proximaCobranca: assinatura.proximaCobranca,
-        pago: pagoAposSincronizar(existente, assinatura.ultimaCobranca, assinatura.proximaCobranca, assinatura.pago),
-        recorrente: true,
-        parcelaAtual: null,
-        parcelaTotal: null,
-      });
+      const conta = await ContaRepository.atualizarMonitoramento(
+        existente.id,
+        {
+          nome,
+          preco: Number(assinatura.preco.toFixed(2)),
+          data: assinatura.ultimaCobranca,
+          periodicidade: assinatura.periodicidade,
+          proximaCobranca: assinatura.proximaCobranca,
+          pago: pagoAposSincronizar(existente, assinatura.ultimaCobranca, assinatura.proximaCobranca, assinatura.pago),
+          recorrente: true,
+          parcelaAtual: null,
+          parcelaTotal: null,
+          ocorrencias: assinatura.ocorrencias,
+          primeiraCobranca: assinatura.primeiraCobranca,
+          totalGasto: Number(assinatura.totalGasto.toFixed(2)),
+        },
+        executor,
+      );
 
       if (conta) {
         atualizadas.push(conta);
@@ -93,19 +101,25 @@ async function persistirAnalise(analise: AnaliseRecorrencia) {
       continue;
     }
 
-    const conta = await ContaRepository.criar({
-      nome,
-      preco: Number(assinatura.preco.toFixed(2)),
-      data: assinatura.ultimaCobranca,
-      pago: assinatura.pago,
-      categoria: inferirCategoria(nome),
-      recorrente: true,
-      periodicidade: assinatura.periodicidade,
-      proximaCobranca: assinatura.proximaCobranca,
-      origem: 'pluggy',
-      parcelaAtual: null,
-      parcelaTotal: null,
-    });
+    const conta = await ContaRepository.criar(
+      {
+        nome,
+        preco: Number(assinatura.preco.toFixed(2)),
+        data: assinatura.ultimaCobranca,
+        pago: assinatura.pago,
+        categoria: inferirCategoria(nome),
+        recorrente: true,
+        periodicidade: assinatura.periodicidade,
+        proximaCobranca: assinatura.proximaCobranca,
+        origem: 'pluggy',
+        parcelaAtual: null,
+        parcelaTotal: null,
+        ocorrencias: assinatura.ocorrencias,
+        primeiraCobranca: assinatura.primeiraCobranca,
+        totalGasto: Number(assinatura.totalGasto.toFixed(2)),
+      },
+      executor,
+    );
 
     importadas.push(conta);
     for (const chave of chaves) {
@@ -114,7 +128,7 @@ async function persistirAnalise(analise: AnaliseRecorrencia) {
   }
 
   if (analise.totalTransacoesAnalisadas > 0) {
-    const atuais = await ContaRepository.listar();
+    const atuais = await ContaRepository.listar(executor);
     const idsCanonico = new Set([...importadas, ...atualizadas].map((conta) => conta.id));
 
     for (const conta of atuais) {
@@ -125,7 +139,7 @@ async function persistirAnalise(analise: AnaliseRecorrencia) {
       const manter = detectada && idsCanonico.has(conta.id);
 
       if (!manter) {
-        const apagou = await ContaRepository.remover(conta.id);
+        const apagou = await ContaRepository.remover(conta.id, executor);
         if (apagou) {
           removidas.push(conta);
         }
@@ -165,6 +179,10 @@ async function persistirAnalise(analise: AnaliseRecorrencia) {
   };
 }
 
+async function persistirAnalise(analise: AnaliseRecorrencia) {
+  return db.withTransaction((client) => persistirAnaliseNoExecutor(analise, client));
+}
+
 const ImportacaoService = {
   async importarAssinaturas(itemId: string) {
     const id = itemId.trim();
@@ -174,20 +192,26 @@ const ImportacaoService = {
     }
 
     const analise = await PluggyService.analisarRecorrencias(id);
-    const resultado = await persistirAnalise(analise);
 
-    const conexaoSalva = await ConexaoRepository.salvar(id, {
-      transacoesAnalisadas: analise.totalTransacoesAnalisadas,
-      recorrentesEncontradas: analise.totalRecorrentes,
-      eventuaisDescartadas: Math.max(0, analise.totalEventuais - analise.totalParcelas),
+    return db.withTransaction(async (client) => {
+      const resultado = await persistirAnaliseNoExecutor(analise, client);
+      const conexaoSalva = await ConexaoRepository.salvar(
+        id,
+        {
+          transacoesAnalisadas: analise.totalTransacoesAnalisadas,
+          recorrentesEncontradas: analise.totalRecorrentes,
+          eventuaisDescartadas: Math.max(0, analise.totalEventuais - analise.totalParcelas),
+        },
+        client,
+      );
+
+      return conexaoSalva
+        ? resultado
+        : {
+            ...resultado,
+            mensagem: `${resultado.mensagem} Rode a migração do banco para poder atualizar depois sem abrir o widget.`,
+          };
     });
-
-    return conexaoSalva
-      ? resultado
-      : {
-          ...resultado,
-          mensagem: `${resultado.mensagem} Rode a migração do banco para poder atualizar depois sem abrir o widget.`,
-        };
   },
 
   /** Extrato de teste gerado em memória, relativo a hoje. Não usa a Pluggy nem salva conexão. */

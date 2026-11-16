@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import PluggyService from '../services/pluggy.service';
 import ImportacaoService from '../services/importacao.service';
+import { hojeIso } from '../utils/heuristica.recorrencia';
 
 function obterItemId(params: Request['params']): string | null {
   const itemId = params.itemId;
@@ -19,7 +20,7 @@ const PluggyController = {
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Erro desconhecido';
       console.error('[PLUGGY] Erro ao gerar connect token:', message);
-      res.status(500).json({ erro: 'Falha ao gerar o token', detalhes: message });
+      res.status(500).json({ erro: 'Não foi possível conectar ao banco agora. Tente de novo.' });
     }
   },
 
@@ -83,7 +84,7 @@ const PluggyController = {
       }
 
       const csv = await ImportacaoService.exportarExtratoCsv();
-      const hoje = new Date().toISOString().slice(0, 10);
+      const hoje = hojeIso();
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader('Content-Disposition', `attachment; filename="subtracker-extrato-${hoje}.csv"`);
       res.send(csv);

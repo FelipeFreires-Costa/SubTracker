@@ -157,6 +157,70 @@ export function custoAnual(conta: Pick<Conta, 'preco' | 'periodicidade'>) {
   return custoMensal(conta) * 12;
 }
 
+function parseIsoLocal(iso: string): Date {
+  const [ano, mes, dia] = iso.split('-').map(Number);
+  return new Date(ano || 1970, (mes || 1) - 1, dia || 1);
+}
+
+function mesesEntre(inicioIso: string, fimIso: string): number {
+  const inicio = parseIsoLocal(inicioIso);
+  const fim = parseIsoLocal(fimIso);
+  const meses =
+    (fim.getFullYear() - inicio.getFullYear()) * 12 + (fim.getMonth() - inicio.getMonth());
+  return Math.max(0, meses);
+}
+
+/** Histórico derivado (Pluggy) ou estimado (conta manual). */
+export function historicoGasto(conta: Conta, hoje = hojeIso()) {
+  if (conta.totalGasto != null && conta.totalGasto >= 0) {
+    return {
+      total: Number(conta.totalGasto),
+      ocorrencias: conta.ocorrencias ?? null,
+      desde: conta.primeiraCobranca || conta.data,
+      estimado: false,
+    };
+  }
+
+  const desde = conta.primeiraCobranca || conta.data;
+  const passo = mesesDoCiclo(conta.periodicidade);
+  const ciclos = Math.floor(mesesEntre(desde, hoje) / passo) + 1;
+  const ocorrencias = Math.max(1, ciclos);
+
+  return {
+    total: Number((Number(conta.preco) * ocorrencias).toFixed(2)),
+    ocorrencias,
+    desde,
+    estimado: true,
+  };
+}
+
+export function totalJaGasto(contas: Conta[], hoje = hojeIso()) {
+  return contas.reduce((soma, conta) => soma + historicoGasto(conta, hoje).total, 0);
+}
+
+export function maioresDrenos(contas: Conta[], limite = 5) {
+  return [...contas]
+    .sort((a, b) => custoMensal(b) - custoMensal(a))
+    .slice(0, limite);
+}
+
+export function formatarMesAno(iso: string) {
+  const data = parseIsoLocal(iso);
+  const rotulo = data.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+  return rotulo.replace('.', '');
+}
+
+export function textoHistoricoGasto(conta: Conta, hoje = hojeIso()) {
+  const hist = historicoGasto(conta, hoje);
+  const desde = formatarMesAno(hist.desde);
+  const cobrancas =
+    hist.ocorrencias != null
+      ? ` · ${hist.ocorrencias} cobrança${hist.ocorrencias === 1 ? '' : 's'}`
+      : '';
+  const sufixo = hist.estimado ? ' (estimado)' : '';
+  return `${formatarDinheiro(hist.total)} desde ${desde}${cobrancas}${sufixo}`;
+}
+
 function fimDoMes(hoje: string) {
   const [ano, mes] = hoje.split('-').map(Number);
   const ultimo = new Date(ano || 1970, mes || 1, 0).getDate();

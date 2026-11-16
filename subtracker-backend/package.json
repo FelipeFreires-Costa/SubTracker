@@ -9,6 +9,7 @@
     "start": "node dist/server.js",
     "migrate:recorrencia": "node scripts/migrate-recorrencia.js",
     "avaliar": "node -r ts-node/register/transpile-only scripts/avaliar-heuristica.ts",
+    "avaliar:teste": "node -r ts-node/register/transpile-only scripts/avaliar-teste.ts",
     "sandbox": "node -r ts-node/register/transpile-only scripts/testar-sandbox.ts"
   },
   "keywords": [],
