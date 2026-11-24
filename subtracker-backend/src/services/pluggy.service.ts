@@ -1,7 +1,7 @@
 import '../config/env';
 import { PluggyClient } from 'pluggy-sdk';
 
-import { normalizarData } from '../utils/date.utils';
+import { formatarDataLocal, normalizarData } from '../utils/date.utils';
 import { formatarNomeServico } from '../utils/categoria.mapper';
 import {
   ehDespesa,
@@ -66,13 +66,22 @@ export interface LancamentoFatura {
   valor: number;
 }
 
+export interface PeriodoFatura {
+  chave: string;
+  rotulo: string;
+  vencimento: string | null;
+  papel: 'anterior' | 'atual' | 'proxima';
+}
+
 export interface FaturaMesAtual {
   mes: string;
+  mesChave: string;
   cartao: string | null;
   vencimento: string | null;
   total: number;
   minimo: number | null;
   lancamentos: LancamentoFatura[];
+  periodos: PeriodoFatura[];
 }
 
 function lerParcela(transacao: {
@@ -87,10 +96,29 @@ function lerParcela(transacao: {
   };
 }
 
+/**
+ * Pluggy: em compra internacional, `amount` vem na moeda da cobrança (ex.: USD 20)
+ * e `amountInAccountCurrency` na moeda da conta (ex.: BRL 130,48). Sem isso,
+ * assinaturas como Cursor aparecem com o valor em dólar tratado como real.
+ */
+function valorNaMoedaDaConta(transacao: {
+  amount?: number | null;
+  amountInAccountCurrency?: number | null;
+}) {
+  if (
+    transacao.amountInAccountCurrency != null &&
+    Number.isFinite(transacao.amountInAccountCurrency)
+  ) {
+    return transacao.amountInAccountCurrency;
+  }
+  return transacao.amount ?? 0;
+}
+
 function mapearTransacao(
   transacao: {
     description?: string | null;
     amount?: number | null;
+    amountInAccountCurrency?: number | null;
     date: string | Date;
     category?: string | null;
     status?: string;
@@ -102,7 +130,7 @@ function mapearTransacao(
   const parcela = lerParcela(transacao);
   return {
     description: transacao.description ?? '',
-    amount: transacao.amount ?? 0,
+    amount: valorNaMoedaDaConta(transacao),
     date: normalizarData(transacao.date),
     category: transacao.category ?? '',
     tipoConta,
@@ -113,15 +141,54 @@ function mapearTransacao(
   };
 }
 
-function inicioDoMes(hoje = hojeIso()) {
-  return `${hoje.slice(0, 7)}-01`;
+function chaveDoMes(iso: string) {
+  return iso.slice(0, 7);
 }
 
-function rotuloMes(hoje = hojeIso()) {
-  const data = new Date(`${hoje}T00:00:00`);
+function inicioDoMes(chaveOuDia = hojeIso()) {
+  return `${chaveDoMes(chaveOuDia)}-01`;
+}
+
+function rotuloMes(chaveOuDia = hojeIso()) {
+  const chave = chaveDoMes(chaveOuDia);
+  const data = new Date(`${chave}-01T00:00:00`);
   const texto = data.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
+
+function rotuloMesCurto(chave: string) {
+  const data = new Date(`${chave}-01T00:00:00`);
+  const texto = data.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+  return texto.replace('.', '').replace(' de ', '/');
+}
+
+function adicionarMeses(isoDia: string, meses: number) {
+  const data = new Date(`${isoDia.slice(0, 10)}T00:00:00`);
+  data.setMonth(data.getMonth() + meses);
+  return formatarDataLocal(data);
+}
+
+function adicionarDias(isoDia: string, dias: number) {
+  const data = new Date(`${isoDia.slice(0, 10)}T00:00:00`);
+  data.setDate(data.getDate() + dias);
+  return formatarDataLocal(data);
+}
+
+function papelDoPeriodo(chave: string, hoje = hojeIso()): PeriodoFatura['papel'] {
+  const atual = chaveDoMes(hoje);
+  if (chave > atual) return 'proxima';
+  if (chave === atual) return 'atual';
+  return 'anterior';
+}
+
+type FaturaPluggyResumo = {
+  chave: string;
+  vencimento: string;
+  total: number;
+  minimo: number | null;
+  from: string;
+  to: string;
+};
 
 const PluggyService = {
   async generateConnectToken() {
@@ -157,16 +224,19 @@ const PluggyService = {
     return resumirAnalise(transacoes, totalContas, 'PLUGGY');
   },
 
-  async obterFaturaMesAtual(itemId: string): Promise<FaturaMesAtual> {
+  async obterFaturaMesAtual(itemId: string, mesChave?: string | null): Promise<FaturaMesAtual> {
     const accounts = await pluggyClient.fetchAccounts(itemId);
     const cartoes = accounts.results.filter((conta) => (conta as { type?: string }).type === 'CREDIT');
-    const mes = inicioDoMes();
     const hoje = hojeIso();
-    const lancamentos: LancamentoFatura[] = [];
+    const mesAtual = chaveDoMes(hoje);
+    const mesProximo = chaveDoMes(adicionarMeses(hoje, 1));
+
     let cartao: string | null = null;
-    let vencimento: string | null = null;
-    let totalFatura: number | null = null;
-    let minimo: number | null = null;
+    const resumosPorChave = new Map<string, FaturaPluggyResumo>();
+    const todosLancamentos: LancamentoFatura[] = [];
+
+    const janelaFrom = inicioDoMes(adicionarMeses(hoje, -4));
+    const janelaTo = adicionarMeses(inicioDoMes(hoje), 2);
 
     for (const conta of cartoes) {
       cartao =
@@ -175,31 +245,58 @@ const PluggyService = {
         cartao ||
         'Cartão';
 
-      try {
-        const faturas = await pluggyClient.fetchCreditCardBills(conta.id, { pageSize: 20 });
-        const doMes = faturas.results
-          .map((fatura) => ({
-            ...fatura,
-            vencimento: normalizarData(fatura.dueDate),
-          }))
-          .filter((fatura) => fatura.vencimento.slice(0, 7) === hoje.slice(0, 7))
-          .sort((a, b) => b.vencimento.localeCompare(a.vencimento));
-        const atual = doMes[0] ?? [...faturas.results]
-          .map((fatura) => ({ ...fatura, vencimento: normalizarData(fatura.dueDate) }))
-          .sort((a, b) => b.vencimento.localeCompare(a.vencimento))[0];
+      const vencimentosBrutos: Array<{
+        vencimento: string;
+        total: number;
+        minimo: number | null;
+      }> = [];
 
-        if (atual) {
-          vencimento = atual.vencimento;
-          totalFatura = Number(atual.totalAmount ?? 0);
-          minimo = atual.minimumPaymentAmount == null ? null : Number(atual.minimumPaymentAmount);
+      try {
+        const faturas = await pluggyClient.fetchCreditCardBills(conta.id, { pageSize: 24 });
+        for (const fatura of faturas.results) {
+          const vencimento = normalizarData(fatura.dueDate);
+          if (!vencimento) continue;
+          vencimentosBrutos.push({
+            vencimento,
+            total: Number(fatura.totalAmount ?? 0),
+            minimo:
+              fatura.minimumPaymentAmount == null ? null : Number(fatura.minimumPaymentAmount),
+          });
         }
       } catch (error) {
         console.warn('[PLUGGY] Fatura do cartão indisponível nesta conta.', error);
       }
 
+      vencimentosBrutos.sort((a, b) => a.vencimento.localeCompare(b.vencimento));
+
+      for (let i = 0; i < vencimentosBrutos.length; i += 1) {
+        const atual = vencimentosBrutos[i];
+        if (!atual) continue;
+        const anterior = vencimentosBrutos[i - 1];
+        const from = anterior
+          ? adicionarDias(anterior.vencimento, 1)
+          : inicioDoMes(adicionarMeses(atual.vencimento, -1));
+        const to = atual.vencimento > hoje ? hoje : atual.vencimento;
+        const chave = chaveDoMes(atual.vencimento);
+        const existente = resumosPorChave.get(chave);
+
+        // Se houver mais de um cartão no mesmo mês, soma os totais.
+        resumosPorChave.set(chave, {
+          chave,
+          vencimento: atual.vencimento,
+          total: (existente?.total ?? 0) + atual.total,
+          minimo:
+            atual.minimo == null
+              ? existente?.minimo ?? null
+              : (existente?.minimo ?? 0) + atual.minimo,
+          from: existente && existente.from < from ? existente.from : from,
+          to: existente && existente.to > to ? existente.to : to,
+        });
+      }
+
       const brutas = await pluggyClient.fetchAllTransactions(conta.id, {
-        from: mes,
-        to: hoje,
+        from: janelaFrom,
+        to: janelaTo,
       });
 
       for (const transacao of brutas) {
@@ -207,7 +304,7 @@ const PluggyService = {
         if (!ehDespesa(item.amount, 'CREDIT')) continue;
         if (ehRuidoBancario(chaveDescricao(item.description))) continue;
 
-        lancamentos.push({
+        todosLancamentos.push({
           nome: formatarNomeServico(item.merchantName || item.description),
           data: item.date,
           valor: Math.abs(item.amount),
@@ -215,16 +312,90 @@ const PluggyService = {
       }
     }
 
-    lancamentos.sort((a, b) => b.data.localeCompare(a.data));
+    // Garante abas do mês atual e do próximo (estilo app de fatura).
+    const ultimaConhecida = [...resumosPorChave.values()].sort((a, b) =>
+      b.vencimento.localeCompare(a.vencimento),
+    )[0];
+
+    if (!resumosPorChave.has(mesAtual)) {
+      const vencimento = ultimaConhecida
+        ? adicionarMeses(ultimaConhecida.vencimento, mesAtual > chaveDoMes(ultimaConhecida.vencimento) ? 1 : 0)
+        : `${mesAtual}-01`;
+      resumosPorChave.set(mesAtual, {
+        chave: mesAtual,
+        vencimento,
+        total: 0,
+        minimo: null,
+        from: inicioDoMes(adicionarMeses(`${mesAtual}-01`, -1)),
+        to: hoje,
+      });
+    }
+
+    if (!resumosPorChave.has(mesProximo)) {
+      const base = resumosPorChave.get(mesAtual) ?? ultimaConhecida;
+      const vencimento = base ? adicionarMeses(base.vencimento, 1) : `${mesProximo}-01`;
+      const from = base ? adicionarDias(base.vencimento, 1) : inicioDoMes(mesAtual);
+      resumosPorChave.set(mesProximo, {
+        chave: mesProximo,
+        vencimento,
+        total: 0,
+        minimo: null,
+        from,
+        to: hoje,
+      });
+    }
+
+    const periodosOrdenados = [...resumosPorChave.values()].sort((a, b) =>
+      a.chave.localeCompare(b.chave),
+    );
+
+    const periodosCompletos: PeriodoFatura[] = periodosOrdenados.map((item) => ({
+      chave: item.chave,
+      rotulo: rotuloMesCurto(item.chave),
+      vencimento: item.vencimento,
+      papel: papelDoPeriodo(item.chave, hoje),
+    }));
+
+    const foco = periodosCompletos.filter((p) => p.papel !== 'anterior');
+    const anteriores = periodosCompletos.filter((p) => p.papel === 'anterior').slice(-3);
+    const periodos = [...anteriores, ...foco];
+
+    const preferida =
+      periodos.find((p) => p.papel === 'proxima')?.chave ??
+      periodos.find((p) => p.papel === 'atual')?.chave ??
+      periodos[periodos.length - 1]?.chave ??
+      mesAtual;
+
+    const chaveSelecionada =
+      mesChave && resumosPorChave.has(mesChave) ? mesChave : preferida;
+    const selecionada = resumosPorChave.get(chaveSelecionada) ?? {
+      chave: chaveSelecionada,
+      vencimento: null as string | null,
+      total: 0,
+      minimo: null as number | null,
+      from: inicioDoMes(chaveSelecionada),
+      to: hoje,
+    };
+
+    const lancamentos = todosLancamentos
+      .filter((item) => item.data >= selecionada.from && item.data <= selecionada.to)
+      .sort((a, b) => b.data.localeCompare(a.data));
+
     const totalLancamentos = lancamentos.reduce((soma, item) => soma + item.valor, 0);
+    const total =
+      selecionada.total > 0
+        ? selecionada.total
+        : totalLancamentos;
 
     return {
-      mes: rotuloMes(hoje),
+      mes: rotuloMes(chaveSelecionada),
+      mesChave: chaveSelecionada,
       cartao,
-      vencimento,
-      total: totalFatura ?? totalLancamentos,
-      minimo,
+      vencimento: selecionada.vencimento,
+      total,
+      minimo: selecionada.minimo,
       lancamentos,
+      periodos,
     };
   },
 };

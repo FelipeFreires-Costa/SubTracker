@@ -4,14 +4,14 @@ import {
   FaCheck,
   FaChevronDown,
   FaChevronUp,
-  FaHome,
   FaRegTrashAlt,
-  FaTag,
-  FaTv,
   FaWallet,
 } from 'react-icons/fa';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { MdEdit, MdOutlineEventBusy, MdOutlineSchedule, MdToday } from 'react-icons/md';
+import type { OrigemConta, SituacaoConta } from '../../types/Conta';
+import { iconeDaConta } from '../../utils/categoriaIcones';
+import { rotuloCategoria } from '../../utils/contaHelpers';
 import { nomeParaExibicao } from '../../utils/contaHelpers';
 
 interface CardsContasProps {
@@ -27,9 +27,14 @@ interface CardsContasProps {
   categoria?: string;
   periodicidade?: string | null;
   historico?: string | null;
+  situacaoHeuristica?: SituacaoConta | null;
+  origem?: OrigemConta | null;
 }
 
-function rotuloSituacao(situacao: string, pago: boolean) {
+function rotuloSituacao(situacao: string, pago: boolean, situacaoHeuristica?: SituacaoConta | null) {
+  if (situacaoHeuristica === 'ativa') return 'Ativa';
+  if (situacaoHeuristica === 'pendente') return 'Pendente';
+  if (situacaoHeuristica === 'encerrada') return 'Encerrada';
   if (pago) return 'Paga';
   if (situacao === 'vencida') return 'Atrasada';
   if (situacao === 'perto') return 'Em breve';
@@ -38,18 +43,23 @@ function rotuloSituacao(situacao: string, pago: boolean) {
   return situacao || 'Aberta';
 }
 
+function classeStatus(
+  situacao: string,
+  pago: boolean,
+  situacaoHeuristica?: SituacaoConta | null,
+) {
+  if (situacaoHeuristica === 'ativa') return 'ativa';
+  if (situacaoHeuristica === 'pendente') return 'pendente';
+  if (situacaoHeuristica === 'encerrada') return 'encerrada';
+  if (pago) return 'pago';
+  return situacao || 'aberta';
+}
+
 function iconeSituacao(situacao: string, pago: boolean) {
   if (pago) return <FaCheck size={14} />;
   if (situacao === 'vencida') return <MdOutlineEventBusy size={16} />;
   if (situacao === 'hoje') return <MdToday size={16} />;
   return <MdOutlineSchedule size={16} />;
-}
-
-function iconeCategoria(categoria?: string) {
-  const chave = (categoria || '').toLowerCase();
-  if (chave.includes('stream')) return <FaTv size={12} />;
-  if (chave.includes('moradia') || chave.includes('casa')) return <FaHome size={12} />;
-  return <FaTag size={12} />;
 }
 
 function MenuAcoes({
@@ -131,17 +141,20 @@ const CardsContas = ({
   categoria,
   periodicidade,
   historico,
+  situacaoHeuristica,
+  origem,
 }: CardsContasProps) => {
   const [estaAberto, setEstaAberto] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const status = rotuloSituacao(situacao, pago);
+  const status = rotuloSituacao(situacao, pago, situacaoHeuristica);
+  const categoriaPt = categoria ? rotuloCategoria(categoria) : '';
   const valor = preco.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
   const titulo = nomeParaExibicao(nome);
-  const classeStatus = pago ? 'pago' : situacao || 'aberta';
+  const statusClasse = classeStatus(situacao, pago, situacaoHeuristica);
   const textoQuando = pago
     ? `Próxima ${data}`
     : situacao === 'vencida'
@@ -167,27 +180,28 @@ const CardsContas = ({
   }, [menuAberto]);
 
   return (
-    <article className={`linha-conta ${classeStatus}`}>
+    <article className={`linha-conta ${statusClasse}`}>
       <div className="linha-conta-corpo">
-        <span className={`linha-icone ${classeStatus}`} aria-hidden="true">
-          {iconeSituacao(situacao, pago)}
+        <span className={`linha-icone categoria ${statusClasse}`} aria-hidden="true">
+          {iconeDaConta(categoria, nome, 16)}
         </span>
 
         <div className="linha-info">
           <div className="linha-topo">
             <h3 title={titulo}>{titulo}</h3>
-            <span className={`status-pill ${classeStatus}`}>{status}</span>
+            <span className={`status-pill ${statusClasse}`}>{status}</span>
           </div>
 
           <div className="linha-meta">
-            {categoria && (
-              <span className="meta-chip">
-                {iconeCategoria(categoria)}
-                {categoria}
-              </span>
-            )}
+            <span className={`meta-chip meta-origem ${origem === 'pluggy' ? 'open-finance' : 'manual'}`}>
+              {origem === 'pluggy' ? 'Open Finance' : 'Manual'}
+            </span>
+            {categoriaPt && <span className="meta-chip">{categoriaPt}</span>}
             {periodicidade && <span className="meta-chip">{periodicidade}</span>}
-            <span className="meta-chip meta-quando">{textoQuando}</span>
+            <span className="meta-chip meta-quando">
+              {iconeSituacao(situacao, pago)}
+              {textoQuando}
+            </span>
             {!pago && textoDias && <span className="meta-chip meta-urgencia">{textoDias}</span>}
           </div>
         </div>
@@ -232,7 +246,7 @@ const CardsContas = ({
           </p>
           <p>
             <strong>Categoria: </strong>
-            {categoria || 'Sem categoria'}
+            {categoriaPt || 'Sem categoria'}
           </p>
           {periodicidade && (
             <p>

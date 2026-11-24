@@ -1,0 +1,16 @@
+{
+  "papel": "exploracao-historica-pre-correcao-gerador",
+  "semente": 2026,
+  "totalCasos": 120,
+  "heuristica": {
+    "verdadeirosPositivos": 57,
+    "verdadeirosNegativos": 60,
+    "falsosPositivos": 0,
+    "falsosNegativos": 3,
+    "acuracia": 97.5,
+    "precisao": 100,
+    "recall": 95.0,
+    "f1": 97.4
+  },
+  "observacao": "Registro histórico da semente 2026 ANTES da correção de validade do gerador (R8 com Sports/Telecom; R4 com deriva ±4 dias). Os 3 FN eram R4×2 e R8×1. NÃO é evidência independente. Mantido para transparência do processo de refinamento. O gerador v2 e o teste oficial 2027 substituem este arquivo como evidência formal."
+}

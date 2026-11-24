@@ -3,6 +3,7 @@ import contaRoutes from './conta.routes';
 import pluggyRoutes from './pluggy.routes';
 import avaliacaoRoutes from './avaliacao.routes';
 import sandboxRoutes from './sandbox.routes';
+import demoAcademicaRoutes from './demoAcademica.routes';
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use(contaRoutes);
 router.use(pluggyRoutes);
 router.use(avaliacaoRoutes);
 router.use(sandboxRoutes);
+router.use(demoAcademicaRoutes);
 
 export default router;

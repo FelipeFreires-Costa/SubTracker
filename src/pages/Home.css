@@ -1,0 +1,255 @@
+.home-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.home-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.home-kpi {
+  background: var(--folha);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 112px;
+}
+
+.home-kpi-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--tinta-fraca);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.home-kpi-topo span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-kpi strong {
+  font-size: 1.45rem;
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.home-kpi em {
+  font-style: normal;
+  color: var(--tinta-fraca);
+  font-size: 0.82rem;
+}
+
+.home-kpi.destaque {
+  border-left: 3px solid var(--agua);
+}
+
+.home-kpi.ok {
+  border-left: 3px solid var(--ok);
+}
+
+.home-kpi.alerta {
+  border-left: 3px solid var(--alerta);
+}
+
+.home-painel-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.home-painel {
+  background: var(--folha);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 16px 18px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-painel-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.home-painel-topo h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.home-painel-topo a,
+.home-painel-topo button.linkish {
+  background: none;
+  border: none;
+  color: var(--agua);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.home-modo-serie {
+  display: inline-flex;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  overflow: hidden;
+}
+
+.home-modo-serie button {
+  border: none;
+  background: transparent;
+  color: var(--tinta-fraca);
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.home-modo-serie button.ativo {
+  background: var(--marca);
+  color: #f2f2f2;
+}
+
+.home-grafico {
+  flex: 1;
+  min-height: 200px;
+  width: 100%;
+}
+
+.home-proximos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: auto;
+}
+
+.home-proximos li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--linha);
+}
+
+.home-proximos li:last-child {
+  border-bottom: none;
+}
+
+.home-prox-icone {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--raio);
+  display: grid;
+  place-items: center;
+  line-height: 0;
+  background: color-mix(in srgb, var(--agua) 14%, transparent);
+  color: var(--agua);
+  flex-shrink: 0;
+}
+
+.home-prox-icone svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.home-prox-info strong {
+  display: block;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-prox-info span {
+  display: block;
+  margin-top: 2px;
+  color: var(--tinta-fraca);
+  font-size: 0.8rem;
+}
+
+.home-prox-info span.atrasada {
+  color: var(--alerta);
+}
+
+.home-prox-valor {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.home-alerta-faixa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--linha);
+  border-left: 3px solid var(--ouro);
+  border-radius: var(--raio);
+  background: color-mix(in srgb, var(--ouro) 8%, transparent);
+}
+
+.home-alerta-faixa p {
+  margin: 0;
+  color: var(--tinta);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.home-alerta-faixa button {
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  background: var(--folha);
+  color: var(--tinta);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.home-vazio-painel {
+  margin: auto;
+  color: var(--tinta-fraca);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.home-acoes-compactas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 980px) {
+  .home-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-painel-grade {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,5 +1,6 @@
 export type Periodicidade = 'mensal' | 'bimestral' | 'anual' | 'indefinida';
 export type OrigemConta = 'manual' | 'pluggy';
+export type SituacaoConta = 'ativa' | 'pendente' | 'encerrada';
 
 export interface Conta {
   id: number;
@@ -17,6 +18,7 @@ export interface Conta {
   ocorrencias: number | null;
   primeiraCobranca: string | null;
   totalGasto: number | null;
+  situacao: SituacaoConta | null;
 }
 
 export interface CriarContaInput {
@@ -34,6 +36,7 @@ export interface CriarContaInput {
   ocorrencias?: number | null;
   primeiraCobranca?: string | null;
   totalGasto?: number | null;
+  situacao?: SituacaoConta | null;
 }
 
 export interface AtualizarContaInput {

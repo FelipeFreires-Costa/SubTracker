@@ -125,8 +125,19 @@
 }
 
 .linha-conta.tranquilo,
-.linha-conta.aberta {
+.linha-conta.aberta,
+.linha-conta.ativa {
   border-left-color: var(--agua);
+}
+
+.linha-conta.pendente {
+  border-left-color: #d4a017;
+  background: color-mix(in srgb, #d4a017 8%, transparent);
+}
+
+.linha-conta.encerrada {
+  border-left-color: var(--tinta-fraca);
+  opacity: 0.75;
 }
 
 .linha-conta.pago {
@@ -146,11 +157,23 @@
   width: 38px;
   height: 38px;
   border-radius: var(--raio);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  line-height: 0;
   flex-shrink: 0;
   background: var(--detalhes, #1c1c1c);
+}
+
+.linha-icone svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.linha-icone.categoria {
+  background: color-mix(in srgb, var(--agua) 14%, transparent);
+  color: var(--agua);
 }
 
 .linha-icone.vencida {
@@ -165,9 +188,20 @@
 }
 
 .linha-icone.tranquilo,
-.linha-icone.aberta {
+.linha-icone.aberta,
+.linha-icone.ativa {
   background: color-mix(in srgb, var(--agua) 18%, transparent);
   color: var(--agua);
+}
+
+.linha-icone.pendente {
+  background: color-mix(in srgb, #d4a017 18%, transparent);
+  color: #d4a017;
+}
+
+.linha-icone.encerrada {
+  background: color-mix(in srgb, var(--tinta-fraca) 18%, transparent);
+  color: var(--tinta-fraca);
 }
 
 .linha-icone.pago {
@@ -203,7 +237,7 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--raio);
   border: 1px solid transparent;
 }
 
@@ -221,10 +255,23 @@
 }
 
 .status-pill.tranquilo,
-.status-pill.aberta {
+.status-pill.aberta,
+.status-pill.ativa {
   color: var(--agua);
   background: color-mix(in srgb, var(--agua) 14%, transparent);
   border-color: color-mix(in srgb, var(--agua) 35%, transparent);
+}
+
+.status-pill.pendente {
+  color: #d4a017;
+  background: color-mix(in srgb, #d4a017 14%, transparent);
+  border-color: color-mix(in srgb, #d4a017 35%, transparent);
+}
+
+.status-pill.encerrada {
+  color: var(--tinta-fraca);
+  background: color-mix(in srgb, var(--tinta-fraca) 14%, transparent);
+  border-color: color-mix(in srgb, var(--tinta-fraca) 35%, transparent);
 }
 
 .status-pill.pago {
@@ -245,7 +292,7 @@
   align-items: center;
   gap: 5px;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--raio);
   background: color-mix(in srgb, var(--folha) 80%, #000);
   border: 1px solid var(--linha);
   color: var(--tinta-fraca);
@@ -254,9 +301,22 @@
   white-space: nowrap;
 }
 
+.meta-chip svg {
+  flex-shrink: 0;
+}
+
 .meta-urgencia {
   color: var(--alerta);
   border-color: color-mix(in srgb, var(--alerta) 40%, var(--linha));
+}
+
+.meta-origem.open-finance {
+  color: var(--agua);
+  border-color: color-mix(in srgb, var(--agua) 45%, var(--linha));
+}
+
+.meta-origem.manual {
+  color: var(--tinta-fraca);
 }
 
 .linha-valor-bloco {

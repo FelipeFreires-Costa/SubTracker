@@ -1,0 +1,11 @@
+CONGELAMENTO DAS REGRAS — SubTracker
+Data: 2026-11-16
+
+Regras (heuristica.recorrencia.ts): NÃO alterar limiares/filtros para melhorar métricas.
+Gerador (dataset.teste.ts): v2-validade (R8=Subscriptions, R4=±2 dias, E1=gaps irregulares).
+  Correção de validade de rótulos — NÃO é retune das regras.
+
+Teste oficial held-out: semente 2027 (npm run avaliar:teste:oficial)
+Estabilidade: npm run avaliar:estabilidade
+Snapshot: heuristica.recorrencia.CONGELADA.ts + dataset.teste.CONGELADO.ts
+Parecer: PARECER-VALIDADE.md

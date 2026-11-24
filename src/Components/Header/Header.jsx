@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Header.css";
 import { NavLink } from "react-router-dom";
-import { FaWallet, FaListUl, FaChartPie, FaCreditCard } from "react-icons/fa";
+import { FaWallet, FaListUl, FaChartPie, FaCreditCard, FaGraduationCap } from "react-icons/fa";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 const Header = () => {
@@ -52,6 +52,11 @@ const Header = () => {
         <NavLink to="/fatura" title="Fatura">
           <FaCreditCard size={18} />
           {sidebarAberta && <span>Fatura</span>}
+        </NavLink>
+
+        <NavLink to="/demonstracao-academica" title="Demonstração Acadêmica">
+          <FaGraduationCap size={18} />
+          {sidebarAberta && <span>Modo TCC</span>}
         </NavLink>
       </nav>
     </aside>

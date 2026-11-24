@@ -38,8 +38,9 @@ export const pluggyService = {
     return apiRequest<RelatorioAvaliacaoHeuristica>('/heuristica/avaliacao');
   },
 
-  faturaMesAtual(): Promise<FaturaMesAtual> {
-    return apiRequest<FaturaMesAtual>('/pluggy/fatura');
+  faturaMesAtual(mesChave?: string | null): Promise<FaturaMesAtual> {
+    const query = mesChave ? `?mes=${encodeURIComponent(mesChave)}` : '';
+    return apiRequest<FaturaMesAtual>(`/pluggy/fatura${query}`);
   },
 
   baixarExtrato(): Promise<void> {

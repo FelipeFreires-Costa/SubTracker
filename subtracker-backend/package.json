@@ -10,6 +10,8 @@
     "migrate:recorrencia": "node scripts/migrate-recorrencia.js",
     "avaliar": "node -r ts-node/register/transpile-only scripts/avaliar-heuristica.ts",
     "avaliar:teste": "node -r ts-node/register/transpile-only scripts/avaliar-teste.ts",
+    "avaliar:teste:oficial": "node -r ts-node/register/transpile-only scripts/avaliar-teste-oficial.ts",
+    "avaliar:estabilidade": "node -r ts-node/register/transpile-only scripts/avaliar-estabilidade.ts",
     "sandbox": "node -r ts-node/register/transpile-only scripts/testar-sandbox.ts"
   },
   "keywords": [],

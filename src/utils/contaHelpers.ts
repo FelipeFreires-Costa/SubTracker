@@ -81,6 +81,50 @@ export function rotuloPeriodicidade(periodicidade?: Periodicidade | null) {
   return null;
 }
 
+/** Traduz categorias da Pluggy / API para rótulo em português na UI. */
+const CATEGORIAS_PT: Record<string, string> = {
+  subscriptions: 'Assinaturas',
+  subscription: 'Assinaturas',
+  transfer: 'Transferência',
+  transfers: 'Transferência',
+  electricity: 'Energia',
+  telecommunications: 'Telecomunicações',
+  telecom: 'Telecomunicações',
+  sports: 'Esportes',
+  utilities: 'Moradia',
+  utility: 'Moradia',
+  'digital services': 'Serviços digitais',
+  streaming: 'Streaming',
+  entertainment: 'Entretenimento',
+  'food and drink': 'Alimentação',
+  'eating out': 'Alimentação',
+  groceries: 'Mercado',
+  shopping: 'Compras',
+  transport: 'Transporte',
+  transportation: 'Transporte',
+  travel: 'Viagem',
+  education: 'Educação',
+  health: 'Saúde',
+  insurance: 'Seguro',
+  games: 'Jogos',
+  gaming: 'Jogos',
+  software: 'Software',
+  others: 'Outros',
+  other: 'Outros',
+  outros: 'Outros',
+  moradia: 'Moradia',
+  alimentação: 'Alimentação',
+  educacao: 'Educação',
+  educação: 'Educação',
+  transporte: 'Transporte',
+};
+
+export function rotuloCategoria(categoria?: string | null) {
+  if (!categoria?.trim()) return 'Outros';
+  const chave = categoria.trim().toLowerCase();
+  return CATEGORIAS_PT[chave] ?? categoria.trim();
+}
+
 export function formatarData(dataAmericana: string) {
   if (!dataAmericana) return '';
   const partes = dataAmericana.split('-');
@@ -302,4 +346,42 @@ export function agruparPorMes(contas: Conta[]) {
       total: itens.reduce((soma, conta) => soma + Number(conta.preco), 0),
       contas: itens,
     }));
+}
+
+/** Dia curto para cards (ex.: 21 de dez). */
+export function formatarDiaMes(iso: string) {
+  const data = parseIsoLocal(iso);
+  const texto = data.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
+  return texto.replace('.', '');
+}
+
+/**
+ * Série dos últimos N meses: custo mensal equivalente das contas já ativas
+ * naquele mês (desde primeira cobrança / data). Útil para visão do usuário.
+ */
+export function serieGastoMensal(contas: Conta[], quantidade = 12, hoje = hojeIso()) {
+  const base = parseIsoLocal(hoje);
+  const pontos: Array<{ chave: string; rotulo: string; total: number }> = [];
+
+  for (let i = quantidade - 1; i >= 0; i -= 1) {
+    const ref = new Date(base.getFullYear(), base.getMonth() - i, 1);
+    const ano = ref.getFullYear();
+    const mes = ref.getMonth() + 1;
+    const chave = `${ano}-${String(mes).padStart(2, '0')}`;
+    const fimMes = `${chave}-${String(new Date(ano, mes, 0).getDate()).padStart(2, '0')}`;
+
+    const total = contas.reduce((soma, conta) => {
+      const desde = conta.primeiraCobranca || conta.data;
+      if (!desde || desde > fimMes) return soma;
+      return soma + custoMensal(conta);
+    }, 0);
+
+    pontos.push({
+      chave,
+      rotulo: ref.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
+      total: Number(total.toFixed(2)),
+    });
+  }
+
+  return pontos;
 }

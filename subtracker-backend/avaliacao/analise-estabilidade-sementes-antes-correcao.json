@@ -1,0 +1,265 @@
+{
+  "geradoEm": "2026-11-16T15:09:46.474Z",
+  "regras": "congeladas",
+  "nPorSemente": 120,
+  "sementes": [
+    {
+      "semente": 2026,
+      "acc": 97.5,
+      "prec": 100,
+      "rec": 95,
+      "f1": 97.4,
+      "vp": 57,
+      "vn": 60,
+      "fp": 0,
+      "fn": 3,
+      "ciclo": 100,
+      "erros": 3,
+      "porCenario": {
+        "R4_consumo_valor_variavel": 2,
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2027,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2028,
+      "acc": 99.2,
+      "prec": 100,
+      "rec": 98.3,
+      "f1": 99.2,
+      "vp": 59,
+      "vn": 60,
+      "fp": 0,
+      "fn": 1,
+      "ciclo": 100,
+      "erros": 1,
+      "porCenario": {
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2029,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2030,
+      "acc": 98.3,
+      "prec": 100,
+      "rec": 96.7,
+      "f1": 98.3,
+      "vp": 58,
+      "vn": 60,
+      "fp": 0,
+      "fn": 2,
+      "ciclo": 100,
+      "erros": 2,
+      "porCenario": {
+        "R4_consumo_valor_variavel": 1,
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2031,
+      "acc": 96.7,
+      "prec": 100,
+      "rec": 93.3,
+      "f1": 96.6,
+      "vp": 56,
+      "vn": 60,
+      "fp": 0,
+      "fn": 4,
+      "ciclo": 100,
+      "erros": 4,
+      "porCenario": {
+        "R4_consumo_valor_variavel": 3,
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2032,
+      "acc": 99.2,
+      "prec": 100,
+      "rec": 98.3,
+      "f1": 99.2,
+      "vp": 59,
+      "vn": 60,
+      "fp": 0,
+      "fn": 1,
+      "ciclo": 100,
+      "erros": 1,
+      "porCenario": {
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2033,
+      "acc": 99.2,
+      "prec": 100,
+      "rec": 98.3,
+      "f1": 99.2,
+      "vp": 59,
+      "vn": 60,
+      "fp": 0,
+      "fn": 1,
+      "ciclo": 100,
+      "erros": 1,
+      "porCenario": {
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2034,
+      "acc": 99.2,
+      "prec": 100,
+      "rec": 98.3,
+      "f1": 99.2,
+      "vp": 59,
+      "vn": 60,
+      "fp": 0,
+      "fn": 1,
+      "ciclo": 100,
+      "erros": 1,
+      "porCenario": {
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2035,
+      "acc": 95.8,
+      "prec": 100,
+      "rec": 91.7,
+      "f1": 95.7,
+      "vp": 55,
+      "vn": 60,
+      "fp": 0,
+      "fn": 5,
+      "ciclo": 100,
+      "erros": 5,
+      "porCenario": {
+        "R8_assinatura_recente": 4,
+        "R4_consumo_valor_variavel": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2040,
+      "acc": 99.2,
+      "prec": 100,
+      "rec": 98.3,
+      "f1": 99.2,
+      "vp": 59,
+      "vn": 60,
+      "fp": 0,
+      "fn": 1,
+      "ciclo": 100,
+      "erros": 1,
+      "porCenario": {
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2100,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 9999,
+      "acc": 99.2,
+      "prec": 100,
+      "rec": 98.3,
+      "f1": 99.2,
+      "vp": 59,
+      "vn": 60,
+      "fp": 0,
+      "fn": 1,
+      "ciclo": 100,
+      "erros": 1,
+      "porCenario": {
+        "R8_assinatura_recente": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 42,
+      "acc": 98.3,
+      "prec": 100,
+      "rec": 96.7,
+      "f1": 98.3,
+      "vp": 58,
+      "vn": 60,
+      "fp": 0,
+      "fn": 2,
+      "ciclo": 100,
+      "erros": 2,
+      "porCenario": {
+        "R8_assinatura_recente": 2
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 7,
+      "acc": 97.5,
+      "prec": 100,
+      "rec": 95,
+      "f1": 97.4,
+      "vp": 57,
+      "vn": 60,
+      "fp": 0,
+      "fn": 3,
+      "ciclo": 100,
+      "erros": 3,
+      "porCenario": {
+        "R8_assinatura_recente": 3
+      },
+      "baseF1": 70.6
+    }
+  ],
+  "resumo": {
+    "meanAcc": 98.62,
+    "minAcc": 95.8,
+    "maxAcc": 100
+  }
+}

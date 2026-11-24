@@ -36,7 +36,7 @@ async function migrar() {
     WHERE table_name = 'contas'
       AND column_name IN (
         'recorrente', 'periodicidade', 'proxima_cobranca', 'origem',
-        'parcela_atual', 'parcela_total', 'ocorrencias', 'primeira_cobranca', 'total_gasto'
+        'parcela_atual', 'parcela_total', 'ocorrencias', 'primeira_cobranca', 'total_gasto', 'situacao'
       )
     ORDER BY column_name
   `);

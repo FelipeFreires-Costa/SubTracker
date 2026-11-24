@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS contas (
   ocorrencias INTEGER,
   primeira_cobranca DATE,
   total_gasto NUMERIC(12, 2),
+  situacao VARCHAR(20),
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 

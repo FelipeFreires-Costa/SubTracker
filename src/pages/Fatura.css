@@ -1,0 +1,432 @@
+.fatura-pagina {
+  width: auto;
+  margin: 24px 28px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fatura-cabecalho h1 {
+  margin: 0 0 6px;
+  font-size: 1.7rem;
+  color: var(--tinta);
+}
+
+.fatura-cabecalho p {
+  margin: 0;
+  color: var(--tinta-fraca);
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+
+.fatura-meses {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.fatura-mes-aba {
+  appearance: none;
+  flex: 0 0 auto;
+  min-width: 92px;
+  border: 1px solid var(--linha);
+  background: var(--folha);
+  color: var(--tinta-fraca);
+  border-radius: var(--raio);
+  padding: 10px 12px;
+  cursor: pointer;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.fatura-mes-aba strong {
+  color: var(--tinta);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.fatura-mes-aba span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--tinta-fraca);
+}
+
+.fatura-mes-aba.ativa {
+  border-color: color-mix(in srgb, var(--agua) 45%, #333);
+  background: color-mix(in srgb, var(--agua) 14%, transparent);
+}
+
+.fatura-mes-aba.ativa span {
+  color: var(--agua);
+}
+
+.fatura-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--agua) 22%, transparent), transparent 55%),
+    linear-gradient(160deg, #161a1f 0%, #101214 55%, #0d0f12 100%);
+  padding: 22px 22px 20px;
+  display: grid;
+  gap: 18px;
+}
+
+.fatura-hero-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.fatura-hero-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tinta-fraca);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.fatura-hero-marca i {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--raio);
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--agua) 18%, transparent);
+  color: var(--agua);
+  line-height: 0;
+}
+
+.fatura-hero-marca i svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.fatura-hero-marca strong {
+  display: block;
+  color: var(--tinta);
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+.fatura-hero-selo {
+  padding: 5px 9px;
+  border: 1px solid color-mix(in srgb, var(--agua) 35%, var(--linha));
+  border-radius: var(--raio);
+  color: #c9d8e6;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.fatura-hero-valor span {
+  display: block;
+  color: var(--tinta-fraca);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.fatura-hero-valor strong {
+  display: block;
+  color: var(--tinta);
+  font-size: clamp(1.8rem, 3vw, 2.35rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.fatura-hero-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-top: 4px;
+  border-top: 1px solid color-mix(in srgb, var(--linha) 80%, transparent);
+}
+
+.fatura-hero-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fatura-hero-meta span {
+  color: var(--tinta-fraca);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.fatura-hero-meta strong {
+  color: var(--tinta);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fatura-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fatura-stat {
+  background: var(--folha);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 96px;
+}
+
+.fatura-stat.destaque {
+  border-left: 3px solid var(--agua);
+}
+
+.fatura-stat-topo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tinta-fraca);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.fatura-stat strong {
+  color: var(--tinta);
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.fatura-stat em {
+  font-style: normal;
+  color: var(--tinta-fraca);
+  font-size: 0.8rem;
+}
+
+.fatura-painel {
+  background: var(--folha);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fatura-painel-topo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.fatura-painel-topo h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--tinta);
+}
+
+.fatura-painel-topo p {
+  margin: 4px 0 0;
+  color: var(--tinta-fraca);
+  font-size: 0.86rem;
+}
+
+.fatura-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.fatura-filtros input {
+  flex: 1;
+  min-width: 180px;
+  background: var(--detalhes, #141414);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  color: var(--tinta);
+  padding: 8px 10px;
+  font: inherit;
+}
+
+.fatura-chip {
+  appearance: none;
+  border: 1px solid var(--linha);
+  background: transparent;
+  color: var(--tinta-fraca);
+  padding: 7px 10px;
+  border-radius: var(--raio);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.fatura-chip.ativa {
+  color: var(--tinta);
+  background: color-mix(in srgb, var(--agua) 16%, transparent);
+  border-color: color-mix(in srgb, var(--agua) 35%, #333);
+}
+
+.fatura-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fatura-grupo-titulo {
+  margin: 14px 0 6px;
+  color: var(--tinta-fraca);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fatura-grupo-titulo:first-child {
+  margin-top: 2px;
+}
+
+.fatura-item {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--linha);
+}
+
+.fatura-item:last-child {
+  border-bottom: none;
+}
+
+.fatura-item-icone {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--raio);
+  display: grid;
+  place-items: center;
+  line-height: 0;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--agua) 12%, transparent);
+  color: var(--agua);
+}
+
+.fatura-item-icone.assinatura {
+  background: color-mix(in srgb, #3d7a55 16%, transparent);
+  color: #9fd0b0;
+}
+
+.fatura-item-icone svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.fatura-item-info {
+  min-width: 0;
+}
+
+.fatura-item-info strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--tinta);
+  font-size: 0.95rem;
+}
+
+.fatura-item-info span {
+  display: block;
+  margin-top: 3px;
+  color: var(--tinta-fraca);
+  font-size: 0.8rem;
+}
+
+.fatura-selo {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: var(--raio);
+  border: 1px solid color-mix(in srgb, #3d7a55 40%, #333);
+  background: color-mix(in srgb, #3d7a55 14%, transparent);
+  color: #9fd0b0;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.fatura-item-valor {
+  color: var(--tinta);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.fatura-vazio,
+.fatura-erro,
+.fatura-carregando {
+  margin: 0;
+  color: var(--tinta-fraca);
+  font-size: 0.92rem;
+}
+
+.fatura-erro {
+  color: var(--alerta);
+}
+
+.fatura-nota {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--linha);
+  color: var(--tinta-fraca);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .fatura-hero-meta,
+  .fatura-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .fatura-pagina {
+    margin: 16px;
+  }
+
+  .fatura-hero-meta,
+  .fatura-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .fatura-item {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .fatura-item-valor {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

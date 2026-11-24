@@ -1,0 +1,329 @@
+{
+  "geradoEm": "2026-11-16T15:12:47.818Z",
+  "regras": "congeladas (heuristica.recorrencia.ts inalterada)",
+  "gerador": "v2-validade: R8=Subscriptions, R4=deriva±2, E1=gaps irregulares",
+  "nPorSemente": 120,
+  "sementes": [
+    {
+      "semente": 2026,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2027,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2028,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2029,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2030,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2031,
+      "acc": 99.2,
+      "prec": 100,
+      "rec": 98.3,
+      "f1": 99.2,
+      "vp": 59,
+      "vn": 60,
+      "fp": 0,
+      "fn": 1,
+      "ciclo": 100,
+      "erros": 1,
+      "porCenario": {
+        "R4_consumo_valor_variavel": 1
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2032,
+      "acc": 98.3,
+      "prec": 100,
+      "rec": 96.7,
+      "f1": 98.3,
+      "vp": 58,
+      "vn": 60,
+      "fp": 0,
+      "fn": 2,
+      "ciclo": 100,
+      "erros": 2,
+      "porCenario": {
+        "R4_consumo_valor_variavel": 2
+      },
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2033,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2034,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2035,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2040,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 2100,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 9999,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 42,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    },
+    {
+      "semente": 7,
+      "acc": 100,
+      "prec": 100,
+      "rec": 100,
+      "f1": 100,
+      "vp": 60,
+      "vn": 60,
+      "fp": 0,
+      "fn": 0,
+      "ciclo": 100,
+      "erros": 0,
+      "porCenario": {},
+      "baseF1": 70.6
+    }
+  ],
+  "resumo": {
+    "meanAcc": 99.83,
+    "minAcc": 98.3,
+    "maxAcc": 100,
+    "meanF1": 99.83,
+    "totalFP": 0,
+    "totalFN": 3,
+    "totalCasos": 1800,
+    "nSementes": 15
+  },
+  "porCenario": {
+    "R1_assinatura_fixa": {
+      "casos": 150,
+      "fn": 0,
+      "fp": 0
+    },
+    "R2_assinatura_reajuste": {
+      "casos": 150,
+      "fn": 0,
+      "fp": 0
+    },
+    "R3_assinatura_mes_falho": {
+      "casos": 150,
+      "fn": 0,
+      "fp": 0
+    },
+    "R4_consumo_valor_variavel": {
+      "casos": 150,
+      "fn": 3,
+      "fp": 0
+    },
+    "R5_anual": {
+      "casos": 60,
+      "fn": 0,
+      "fp": 0
+    },
+    "R6_bimestral": {
+      "casos": 60,
+      "fn": 0,
+      "fp": 0
+    },
+    "E1_frequente_valor_irregular": {
+      "casos": 300,
+      "fn": 0,
+      "fp": 0
+    },
+    "E2_compra_unica": {
+      "casos": 150,
+      "fn": 0,
+      "fp": 0
+    },
+    "E6_mesmo_valor_datas_irregulares": {
+      "casos": 150,
+      "fn": 0,
+      "fp": 0
+    },
+    "E3_pix_para_pessoa": {
+      "casos": 75,
+      "fn": 0,
+      "fp": 0
+    },
+    "E4_parcelamento": {
+      "casos": 75,
+      "fn": 0,
+      "fp": 0
+    },
+    "R7_pix_de_conta": {
+      "casos": 60,
+      "fn": 0,
+      "fp": 0
+    },
+    "R8_assinatura_recente": {
+      "casos": 60,
+      "fn": 0,
+      "fp": 0
+    },
+    "E5_pagamento_fatura": {
+      "casos": 75,
+      "fn": 0,
+      "fp": 0
+    },
+    "E7_ted_irregular": {
+      "casos": 75,
+      "fn": 0,
+      "fp": 0
+    },
+    "R9_assinatura_cancelada": {
+      "casos": 60,
+      "fn": 0,
+      "fp": 0
+    }
+  }
+}

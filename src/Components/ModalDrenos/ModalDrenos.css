@@ -21,9 +21,17 @@
   border-radius: var(--raio);
   display: grid;
   place-items: center;
+  line-height: 0;
   background: color-mix(in srgb, var(--alerta) 18%, transparent);
   color: var(--alerta);
   flex-shrink: 0;
+}
+
+.modal-drenos-icone svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: 0;
 }
 
 .modal-drenos-topo h2 {

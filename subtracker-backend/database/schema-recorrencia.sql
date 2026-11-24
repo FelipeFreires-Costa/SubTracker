@@ -36,3 +36,7 @@ ALTER TABLE contas
   ADD COLUMN IF NOT EXISTS ocorrencias INTEGER,
   ADD COLUMN IF NOT EXISTS primeira_cobranca DATE,
   ADD COLUMN IF NOT EXISTS total_gasto NUMERIC(12, 2);
+
+-- Situação da heurística: ativa | pendente | encerrada (só contas Pluggy).
+ALTER TABLE contas
+  ADD COLUMN IF NOT EXISTS situacao VARCHAR(20);

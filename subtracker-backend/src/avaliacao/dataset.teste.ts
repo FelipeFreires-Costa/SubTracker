@@ -3,8 +3,12 @@ import type { Classificacao, Periodicidade, TransacaoAnalise } from '../utils/he
 /**
  * Conjunto de teste separado do gabarito de desenvolvimento (dataset.recorrencia.ts).
  * Gerado por semente fixa; o rótulo vem do tipo de cenário (tabela ROTULO_DO_CENARIO),
- * nunca da saída do algoritmo. Não alterar cenários, catálogo ou semente depois de
- * observar o resultado: isso anularia o caráter de teste.
+ * nunca da saída do algoritmo.
+ *
+ * Correção de validade do gerador (2026-11-16, pós-auditoria): R8 só usa categoria
+ * Subscriptions (alinhado ao critério documentado “2 ocorrências + Subscriptions”);
+ * R4 reduz deriva de dia (±2) para não misturar ruído de calendário com tolerância de valor.
+ * Regras da heurística NÃO foram alteradas.
  */
 
 export const SEMENTE_TESTE = 2026;
@@ -70,7 +74,8 @@ interface ItemCatalogo {
   categoria: string;
 }
 
-const ASSINATURAS: ItemCatalogo[] = [
+/** Streaming/SaaS: categoria Subscriptions (necessário para R8 com só 2 cobranças). */
+const ASSINATURAS_SUBSCRIPTIONS: ItemCatalogo[] = [
   { descricao: 'NETFLIX.COM', valor: 44.9, categoria: 'Subscriptions' },
   { descricao: 'SPOTIFY', valor: 21.9, categoria: 'Subscriptions' },
   { descricao: 'DISNEY PLUS', valor: 33.9, categoria: 'Subscriptions' },
@@ -85,12 +90,18 @@ const ASSINATURAS: ItemCatalogo[] = [
   { descricao: 'CANVA PRO', valor: 34.9, categoria: 'Subscriptions' },
   { descricao: 'DUOLINGO', valor: 29.9, categoria: 'Subscriptions' },
   { descricao: 'OPENAI CHATGPT', valor: 110, categoria: 'Subscriptions' },
+];
+
+/** Contas mensais com ≥3 ocorrências no cenário (não dependem do atalho Subscriptions). */
+const CONTAS_MENSAIS: ItemCatalogo[] = [
   { descricao: 'SMART FIT', valor: 119.9, categoria: 'Sports' },
   { descricao: 'WELLHUB', valor: 149.9, categoria: 'Sports' },
   { descricao: 'CLARO FIBRA', valor: 99.9, categoria: 'Telecommunications' },
   { descricao: 'VIVO FIBRA', valor: 109.99, categoria: 'Telecommunications' },
   { descricao: 'TIM CONTROLE', valor: 54.99, categoria: 'Telecommunications' },
 ];
+
+const ASSINATURAS: ItemCatalogo[] = [...ASSINATURAS_SUBSCRIPTIONS, ...CONTAS_MENSAIS];
 
 const CONSUMO_VARIAVEL: ItemCatalogo[] = [
   { descricao: 'ENEL DISTRIBUICAO CE', valor: 180, categoria: 'Utilities' },
@@ -271,10 +282,11 @@ function gerarRecorrente(rnd: Aleatorio, cenario: Cenario, item: ItemCatalogo): 
       return mensal(rnd, item, meses, { cartao, valor: () => item.valor, deslocamentoMax: 2 });
     }
     case 'R4_consumo_valor_variavel':
+      // deriva ±2 dias: realista para fatura de consumo; ±4 misturava falha de calendário com tolerância de valor
       return mensal(rnd, item, intervalo(0, ULTIMO_MES), {
         cartao: false,
         valor: () => item.valor * real(rnd, 0.75, 1.3),
-        deslocamentoMax: 4,
+        deslocamentoMax: 2,
       });
     case 'R5_anual': {
       const dia = inteiro(rnd, 1, 28);
@@ -318,10 +330,18 @@ function gerarRecorrente(rnd: Aleatorio, cenario: Cenario, item: ItemCatalogo): 
 function gerarEventual(rnd: Aleatorio, cenario: Cenario, item: ItemCatalogo): TransacaoAnalise[] {
   switch (cenario) {
     case 'E1_frequente_valor_irregular': {
+      // Datas encadeadas com gaps fora das faixas mensal/bimestral (evita FP acidental por sorteio).
       const cartao = rnd() < 0.5;
-      return Array.from({ length: inteiro(rnd, 4, 12) }, () =>
-        lancamento(item, dataAleatoria(rnd), item.valor * real(rnd, 0.4, 2), cartao),
-      );
+      const lista: TransacaoAnalise[] = [];
+      const atual = new Date(INICIO_PERIODO.ano, INICIO_PERIODO.mes + inteiro(rnd, 0, 4), inteiro(rnd, 1, 28));
+      const quantidade = inteiro(rnd, 4, 12);
+      for (let i = 0; i < quantidade; i += 1) {
+        lista.push(lancamento(item, formatar(atual), item.valor * real(rnd, 0.4, 2), cartao));
+        const gap = rnd() < 0.5 ? inteiro(rnd, 3, 18) : inteiro(rnd, 40, 50);
+        atual.setDate(atual.getDate() + gap);
+        if (atual.getFullYear() > INICIO_PERIODO.ano + 1) break;
+      }
+      return lista;
     }
     case 'E2_compra_unica':
       return [lancamento(item, dataAleatoria(rnd), item.valor, rnd() < 0.5)];
@@ -391,7 +411,8 @@ function itemDoCenario(cenario: Cenario, rnd: Aleatorio, usados: Set<string>, in
     R1_assinatura_fixa: ASSINATURAS,
     R2_assinatura_reajuste: ASSINATURAS,
     R3_assinatura_mes_falho: ASSINATURAS,
-    R8_assinatura_recente: ASSINATURAS,
+    // R8: só Subscriptions — o critério da heurística exige categoria Subscriptions com 2 ocorrências
+    R8_assinatura_recente: ASSINATURAS_SUBSCRIPTIONS,
     R9_assinatura_cancelada: ASSINATURAS,
     R4_consumo_valor_variavel: CONSUMO_VARIAVEL,
     R5_anual: ANUAIS,

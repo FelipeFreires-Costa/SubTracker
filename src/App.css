@@ -89,6 +89,46 @@ html {
   line-height: 1.45;
 }
 
+.tcc-clareza {
+  margin: 12px 0 0;
+  max-width: 46rem;
+  padding: 10px 14px;
+  border: 1px solid var(--linha);
+  border-left: 3px solid var(--agua);
+  border-radius: var(--raio);
+  background: color-mix(in srgb, var(--agua) 10%, transparent);
+}
+
+.tcc-clareza p {
+  margin: 0;
+  color: var(--tinta-fraca);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.tcc-clareza strong {
+  color: var(--tinta);
+}
+
+.tcc-clareza em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.tcc-clareza-lista {
+  list-style: disc;
+  margin: 8px 0 12px 1.1rem;
+  padding: 0;
+  color: var(--tinta-fraca);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.tcc-clareza-lista li {
+  margin: 4px 0;
+}
+
 .card-resumo-nota {
   margin: 0;
   color: var(--tinta-fraca);
@@ -130,9 +170,17 @@ html {
   border-radius: var(--raio);
   display: grid;
   place-items: center;
+  line-height: 0;
   background: color-mix(in srgb, var(--alerta) 16%, transparent);
   color: var(--alerta);
   flex-shrink: 0;
+}
+
+.drenos-atalho-icone svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: 0;
 }
 
 .drenos-atalho-texto {

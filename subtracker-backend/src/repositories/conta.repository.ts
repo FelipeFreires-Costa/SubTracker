@@ -6,6 +6,7 @@ import type {
   CriarContaInput,
   OrigemConta,
   Periodicidade,
+  SituacaoConta,
 } from '../types/conta.types';
 
 interface ContaRow {
@@ -24,12 +25,13 @@ interface ContaRow {
   ocorrencias: number | string | null;
   primeira_cobranca: Date | string | null;
   total_gasto: string | number | null;
+  situacao: SituacaoConta | null;
 }
 
 const COLUNAS = `
   id, nome, preco, data, pago, categoria,
   recorrente, periodicidade, proxima_cobranca, origem,
-  parcela_atual, parcela_total, ocorrencias, primeira_cobranca, total_gasto
+  parcela_atual, parcela_total, ocorrencias, primeira_cobranca, total_gasto, situacao
 `;
 
 function mapData(valor: Date | string | null | undefined): string | null {
@@ -65,6 +67,7 @@ function mapConta(row: ContaRow): Conta {
     ocorrencias: mapNumero(row.ocorrencias),
     primeiraCobranca: mapData(row.primeira_cobranca),
     totalGasto: mapNumero(row.total_gasto),
+    situacao: row.situacao ?? null,
   };
 }
 
@@ -90,8 +93,8 @@ const ContaRepository = {
     const result = await executor.query(
       `INSERT INTO contas
         (nome, preco, data, pago, categoria, recorrente, periodicidade, proxima_cobranca, origem,
-         parcela_atual, parcela_total, ocorrencias, primeira_cobranca, total_gasto)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+         parcela_atual, parcela_total, ocorrencias, primeira_cobranca, total_gasto, situacao)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
        RETURNING ${COLUNAS}`,
       [
         dados.nome,
@@ -108,6 +111,7 @@ const ContaRepository = {
         dados.ocorrencias ?? null,
         dados.primeiraCobranca ?? null,
         dados.totalGasto ?? null,
+        dados.situacao ?? null,
       ],
     );
 
@@ -177,6 +181,8 @@ const ContaRepository = {
       ocorrencias?: number | null;
       primeiraCobranca?: string | null;
       totalGasto?: number | null;
+      categoria?: string;
+      situacao?: SituacaoConta | null;
     },
     executor: DbExecutor = db,
   ): Promise<Conta | null> {
@@ -186,8 +192,10 @@ const ContaRepository = {
            preco = $2, data = $3, periodicidade = $4, proxima_cobranca = $5, pago = $6,
            recorrente = COALESCE($7, recorrente),
            parcela_atual = $8, parcela_total = $9,
-           ocorrencias = $10, primeira_cobranca = $11, total_gasto = $12
-       WHERE id = $13
+           ocorrencias = $10, primeira_cobranca = $11, total_gasto = $12,
+           categoria = COALESCE($13, categoria),
+           situacao = $14
+       WHERE id = $15
        RETURNING ${COLUNAS}`,
       [
         dados.nome ?? null,
@@ -202,6 +210,8 @@ const ContaRepository = {
         dados.ocorrencias ?? null,
         dados.primeiraCobranca ?? null,
         dados.totalGasto ?? null,
+        dados.categoria ?? null,
+        dados.situacao ?? null,
         id,
       ],
     );

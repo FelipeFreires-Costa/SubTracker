@@ -12,6 +12,15 @@ function chavesDaAssinatura(nomeFormatado: string, chaveGrupo: string): string[]
   return [...new Set([normalizarNome(nomeFormatado), chaveGrupo].filter(Boolean))];
 }
 
+/** Prefer category from the heuristic/Pluggy; only fall back when it is empty or the generic default. */
+function categoriaParaPersistir(nome: string, categoriaHeuristica?: string | null) {
+  const cat = (categoriaHeuristica || '').trim();
+  if (!cat || /^assinatura$/i.test(cat)) {
+    return inferirCategoria(nome);
+  }
+  return cat;
+}
+
 function chavesEquivalentes(a: string, b: string): boolean {
   if (a === b) return true;
   const [menor, maior] = a.length <= b.length ? [a, b] : [b, a];
@@ -88,6 +97,8 @@ async function persistirAnaliseNoExecutor(analise: AnaliseRecorrencia, executor:
           ocorrencias: assinatura.ocorrencias,
           primeiraCobranca: assinatura.primeiraCobranca,
           totalGasto: Number(assinatura.totalGasto.toFixed(2)),
+          categoria: categoriaParaPersistir(nome, assinatura.categoria),
+          situacao: assinatura.situacao === 'encerrada' ? 'encerrada' : assinatura.situacao,
         },
         executor,
       );
@@ -107,7 +118,7 @@ async function persistirAnaliseNoExecutor(analise: AnaliseRecorrencia, executor:
         preco: Number(assinatura.preco.toFixed(2)),
         data: assinatura.ultimaCobranca,
         pago: assinatura.pago,
-        categoria: inferirCategoria(nome),
+        categoria: categoriaParaPersistir(nome, assinatura.categoria),
         recorrente: true,
         periodicidade: assinatura.periodicidade,
         proximaCobranca: assinatura.proximaCobranca,
@@ -117,6 +128,7 @@ async function persistirAnaliseNoExecutor(analise: AnaliseRecorrencia, executor:
         ocorrencias: assinatura.ocorrencias,
         primeiraCobranca: assinatura.primeiraCobranca,
         totalGasto: Number(assinatura.totalGasto.toFixed(2)),
+        situacao: assinatura.situacao === 'encerrada' ? 'encerrada' : assinatura.situacao,
       },
       executor,
     );
@@ -231,14 +243,14 @@ const ImportacaoService = {
     return this.importarAssinaturas(conexao.itemId);
   },
 
-  async faturaMesAtual() {
+  async faturaMesAtual(mesChave?: string | null) {
     const conexao = await ConexaoRepository.obter();
 
     if (!conexao) {
       throw new AppError('Nenhum banco conectado. Conecte na tela Contas.', 400);
     }
 
-    return PluggyService.obterFaturaMesAtual(conexao.itemId);
+    return PluggyService.obterFaturaMesAtual(conexao.itemId, mesChave);
   },
 
   /** O download do extrato fica desligado, salvo EXTRATO_EXPORT=true no .env. */

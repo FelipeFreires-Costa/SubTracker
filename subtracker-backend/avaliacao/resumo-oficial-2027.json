@@ -1,0 +1,32 @@
+{
+  "papel": "teste-independente-oficial",
+  "geradoEm": "2026-11-23T13:11:41.222Z",
+  "semente": 2027,
+  "totalCasos": 120,
+  "totalTransacoes": 958,
+  "perfis": 10,
+  "mesesPorPerfil": 13,
+  "heuristica": {
+    "verdadeirosPositivos": 60,
+    "verdadeirosNegativos": 60,
+    "falsosPositivos": 0,
+    "falsosNegativos": 0,
+    "acuracia": 100,
+    "precisao": 100,
+    "recall": 100,
+    "f1": 100
+  },
+  "linhaDeBase": {
+    "verdadeirosPositivos": 60,
+    "verdadeirosNegativos": 10,
+    "falsosPositivos": 50,
+    "falsosNegativos": 0,
+    "acuracia": 58.3,
+    "precisao": 54.5,
+    "recall": 100,
+    "f1": 70.6
+  },
+  "acertoDeCicloEntreRecorrentes": 100,
+  "errosHeuristica": [],
+  "observacao": "TESTE OFICIAL INDEPENDENTE (semente 2027). Regras congeladas antes desta execução. O conjunto semente 2026 permanece apenas como exploração/ajuste e NÃO é evidência independente. N=21 (desenvolvimento) também não é evidência independente. Rótulos vêm do tipo de cenário, não da saída do algoritmo. Não mede acurácia em extratos reais."
+}

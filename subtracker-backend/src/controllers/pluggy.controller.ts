@@ -67,9 +67,11 @@ const PluggyController = {
     }
   },
 
-  async faturaMesAtual(_req: Request, res: Response, next: NextFunction) {
+  async faturaMesAtual(req: Request, res: Response, next: NextFunction) {
     try {
-      const fatura = await ImportacaoService.faturaMesAtual();
+      const mesBruto = typeof req.query.mes === 'string' ? req.query.mes.trim() : '';
+      const mesChave = /^\d{4}-\d{2}$/.test(mesBruto) ? mesBruto : null;
+      const fatura = await ImportacaoService.faturaMesAtual(mesChave);
       res.json(fatura);
     } catch (error) {
       next(error);
