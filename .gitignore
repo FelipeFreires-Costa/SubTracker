@@ -36,3 +36,6 @@ subtracker-backend/scripts/avaliacao-real/redact_extra.txt
 *.njsproj
 *.sln
 *.sw?
+
+# Material de defesa do TCC — não versionar
+defesa-tcc/
