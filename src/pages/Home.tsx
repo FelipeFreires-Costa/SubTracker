@@ -21,6 +21,7 @@ import { ModalConta } from '../Components/ModalConta/ModalConta';
 import { ModalDrenos } from '../Components/ModalDrenos/ModalDrenos';
 import { useContas } from '../hooks/useContas';
 import { pluggyService } from '../services/pluggyService';
+import { ApiError } from '../services/apiClient';
 import { iconeDaConta } from '../utils/categoriaIcones';
 import {
   resumoDeGastos,
@@ -48,6 +49,11 @@ import {
 import './Home.css';
 
 const MODO_SANDBOX = import.meta.env.VITE_PLUGGY_SANDBOX !== 'false';
+
+// Usa a mensagem do servidor/conexão quando houver; senão, o texto padrão da ação.
+function mensagemDoErro(error: unknown, padrao: string): string {
+  return error instanceof ApiError && error.message ? `${padrao}\n\n${error.message}` : padrao;
+}
 
 export function Home() {
   const {
@@ -194,7 +200,7 @@ export function Home() {
       await importarSandbox();
     } catch (error) {
       tratarErro(error, 'Não deu para carregar os cenários de teste.');
-      alert('Não deu para carregar os cenários de teste.');
+      alert(mensagemDoErro(error, 'Não deu para carregar os cenários de teste.'));
     }
   }
 
@@ -209,7 +215,7 @@ export function Home() {
       await pluggyService.baixarExtrato();
     } catch (error) {
       tratarErro(error, 'Não deu para baixar o extrato.');
-      alert('Não deu para baixar o extrato. Conecte o banco e tente de novo.');
+      alert(mensagemDoErro(error, 'Não deu para baixar o extrato. Conecte o banco e tente de novo.'));
     } finally {
       setBaixandoExtrato(false);
     }
@@ -220,7 +226,7 @@ export function Home() {
       await desconectarPluggy();
     } catch (error) {
       tratarErro(error, 'Não deu para desconectar o banco.');
-      alert('Não deu para desconectar o banco.');
+      alert(mensagemDoErro(error, 'Não deu para desconectar o banco.'));
     }
   }
 
@@ -283,7 +289,7 @@ export function Home() {
       await removerConta(contaParaApagar);
     } catch (error) {
       tratarErro(error, 'Não deu para excluir a conta.');
-      alert('Não deu para excluir a conta. Tente de novo.');
+      alert(mensagemDoErro(error, 'Não deu para excluir a conta. Tente de novo.'));
     } finally {
       setContaParaApagar(null);
     }
@@ -304,7 +310,7 @@ export function Home() {
       limparFormulario();
     } catch (error) {
       tratarErro(error, 'Não deu para salvar a conta.');
-      alert('Não deu para salvar a conta. Tente de novo.');
+      alert(mensagemDoErro(error, 'Não deu para salvar a conta. Tente de novo.'));
     }
   }
 
@@ -322,7 +328,7 @@ export function Home() {
       limparFormulario();
     } catch (error) {
       tratarErro(error, 'Não deu para salvar as alterações.');
-      alert('Não deu para salvar as alterações. Tente de novo.');
+      alert(mensagemDoErro(error, 'Não deu para salvar as alterações. Tente de novo.'));
     }
   }
 
@@ -331,7 +337,7 @@ export function Home() {
       await alternarStatus(id);
     } catch (error) {
       tratarErro(error, 'Não deu para marcar como paga.');
-      alert('Não deu para marcar como paga. Tente de novo.');
+      alert(mensagemDoErro(error, 'Não deu para marcar como paga. Tente de novo.'));
     }
   }
 

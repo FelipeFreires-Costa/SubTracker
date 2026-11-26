@@ -1,16 +1,36 @@
 import pg from 'pg';
 
-if (!process.env.DB_PASSWORD) {
-  throw new Error('Defina DB_PASSWORD no arquivo .env do backend (veja .env.example).');
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString && !process.env.DB_PASSWORD) {
+  throw new Error(
+    'Defina DATABASE_URL (nuvem) ou DB_PASSWORD (local) no .env do backend (veja .env.example).',
+  );
 }
 
-const pool = new pg.Pool({
-  user: process.env.DB_USER ?? 'postgres',
-  host: process.env.DB_HOST ?? 'localhost',
-  database: process.env.DB_NAME ?? 'subtracker_db',
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT ?? 5432),
-});
+// Bancos hospedados (Neon, Render, Supabase...) exigem SSL. Local não usa.
+// DB_SSL=false desliga; DB_SSL=true força.
+function usarSsl(): boolean {
+  if (process.env.DB_SSL === 'false') return false;
+  if (process.env.DB_SSL === 'true') return true;
+  return Boolean(connectionString) && !/localhost|127\.0\.0\.1/.test(connectionString ?? '');
+}
+
+const pool = new pg.Pool(
+  connectionString
+    ? {
+        connectionString,
+        ssl: usarSsl() ? { rejectUnauthorized: false } : undefined,
+      }
+    : {
+        user: process.env.DB_USER ?? 'postgres',
+        host: process.env.DB_HOST ?? 'localhost',
+        database: process.env.DB_NAME ?? 'subtracker_db',
+        password: process.env.DB_PASSWORD,
+        port: Number(process.env.DB_PORT ?? 5432),
+        ssl: usarSsl() ? { rejectUnauthorized: false } : undefined,
+      },
+);
 
 pool.on('error', (err: Error) => {
   console.error('[DB] Erro inesperado no pool de conexões:', err);

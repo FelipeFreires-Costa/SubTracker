@@ -1,0 +1,37 @@
+# Blueprint do Render para a API do SubTracker.
+# Render > New > Blueprint > escolha este repositório. Ele pede os valores marcados "sync: false".
+services:
+  - type: web
+    name: subtracker-api
+    runtime: node
+    plan: free
+    rootDir: subtracker-backend
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: HOST
+        value: 0.0.0.0
+      # Connection string do Postgres (Neon, Supabase ou Render Postgres).
+      - key: DATABASE_URL
+        sync: false
+      - key: PLUGGY_CLIENT_ID
+        sync: false
+      - key: PLUGGY_CLIENT_SECRET
+        sync: false
+      # URL do site no Vercel, sem barra no final. Várias origens: separe por vírgula.
+      - key: CORS_ORIGIN
+        sync: false
+      # Código que o site pede na primeira vez. O Render gera um valor aleatório;
+      # veja em Environment > ACCESS_TOKEN.
+      - key: ACCESS_TOKEN
+        generateValue: true
+      # Gerador local de cenários e Modo TCC. Troque para false para desligar.
+      - key: SANDBOX_API
+        value: "true"
+      - key: AVALIACAO_API
+        value: "true"
+      - key: EXTRATO_EXPORT
+        value: "false"

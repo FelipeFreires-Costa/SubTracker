@@ -38,6 +38,13 @@ export function ModalConta({
   const tituloId = 'modal-conta-titulo';
   const primeiroCampoRef = useRef<HTMLInputElement>(null);
 
+  // onCancelar muda a cada render do pai; guardar em ref evita refazer o efeito
+  // (e roubar o foco para o primeiro campo) a cada tecla digitada.
+  const onCancelarRef = useRef(onCancelar);
+  useEffect(() => {
+    onCancelarRef.current = onCancelar;
+  });
+
   useEffect(() => {
     if (!aberto) return;
 
@@ -46,13 +53,13 @@ export function ModalConta({
     function aoTeclar(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         event.preventDefault();
-        onCancelar();
+        onCancelarRef.current();
       }
     }
 
     document.addEventListener('keydown', aoTeclar);
     return () => document.removeEventListener('keydown', aoTeclar);
-  }, [aberto, onCancelar]);
+  }, [aberto]);
 
   if (!aberto) return null;
 

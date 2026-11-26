@@ -60,6 +60,17 @@ npm run dev
 
 Interface: `http://localhost:5173`
 
+## Publicação (Vercel + API na nuvem)
+
+O Vercel hospeda só o front. A API (Express) e o PostgreSQL precisam estar na nuvem, senão o site publicado tenta falar com `localhost`.
+
+1. **Banco:** crie um Postgres gratuito (ex.: [Neon](https://neon.tech)) e copie a connection string. As tabelas são criadas sozinhas no primeiro start da API.
+2. **API:** no [Render](https://render.com), `New > Blueprint` e escolha este repositório (usa o `render.yaml`). Informe `DATABASE_URL`, `PLUGGY_CLIENT_ID`, `PLUGGY_CLIENT_SECRET` e `CORS_ORIGIN` (URL do site no Vercel, sem barra no final). O Render gera o `ACCESS_TOKEN`.
+3. **Vercel:** em `Settings > Environment Variables`, defina `VITE_API_URL` = `https://SUA-API.onrender.com/api` e faça um novo deploy.
+4. Abra o site: na primeira vez ele pede o **código de acesso** (valor de `ACCESS_TOKEN`). Sem esse código, a API recusa as requisições (401).
+
+No plano gratuito do Render a API dorme após inatividade; a primeira requisição pode levar cerca de 1 minuto.
+
 ## Avaliação acadêmica (evidência formal)
 
 No backend:
